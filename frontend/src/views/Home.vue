@@ -2,9 +2,10 @@
 </script>
 
 <template>
-    <div>hi</div>
+    <div class="home">
+        hi
+    </div>
 </template>
 
 <style scoped lang="scss">
-
 </style>
