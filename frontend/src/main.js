@@ -6,8 +6,11 @@ import "ant-design-vue/dist/antd.css";
 // 覆盖 antd 样式
 import "./muse-ant-vue/app.scss";
 
+import router from "./plugins/router";
+
 const app = createApp(App);
 
 app.use(Antd);
+app.use(router);
 
 app.mount("#app");
