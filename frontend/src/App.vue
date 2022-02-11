@@ -11,7 +11,6 @@ import Header from "./components/Header.vue"
       <router-view />
     </a-layout-content>
     <a-layout-footer>
-      footer
     </a-layout-footer>
   </a-layout>
 </template>
@@ -24,5 +23,7 @@ import Header from "./components/Header.vue"
   text-align: center;
   color: #2c3e50;
 }
-
+.ant-layout-content {
+  padding-top: 0 !important;
+}
 </style>
