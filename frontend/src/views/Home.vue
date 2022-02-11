@@ -1,6 +1,19 @@
 <script setup>
 import KotlinSVG from "../components/KotlinSVG.vue"
 import TrophySVG from "../components/TrophySVG.vue"
+import { Empty } from 'ant-design-vue';
+const emptyImage = Empty.PRESENTED_IMAGE_SIMPLE;
+
+// 定义页面文本 & 默认状态属性
+const noActiveSeminar = "当前没有进行中的活动";
+const emptySeminarRecord = "没有记录"
+
+const columns = [
+    { title: "以往竞赛", dataIndex: "title", key: "title" },
+    { title: "时长", dataIndex: "duration", key: "duration" },
+    { title: "参加人数", dataIndex: "participants", key: "participants" },
+];
+const records = []
 </script>
 
 <template>
@@ -16,6 +29,23 @@ import TrophySVG from "../components/TrophySVG.vue"
             </div>
         </div>
     </div>
+    <div class="main-wrap">
+        <div class="current-seminar">
+            <a-card :bordered="false" class="widget-1">
+                <a-empty :description="noActiveSeminar" />
+            </a-card>
+        </div>
+        <div class="records-wrap">
+            <div class="seminar-redords card">
+                <div class="header">
+                    <h4 class="text-gray-9">往期竞赛记录</h4>
+                    <div class="records">
+                        <a-table :columns="columns" :data-source="records"></a-table>
+                    </div>
+                </div>
+            </div>
+            <div class="tools-box card"></div>
+        </div>
     </div>
 </template>
 
@@ -60,4 +90,38 @@ import TrophySVG from "../components/TrophySVG.vue"
     }
 }
 
+.main-wrap {
+    max-width: 800px;
+    margin: auto;
+
+    .current-seminar {
+        position: relative;
+        top: -50px;
+
+        .widget-1 {
+            min-height: 100px;
+        }
+    }
+
+    .records-wrap {
+        display: flex;
+        justify-content: space-between;
+
+        .card {
+            box-shadow: 0 0 50px 0 rgb(0 0 0 / 15%);
+            border-radius: 20px;
+        }
+        .seminar-redords {
+            width: 70%;
+
+            .header {
+                padding: 30px 20px;
+            }
+        }
+
+        .tools-box {
+            width: 25%;
+        }
+    }
+}
 </style>
