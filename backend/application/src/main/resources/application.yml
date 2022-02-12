@@ -1,0 +1,10 @@
+server:
+  port: 2021
+  servlet:
+    context-path: /api
+
+spring:
+  webflux:
+    base-path: /api
+
+debug: true

@@ -32,12 +32,20 @@ allprojects {
                 implementation(kotlin("stdlib"))
                 implementation(kotlin("reflect"))
                 implementation(kotlin("compiler"))
+                // coroutines
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
+                // spring
+//                implementation(springStarter("web"))
+                implementation(springStarter("webflux"))
 
                 // jackson
                 implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
                 implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-                // dev
+                // devtool
                 runtimeOnly("org.springframework.boot:spring-boot-devtools")
             }
 

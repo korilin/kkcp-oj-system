@@ -1,5 +1,3 @@
-*/.idea/
-*/.gradle/
-*/build/
-backend/buildSrc/.gradle
-backend/buildSrc/build
+.idea/
+.gradle/
+build/
