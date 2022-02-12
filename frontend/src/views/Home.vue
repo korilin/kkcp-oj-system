@@ -1,19 +1,35 @@
-<script setup>
+<script setup >
 import KotlinSVG from "../components/KotlinSVG.vue"
 import TrophySVG from "../components/TrophySVG.vue"
-import { Empty } from 'ant-design-vue';
-const emptyImage = Empty.PRESENTED_IMAGE_SIMPLE;
 
 // 定义页面文本 & 默认状态属性
 const noActiveSeminar = "当前没有进行中的活动";
-const emptySeminarRecord = "没有记录"
+const loading = "loading...";
 
 const columns = [
     { title: "以往竞赛", dataIndex: "title", key: "title" },
     { title: "时长", dataIndex: "duration", key: "duration" },
     { title: "参加人数", dataIndex: "participants", key: "participants" },
 ];
-const records = []
+
+const records = [];
+
+const toolLinks = [
+
+    {
+        text: "帮助文档",
+        link: "",
+    },
+
+    {
+        text: "问题反馈",
+        link: "",
+    },
+    {
+        text: "社区合作",
+        link: "",
+    }
+];
 </script>
 
 <template>
@@ -39,12 +55,21 @@ const records = []
             <div class="seminar-redords card">
                 <div class="header">
                     <h4 class="text-gray-9">往期竞赛记录</h4>
-                    <div class="records">
-                        <a-table :columns="columns" :data-source="records"></a-table>
-                    </div>
+                </div>
+                <div class="records">
+                    <a-table :columns="columns" :data-source="records"></a-table>
                 </div>
             </div>
-            <div class="tools-box card"></div>
+            <div class="tools-box card">
+                <h4 class="text-secondary">Tool Box</h4>
+                <a-list item-layout="horizontal" :data-source="toolLinks">
+                    <template #renderItem="{ item }">
+                        <a-list-item>
+                            <a style="width: 100%;">{{ item.text }}</a>
+                        </a-list-item>
+                    </template>
+                </a-list>
+            </div>
         </div>
     </div>
 </template>
@@ -65,14 +90,14 @@ const records = []
         right: 10px;
 
         .kotlin-svg {
-            height: 150px;
-            width: 150px;
+            height: 180px;
+            width: 180px;
         }
 
         .trophy-svg {
             position: absolute;
-            height: 70px;
-            width: 70px;
+            height: 80px;
+            width: 80px;
             transform: rotate(30deg);
             right: 5px;
             bottom: 5px;
@@ -96,10 +121,10 @@ const records = []
 
     .current-seminar {
         position: relative;
-        top: -50px;
+        top: -60px;
 
         .widget-1 {
-            min-height: 100px;
+            min-height: 150px;
         }
     }
 
@@ -108,19 +133,23 @@ const records = []
         justify-content: space-between;
 
         .card {
-            box-shadow: 0 0 50px 0 rgb(0 0 0 / 15%);
-            border-radius: 20px;
+            box-shadow: 0 0 30px -10px rgb(0 0 0 / 15%);
+            border-radius: 12px;
         }
         .seminar-redords {
             width: 70%;
-
             .header {
                 padding: 30px 20px;
+            }
+            .records {
+                padding-bottom: 30px;
             }
         }
 
         .tools-box {
             width: 25%;
+            padding: 30px 20px 20px;
+            text-align: center;
         }
     }
 }
