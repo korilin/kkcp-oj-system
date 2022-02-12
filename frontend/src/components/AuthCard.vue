@@ -3,7 +3,7 @@ import { GithubFilled } from "@ant-design/icons-vue";
 
 const url = "https://github.com/login/oauth/authorize";
 const clientId = "ec5b9941d159dac959aa";
-const redirectUri = "http://localhost:2022/api/auth/callback"
+const redirectUri = "http://localhost:2021/api/auth/callback"
 
 const state = ""
 
