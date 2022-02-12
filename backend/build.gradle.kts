@@ -8,11 +8,15 @@ buildscript {
 group = "com.korilin"
 version = "1.0-SNAPSHOT"
 
+
 plugins {
+    val kotlinVersion = "1.6.10"
+
     id("org.springframework.boot") version "2.6.3"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
 }
 
 allprojects {
@@ -23,6 +27,7 @@ allprojects {
         plugin("io.spring.dependency-management")
         plugin("org.jetbrains.kotlin.jvm")
         plugin("org.jetbrains.kotlin.plugin.spring")
+        plugin("kotlinx-serialization")
     }
 
     sourceSets {
