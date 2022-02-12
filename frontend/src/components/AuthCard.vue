@@ -1,5 +1,18 @@
 <script setup>
 import { GithubFilled } from "@ant-design/icons-vue";
+
+const url = "https://github.com/login/oauth/authorize";
+const clientId = "ec5b9941d159dac959aa";
+const redirectUri = "http://localhost:2022/api/auth/callback"
+
+const state = ""
+
+const scope = "read:user user:email"
+
+function githubAuth() {
+    window.open(url + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scope + "&state=" + state, "_self");
+}
+
 </script>
 <template>
     <a-card :bordered="false" class="widget-1 auth-card">
@@ -10,7 +23,7 @@ import { GithubFilled } from "@ant-design/icons-vue";
                 <strong>GitHub</strong> 账户授权
             </div>
             <p>点击下面按钮前往授权页面</p>
-            <GithubFilled class="github-icon" />
+            <GithubFilled class="github-icon" @click="githubAuth" />
         </div>
         <a-divider />
         <p style="text-align: left;">

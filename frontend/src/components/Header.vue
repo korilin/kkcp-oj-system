@@ -12,8 +12,8 @@ const isAuthCardShow = ref(false)
             <a-button @click="isAuthCardShow = true">登录/注册</a-button>
         </span>
     </div>
-    <div class="auth-card-wrapper" v-show="isAuthCardShow">
-        <div style="position: relative;">
+    <div class="auth-card-shade" :class="{ 'auth-card-shade-show': isAuthCardShow }">
+        <div class="auth-card-wrapper">
             <AuthCard />
             <CloseOutlined class="auth-card-close-btn" @click="isAuthCardShow = false" />
         </div>
@@ -34,16 +34,25 @@ const isAuthCardShow = ref(false)
     font-weight: 500;
 }
 
-.auth-card-wrapper {
+.auth-card-shade {
     position: fixed;
     z-index: 100;
     width: 100%;
     height: 100%;
     left: 0;
-    background-color: #00000080;
+    background-color: #00000000;
     display: flex;
     justify-content: center;
     align-items: center;
+    visibility: hidden;
+    transition: all 0.3s;
+
+    .auth-card-wrapper {
+        position: relative;
+        top: 50px;
+        opacity: 0;
+        transition: all 0.3s;
+    }
 
     .auth-card-close-btn {
         position: absolute;
@@ -54,6 +63,14 @@ const isAuthCardShow = ref(false)
         &:hover {
             color: #141414;
         }
+    }
+}
+.auth-card-shade-show {
+    visibility: visible;
+    background-color: #00000080;
+    .auth-card-wrapper {
+        top: 0px;
+        opacity: 1;
     }
 }
 </style>
