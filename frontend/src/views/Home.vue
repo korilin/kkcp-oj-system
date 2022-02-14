@@ -3,6 +3,8 @@ import KotlinSVG from "../components/KotlinSVG.vue"
 import TrophySVG from "../components/TrophySVG.vue"
 
 // 定义页面文本 & 默认状态属性
+const heroTitle = "Kotlin Knowledge Contest";
+const heroSubtitle = "Kotlin 编程知识竞赛";
 const noActiveSeminar = "当前没有进行中的活动";
 const loading = "loading...";
 
@@ -40,8 +42,8 @@ const toolLinks = [
                 <TrophySVG class="trophy-svg" />
             </div>
             <div class="text">
-                <h3 class="text-gray-2">Kotlin Knowledge Contest</h3>
-                <p class="text-gray-6">Kotlin 编程知识竞赛</p>
+                <h3 class="text-gray-2">{{ heroTitle }}</h3>
+                <p class="text-gray-6">{{ heroSubtitle }}</p>
             </div>
         </div>
     </div>
@@ -61,7 +63,7 @@ const toolLinks = [
                 </div>
             </div>
             <div class="tools-box card">
-                <h4 class="text-secondary">Tool Box</h4>
+                <h4 class="text-gray-8">Tool Box</h4>
                 <a-list item-layout="horizontal" :data-source="toolLinks">
                     <template #renderItem="{ item }">
                         <a-list-item>
