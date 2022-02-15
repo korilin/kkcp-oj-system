@@ -137,6 +137,7 @@ const toolLinks = [
         .card {
             box-shadow: 0 0 30px -10px rgb(0 0 0 / 15%);
             border-radius: 12px;
+            background-color: white;
         }
         .seminar-redords {
             width: 70%;
