@@ -5,12 +5,12 @@ import vue from "@vitejs/plugin-vue";
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [vue()],
-    build: {
-        rollupOptions: {
-            input: {
-                user: resolve(__dirname, "index.html"),
-                admin: resolve(__dirname, "admin/index.html"),
-            },
+    base: "/admin/",
+    publicDir: "../public",
+    server: {
+        fs: {
+            // Allow serving files from one level up to the project root
+            allow: [".."],
         },
     },
 });
