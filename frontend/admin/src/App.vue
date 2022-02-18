@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import Sidebar from "./components/Sidebar.vue"
+import KotlinSVGVue from './components/KotlinSVG.vue';
 
 const collapsed = ref(false)
 </script>
@@ -13,7 +15,10 @@ const collapsed = ref(false)
       breakpoint="lg"
       collapsed-width="0"
       width="250px"
-    ></a-layout-sider>
+    >
+      <KotlinSVGVue style="padding: 30px 50px 15px 30px;" />
+      <Sidebar />
+    </a-layout-sider>
     <a-layout class="main-layout">
       <a-layout-content>
         <router-view />
