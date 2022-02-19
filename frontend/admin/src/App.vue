@@ -8,6 +8,9 @@ const router = useRouter();
 const route = useRoute();
 const accountStore = useAccountStore();
 
+accountStore.loginToken = window.sessionStorage.getItem("admin_login_token");
+accountStore.account = JSON.parse(window.sessionStorage.getItem("admin_account_info"));
+
 if (accountStore.loginToken == null) {
   router.push({ name: "login" });
 }

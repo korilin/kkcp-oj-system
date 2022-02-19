@@ -1,13 +1,13 @@
 <script setup>
 import { MailOutlined, LockOutlined } from '@ant-design/icons-vue';
-import { ref } from 'vue';
+import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccountStore } from './plugins/pinia';
 
 const accountStore = useAccountStore();
 const router = useRouter();
 
-const loginState = ref({
+const loginState = reactive({
     email: "",
     code: "",
 })
@@ -23,7 +23,8 @@ function saveIntoStore(token, account) {
     accountStore.loginToken = token;
     accountStore.account = account;
     window.sessionStorage.setItem('admin_login_token', token);
-    window.sessionStorage.setItem('admin_account_info', account);
+    window.sessionStorage.setItem('admin_account_info',
+        JSON.stringify(account));
 }
 
 function tryLogin() {
