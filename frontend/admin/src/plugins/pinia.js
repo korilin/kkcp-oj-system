@@ -32,3 +32,24 @@ export const useContestsStore = defineStore("contests", {
         };
     },
 });
+
+const questions = [];
+
+for (let index = 0; index < 20; index++) {
+    questions[index] = {
+        questionId: index,
+        type: 0,
+        title: "模拟问题" + index,
+        description: "很长的问题描述，可能是一个 html 片段",
+        tags: "Kotlin|Coroutine|Compose",
+        level: (index % 3) + 1,
+    };
+}
+
+export const useQuestionsStore = defineStore("questions", {
+    state: () => {
+        return {
+            data: questions,
+        };
+    },
+});

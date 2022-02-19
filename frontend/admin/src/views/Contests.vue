@@ -51,8 +51,3 @@ const columns = [
         </template>
     </a-table>
 </template>
-<style scoped lang="scss">
-.ant-table-thead > tr > th {
-    text-align: center;
-}
-</style>
