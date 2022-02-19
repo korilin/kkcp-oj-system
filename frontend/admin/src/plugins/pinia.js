@@ -11,35 +11,24 @@ export const useAccountStore = defineStore("account", {
     },
 });
 
+const contests = [];
+
+for (let index = 0; index < 20; index++) {
+    contests[index] = {
+        contestId: index,
+        title: "测试数据" + index,
+        description: "这可能是一个非常长的描述",
+        duration: 3600,
+        startTime: "2022/2/20 02:25:00",
+        status: index > 10 ? 1 : 0,
+        questionCount: 10,
+    };
+}
+
 export const useContestsStore = defineStore("contests", {
     state: () => {
         return {
-            data: [
-                {
-                    contestId: 1,
-                    title: "测试数据1",
-                    description: "这可能是一个非常长的描述",
-                    duration: 3600,
-                    startTime: "2022/2/20 02:25:00",
-                    status: 0,
-                },
-                {
-                    contestId: 2,
-                    title: "测试数据2",
-                    description: "这可能是一个非常长的描述",
-                    duration: 3600,
-                    startTime: "2022/2/20 02:25:00",
-                    status: 0,
-                },
-                {
-                    contestId: 3,
-                    title: "测试数据3",
-                    description: "这可能是一个非常长的描述",
-                    duration: 3600,
-                    startTime: "2022/2/20 02:25:00",
-                    status: 1,
-                },
-            ],
+            data: contests,
         };
     },
 });

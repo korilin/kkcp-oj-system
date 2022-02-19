@@ -15,6 +15,11 @@ const columns = [
         key: "startTime"
     },
     {
+        title: "题数",
+        key: "questionCount",
+        slots: { customRender: "questionCount" }
+    },
+    {
         title: "时长",
         dataIndex: "duration",
         key: "duration"
@@ -22,23 +27,32 @@ const columns = [
     {
         title: "状态",
         dataIndex: "status",
-        key: "status"
+        key: "status",
+        slots: { customRender: "status" }
     },
     {
-        title: "Action",
-        key: "action"
+        title: "ACTION",
+        key: "action",
+        slots: { customRender: "action" }
     },
 ]
 </script>
 <template>
     <a-table :columns="columns" :data-source="contestsStore.data" rowKey="contestId">
-        <template #bodyCell="{ column, record }">
-            <template v-if="column.key == 'status'">{{ record.status }} ?</template>
-            <template v-else-if="column.key == 'action'">
-                <span>
-                    <a class="ant-dropdown-link">More actions</a>
-                </span>
-            </template>
+        <template #questionCount="{ record }">{{ record.questionCount }}</template>
+        <template #status="{ record }">
+            <a-tag v-if="record.status == 0" color="purple">进行中</a-tag>
+            <a-tag v-else color="green">已完成</a-tag>
+        </template>
+        <template #action="{ record }">
+            <a-button type="link" size="small">more&edit</a-button>
+            <a-divider type="vertical" />
+            <a-button type="link" size="small" style="color: #ff7875;">del</a-button>
         </template>
     </a-table>
 </template>
+<style scoped lang="scss">
+.ant-table-thead > tr > th {
+    text-align: center;
+}
+</style>

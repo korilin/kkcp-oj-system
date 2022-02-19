@@ -15,7 +15,6 @@ const account = ref(accountStore.account);
         title="管理员信息"
         class="global-style-profile-desc"
         :column="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }"
-        size="middle"
     >
         <a-descriptions-item label="账户名">{{ account.name }}</a-descriptions-item>
         <a-descriptions-item label="邮箱">{{ account.email }}</a-descriptions-item>
