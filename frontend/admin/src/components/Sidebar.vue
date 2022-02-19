@@ -1,34 +1,37 @@
 <script setup>
 import { ref } from 'vue';
 import { HomeFilled } from "@ant-design/icons-vue";
-const selectedKeys = ref(["profile"]);
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
+
+const selectedKeys = ref(["profile"]);
 const menus = [
     {
         key: "profile",
         icon: HomeFilled,
         text: "Profile",
-        name: "profile"
     },
     {
         key: "dashboard",
         icon: HomeFilled,
         text: "Dashboard",
-        name: "dashboard"
     },
     {
         key: "contests",
         icon: HomeFilled,
         text: "Contests",
-        name: "contests"
     },
     {
         key: "questions",
         icon: HomeFilled,
         text: "Question Pool",
-        name: "questions"
     },
 ]
+
+function onSelect(item) {
+    router.push({ name: item.key })
+}
 </script>
 <template>
     <a-menu
@@ -36,6 +39,7 @@ const menus = [
         mode="inline"
         :collapsedWidth="0"
         class="text-gray-12"
+        @select="onSelect"
     >
         <template v-for="menu in menus" :key="menu.key">
             <div>

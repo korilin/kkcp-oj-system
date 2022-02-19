@@ -1,13 +1,31 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Sidebar from "./components/Sidebar.vue"
 import KotlinSVGVue from './components/KotlinSVG.vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useAccountStore } from "./plugins/pinia";
+const router = useRouter();
+const route = useRoute();
+const accountStore = useAccountStore();
 
-const collapsed = ref(false)
+if (accountStore.loginToken == null) {
+  router.push({ name: "login" });
+}
+
+watch(() => route.path, (to) => {
+  // console.log(to);
+  console.log(route);
+})
+
+const collapsed = ref(false);
 </script>
 
 <template>
-  <a-layout class="layout-default" id="layout-default">
+  <a-layout
+    class="layout-default"
+    id="layout-default"
+    v-if="route.name != 'login' && route.name != 'error'"
+  >
     <a-layout-sider
       theme="light"
       v-model:collapsed="collapsed"
@@ -16,7 +34,7 @@ const collapsed = ref(false)
       collapsed-width="0"
       width="250px"
     >
-      <KotlinSVGVue style="padding: 30px 50px 15px 30px;" />
+      <KotlinSVGVue style="padding: 50px 50px 40px 40px;" />
       <Sidebar />
     </a-layout-sider>
     <a-layout class="main-layout">
@@ -25,6 +43,12 @@ const collapsed = ref(false)
       </a-layout-content>
     </a-layout>
   </a-layout>
+  <template v-else-if="route.name == 'login'">
+    <router-view />
+  </template>
+  <template v-else>
+    <router-view />
+  </template>
 </template>
 
 <style lang="scss">
@@ -42,10 +66,15 @@ body {
 #layout-default {
   min-height: 100vh;
 }
-.ant-layout-content {
-  padding-top: 0 !important;
-}
 .main-layout {
-  padding-left: 50px;
+  padding: 50px;
+  .ant-layout-content {
+    padding: 50px;
+    border-radius: 10px;
+    background-color: white;
+  }
+}
+.ant-layout-sider-zero-width-trigger {
+  border-radius: 0px 10px 10px 0px !important;
 }
 </style>
