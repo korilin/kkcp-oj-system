@@ -21,13 +21,20 @@ const account = ref(accountStore.account);
         <a-descriptions-item label="邮箱">{{ account.email }}</a-descriptions-item>
         <a-descriptions-item label="权限级别">{{ account.level }}</a-descriptions-item>
     </a-descriptions>
-    <a-alert style="margin-top: 30px" message="更改管理账户信息请练习管理员" type="info" />
+    <a-alert style="margin-top: 30px" message="更改账户权限/密码请联系 Super Admin" type="info" />
 </template>
 
 <style lang="scss">
 .global-style-profile-desc {
     .ant-descriptions-title {
         font-size: 24px !important;
+    }
+
+    .ant-descriptions-item-label,
+    .ant-descriptions-item-content {
+        font-size: 16px !important;
+        font-weight: 500;
+        line-height: 2;
     }
 }
 </style>

@@ -1,9 +1,10 @@
 <script setup>
-import { ref } from 'vue';
-import { HomeFilled } from "@ant-design/icons-vue";
-import { useRouter } from 'vue-router';
+import { ref, watch } from 'vue';
+import { HomeFilled, DashboardFilled, HighlightFilled, SnippetsFilled } from "@ant-design/icons-vue";
+import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter()
+const route = useRoute()
 
 const selectedKeys = ref(["profile"]);
 const menus = [
@@ -14,17 +15,17 @@ const menus = [
     },
     {
         key: "dashboard",
-        icon: HomeFilled,
+        icon: DashboardFilled,
         text: "Dashboard",
     },
     {
         key: "contests",
-        icon: HomeFilled,
+        icon: HighlightFilled,
         text: "Contests",
     },
     {
         key: "questions",
-        icon: HomeFilled,
+        icon: SnippetsFilled,
         text: "Question Pool",
     },
 ]
@@ -32,6 +33,10 @@ const menus = [
 function onSelect(item) {
     router.push({ name: item.key })
 }
+
+watch(() => route.name, (to) => {
+    selectedKeys.value = [to];
+})
 </script>
 <template>
     <a-menu

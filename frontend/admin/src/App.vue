@@ -15,11 +15,6 @@ if (accountStore.loginToken == null) {
   router.push({ name: "login" });
 }
 
-watch(() => route.path, (to) => {
-  // console.log(to);
-  console.log(route);
-})
-
 const collapsed = ref(false);
 </script>
 
