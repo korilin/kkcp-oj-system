@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.0.1",
-    "ant-design-vue": "^2.2.8",
+    "ant-design-vue": "^3.0.0",
+    "highlight.js": "^11.4.0",
+    "marked": "^4.0.12",
     "pinia": "^2.0.11",
     "sass": "^1.49.7",
     "vue": "^3.2.25",
