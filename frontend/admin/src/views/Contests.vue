@@ -17,7 +17,6 @@ const columns = [
     {
         title: "题数",
         key: "questionCount",
-        slots: { customRender: "questionCount" }
     },
     {
         title: "时长",
@@ -28,26 +27,26 @@ const columns = [
         title: "状态",
         dataIndex: "status",
         key: "status",
-        slots: { customRender: "status" }
     },
     {
         title: "ACTION",
         key: "action",
-        slots: { customRender: "action" }
     },
 ]
 </script>
 <template>
     <a-table :columns="columns" :data-source="contestsStore.data" rowKey="contestId">
-        <template #questionCount="{ record }">{{ record.questionCount }}</template>
-        <template #status="{ record }">
-            <a-tag v-if="record.status == 0" color="purple">进行中</a-tag>
-            <a-tag v-else color="green">已完成</a-tag>
-        </template>
-        <template #action="{ record }">
-            <a-button type="link" size="small">more&edit</a-button>
-            <a-divider type="vertical" />
-            <a-button type="link" size="small" style="color: #ff7875;">del</a-button>
+        <template #bodyCell="{ column, record }">
+            <template v-if="column.key == 'questionCount'">{{ record.questionCount }}</template>
+            <template v-if="column.key == 'status'">
+                <a-tag v-if="record.status == 0" color="purple">进行中</a-tag>
+                <a-tag v-else color="green">已完成</a-tag>
+            </template>
+            <template v-if="column.key == 'action'">
+                <a-button type="link" size="small">more&edit</a-button>
+                <a-divider type="vertical" />
+                <a-button type="link" size="small" style="color: #ff7875;">del</a-button>
+            </template>
         </template>
     </a-table>
 </template>

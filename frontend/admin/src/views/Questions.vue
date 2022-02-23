@@ -19,17 +19,14 @@ const columns = [
     {
         title: "难度",
         key: "level",
-        slots: { customRender: "level" }
     },
     {
         title: "标签",
         key: "tags",
-        slots: { customRender: "tags" }
     },
     {
         title: "ACTION",
         key: "action",
-        slots: { customRender: "action" }
     },
 ];
 
@@ -46,18 +43,20 @@ function goQuestion(questionId) {
 </script>
 <template>
     <a-table :columns="columns" :data-source="questionsStore.data" rowKey="questionId">
-        <template #tags="{ record }">
-            <template v-for="tag in record.tags.split('|')">
-                <a-tag color="blue">{{ tag }}</a-tag>
+        <template #bodyCell="{ column, record }">
+            <template v-if="column.key == 'tags'">
+                <template v-for="tag in record.tags.split('|')">
+                    <a-tag color="blue">{{ tag }}</a-tag>
+                </template>
             </template>
-        </template>
-        <template #level="{ record }">
-            <a-tag :color="levels.bg[record.level]">{{ levels.text[record.level] }}</a-tag>
-        </template>
-        <template #action="{ record }">
-            <a-button type="link" size="small" @click="goQuestion(record.questionId)">more&edit</a-button>
-            <a-divider type="vertical" />
-            <a-button type="link" size="small" style="color: #ff7875;">del</a-button>
+            <template v-else-if="column.key == 'level'">
+                <a-tag :color="levels.bg[record.level]">{{ levels.text[record.level] }}</a-tag>
+            </template>
+            <template v-else-if="column.key == 'action'">
+                <a-button type="link" size="small" @click="goQuestion(record.questionId)">more&edit</a-button>
+                <a-divider type="vertical" />
+                <a-button type="link" size="small" style="color: #ff7875;">del</a-button>
+            </template>
         </template>
     </a-table>
 </template>
