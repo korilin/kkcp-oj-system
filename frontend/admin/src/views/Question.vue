@@ -1,17 +1,38 @@
 <script setup>
 import { reactive, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, } from "vue-router";
 import { InboxOutlined } from "@ant-design/icons-vue";
 import { resolveMarkdownAsHtml } from "../utils/tool-fun";
 
-const router = useRouter();
 const route = useRoute();
 
 const questionId = route.params.questionId
+const readMode = ref(true)
+const spinning = ref(false)
+const collapseKey = ref("1")
 
-// TODO request question info in here
+// 新文件列表，需要保证列表只有一个 file
+const fileList = ref([]);
 
-// TODO remove mock question
+// 拦截上传
+const beforeUpload = file => {
+    fileList.value[0] = file;
+    return false;
+};
+
+// 文件变化
+const handleChange = ({
+    file,
+    fileList,
+}) => {
+    const reader = new FileReader();
+    reader.onload = function fileReadCompleted() {
+        // 当读取完成时，内容只在`reader.result`中
+        question.description.mdText = reader.result;
+    };
+    reader.readAsText(file);
+};
+
 
 const question = reactive({
     questionId: questionId,
@@ -35,33 +56,8 @@ const question = reactive({
     ],
     submiteTimes: 1000,
     passTimes: 800,
-})
+});
 
-const readMode = ref(true)
-
-const spinning = ref(false)
-
-// 新文件列表，需要保证列表只有一个 file
-const fileList = ref([]);
-
-// 拦截上传
-const beforeUpload = file => {
-    fileList.value[0] = file;
-    return false;
-};
-
-// 文件变化
-const handleChange = ({
-    file,
-    fileList,
-}) => {
-    const reader = new FileReader();
-    reader.onload = function fileReadCompleted() {
-        // 当读取完成时，内容只在`reader.result`中
-        question.description.mdText = reader.result;
-    };
-    reader.readAsText(file);
-};
 </script>
 <template>
     <a-descriptions class="global-question-desc-style">
@@ -87,9 +83,17 @@ const handleChange = ({
         </a-descriptions-item>
         <a-descriptions-item label="难度">{{ question.level }}</a-descriptions-item>
         <a-descriptions-item label="标签">{{ question.tags }}</a-descriptions-item>
-        <a-descriptions-item label="提交次数">{{ question.submiteTimes }}</a-descriptions-item>
-        <a-descriptions-item label="通过次数">{{ question.passTimes }}</a-descriptions-item>
-        <a-descriptions-item label="引用场次" :span="3" class="contests">
+        <a-descriptions-item label="通过/提交（次数）" :span="2" style="text-align: center;">
+            <a-statistic value="/">
+                <template #prefix>
+                    <span class="text-success">{{ question.passTimes }}</span>
+                </template>
+                <template #suffix>
+                    <span>{{ question.submiteTimes }}</span>
+                </template>
+            </a-statistic>
+        </a-descriptions-item>
+        <a-descriptions-item :span="3" class="contests">
             <a-divider>引用场次</a-divider>
             <a-list size="small" :data-source="question.useContests" bordered>
                 <template #renderItem="{ item }">
@@ -99,30 +103,41 @@ const handleChange = ({
                 </template>
             </a-list>
         </a-descriptions-item>
+        <a-descriptions-item :span="3">
+            <a-divider>代码模板</a-divider>
+        </a-descriptions-item>
+        <a-descriptions-item :span="3">
+            <a-divider>测试数据</a-divider>
+        </a-descriptions-item>
         <a-descriptions-item label="题目描述" :span="3" class="desc">
-            <a-divider>题目描述</a-divider>
-            <div class="file-space" v-if="!readMode">
-                <a-upload-dragger
-                    name="file"
-                    @change="handleChange"
-                    :before-upload="beforeUpload"
-                    v-model:file-list="fileList"
-                >
-                    <div style="padding: 30px;">
-                        <p class="ant-upload-drag-icon">
-                            <inbox-outlined></inbox-outlined>
-                        </p>
-                        <p class="ant-upload-text">上传 Markdown 文件进行解析</p>
-                        <p class="ant-upload-hint">最后上传时间：{{ question.description.lastUpdateTime }}</p>
-                    </div>
-                </a-upload-dragger>
-            </div>
             <a-spin tip="解析中" :spinning="spinning">
-                <div
-                    class="desc-md-space markdown-html"
-                    v-html="resolveMarkdownAsHtml(question.description.mdText)"
-                    v-highlight
-                ></div>
+                <a-collapse v-model:activeKey="collapseKey">
+                    <a-collapse-panel key="1" header="题目描述">
+                        <div
+                            class="desc-md-space markdown-h tml"
+                            v-html="resolveMarkdownAsHtml(question.description.mdText)"
+                            v-highlight
+                        ></div>
+                    </a-collapse-panel>
+                    <div class="file-space" v-if="!readMode">
+                        <a-upload-dragger
+                            name="file"
+                            @change="handleChange"
+                            :before-upload="beforeUpload"
+                            v-model:file-list="fileList"
+                        >
+                            <div style="padding: 30px;">
+                                <p class="ant-upload-drag-icon">
+                                    <inbox-outlined></inbox-outlined>
+                                </p>
+                                <p class="ant-upload-text">上传 Markdown 文件进行解析</p>
+                                <p
+                                    class="ant-upload-hint"
+                                >最后上传时间: {{ question.description.lastUpdateTime }}</p>
+                            </div>
+                        </a-upload-dragger>
+                    </div>
+                </a-collapse>
             </a-spin>
         </a-descriptions-item>
     </a-descriptions>
