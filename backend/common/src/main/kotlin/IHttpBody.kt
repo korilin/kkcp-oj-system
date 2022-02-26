@@ -1,3 +1,4 @@
+package com.korilin
 data class IResponseBody<T>(
     val status: Boolean, val message: String, val data: T?
 ) {

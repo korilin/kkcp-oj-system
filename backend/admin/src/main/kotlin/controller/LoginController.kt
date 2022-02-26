@@ -1,6 +1,6 @@
 package com.korilin.controller
 
-import IResponseBody
+import com.korilin.IResponseBody
 import com.korilin.model.LoginRequestBody
 import com.korilin.model.LoginResponseBody
 import com.korilin.service.LoginService

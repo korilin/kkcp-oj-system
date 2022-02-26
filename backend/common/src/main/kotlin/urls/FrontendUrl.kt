@@ -1,3 +1,4 @@
+package com.korilin.urls
 object FrontendUrl {
     private const val BASE_URL = "http://localhost:3000"
     const val HOME_PAGE = BASE_URL

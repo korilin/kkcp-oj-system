@@ -2,6 +2,7 @@ package com.korilin.service
 
 import com.korilin.github.GitHubAuth
 import com.korilin.github.serializable.AccessTokenResponse
+import com.korilin.urls.GitHubApis
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*

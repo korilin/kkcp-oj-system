@@ -1,4 +1,4 @@
-package utils
+package com.korilin.utils
 
 import java.security.Key
 import java.security.SecureRandom

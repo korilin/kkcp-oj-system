@@ -83,7 +83,7 @@ const question = reactive({
         </a-descriptions-item>
         <a-descriptions-item label="难度">{{ question.level }}</a-descriptions-item>
         <a-descriptions-item label="标签">{{ question.tags }}</a-descriptions-item>
-        <a-descriptions-item label="通过/提交（次数）" :span="1" style="text-align: center;">
+        <a-descriptions-item label="通过/提交（次数）" :span="2">
             <a-statistic value="/">
                 <template #prefix>
                     <span class="text-success">{{ question.passTimes }}</span>
