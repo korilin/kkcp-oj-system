@@ -2,6 +2,6 @@ package com.korilin
 
 import utils.AESUtil
 
-object AdminModuleConfig {
-    val ADMIN_ACCOUNT_AES_KEY = AESUtil.createKey()
+internal object AdminModuleConfig {
+    internal val ADMIN_ACCOUNT_AES_KEY = AESUtil.createKey()
 }
