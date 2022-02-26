@@ -1,19 +1,22 @@
 package com.korilin.service
 
 import com.korilin.AdminModuleConfig
+import com.korilin.model.LoginResponseBody
+import com.korilin.repository.AdminAccountRepository
+import com.korilin.repository.encodeJson
+import com.korilin.table.AdminAccount
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
+import utils.AESUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 import kotlin.random.nextInt
-import kotlin.random.nextUInt
 
 @Service
 class LoginService(
-    val redisTemplate: StringRedisTemplate
+    private val redisTemplate: StringRedisTemplate, private val adminAccountRepository: AdminAccountRepository
 ) {
-    private val accountKey = AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY
 
     /**
      * 将邮箱转化为存入 Redis 的 Key
@@ -27,7 +30,7 @@ class LoginService(
      *
      * @param codeSize 验证码长度
      */
-    private fun generateCode(codeSize: Int) : String {
+    private fun generateCode(codeSize: Int): String {
         val array = arrayOf(48, 57, 65, 90, 97, 122)
         var index = 0
         val assemble = LinkedList<Int>().apply {
@@ -53,12 +56,34 @@ class LoginService(
      * @param email 管理员邮箱
      * @return 是否发送成功
      */
-    fun sendCodeToEmail(email: String): Boolean {
+    internal fun sendCodeToEmail(email: String): Boolean {
         // TODO 检查是否存在该邮箱
         val code = generateCode(6)
         val key = emailVerificationCodeKeyConvert(email)
         // 存入 redis 的验证码 5 分钟有效
-        redisTemplate.opsForValue().set(key, code,5, TimeUnit.MINUTES)
+        redisTemplate.opsForValue().set(key, code, 5, TimeUnit.MINUTES)
         return true
+    }
+
+    /**
+     * 校验登录验证码
+     * @param email 管理员登录邮箱
+     * @param code 发送到邮箱的验证码
+     */
+    internal fun verifyLoginCode(email: String, code: String): Boolean {
+        val key = emailVerificationCodeKeyConvert(email)
+        val get = redisTemplate.opsForValue().get(key)
+        return get == code
+    }
+
+    /**
+     * 进行管理员登录，
+     * 获取管理员账号，并进行 JSON 序列化和加密得到 token
+     * @param email 管理员邮箱
+     */
+    internal fun doAdminLogin(email: String) = adminAccountRepository.adminLogin(email)?.let {
+        val json = it.encodeJson()
+        val token = AESUtil.aesEncode(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, json)
+        LoginResponseBody(token, AdminAccount(it))
     }
 }
