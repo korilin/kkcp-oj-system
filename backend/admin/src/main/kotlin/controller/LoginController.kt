@@ -1,6 +1,7 @@
 package com.korilin.controller
 
 import com.korilin.IResponseBody
+import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.model.LoginRequestBody
 import com.korilin.model.LoginResponseBody
 import com.korilin.service.LoginService
@@ -17,6 +18,7 @@ class LoginController(
      * @param email 管理员邮箱
      */
     @PostMapping("/sendLoginCode")
+    @ExceptionMessageHandler
     suspend fun sendVerificationCode(@RequestParam("email") email: String): IResponseBody<Unit> {
         val result = loginService.sendCodeToEmail(email)
         return if (result) IResponseBody.success("~ verification code send success ~")
@@ -27,6 +29,7 @@ class LoginController(
      * 登录接口
      */
     @PostMapping("/login")
+    @ExceptionMessageHandler
     suspend fun login(body: LoginRequestBody): IResponseBody<LoginResponseBody> {
         val result = loginService.verifyLoginCode(body.email, body.code)
         if (!result) return IResponseBody.error("请重新发送验证码")

@@ -1,10 +1,11 @@
 package com.korilin.controller
 
-import IResponseBody
+import com.korilin.urls.FrontendUrl
+import com.korilin.IResponseBody
+import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.service.AuthService
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.reactive.result.view.Rendering
@@ -20,6 +21,7 @@ class AuthController(
      */
     @GetMapping("/auth/random")
     @ResponseBody
+    @ExceptionMessageHandler
     suspend fun authRandom(): IResponseBody<String> {
         val uuid = UUID.randomUUID().toString()
         return IResponseBody.success(data = uuid)
