@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service
 @Service
 class AuthService {
 
-
-    val client = HttpClient(CIO) {
+    private val client: HttpClient = HttpClient(CIO) {
         install(JsonFeature) {
             serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
                 ignoreUnknownKeys = true

@@ -6,5 +6,13 @@ server:
 spring:
   webflux:
     base-path: /api
+  datasource:
+    url: "jdbc:mysql://localhost:3306/kkcp"
+    username: root
+    password: jiebin22
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
 
 debug: true

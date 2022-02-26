@@ -2,7 +2,6 @@ parent?.let {
     group = it.group
     group = it.version
 }
-
 val ktorVersion = "1.6.7"
 
 dependencies{
@@ -11,4 +10,5 @@ dependencies{
     implementation("io.ktor:ktor-client-serialization:$ktorVersion")
     implementation("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation(springStarter("data-redis"))
 }

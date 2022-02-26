@@ -11,8 +11,6 @@ data class AccessTokenResponse(
     @SerialName("error") var error: String? = null,
     @SerialName("error_description") var errorDescription: String? = null
 ) {
-    override fun toString(): String {
-        return "access_token=$accessToken&scope=$scope&token_type=$tokenType&error=$error&" +
-                "error_description=$errorDescription"
-    }
+    override fun toString() =
+        "access_token=$accessToken&scope=$scope&token_type=$tokenType&error=$error&error_description=$errorDescription"
 }

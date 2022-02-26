@@ -12,7 +12,7 @@ import java.util.*
 
 @Controller
 class AuthController(
-    val authService: AuthService
+    private val authService: AuthService
 ) {
 
     /**

@@ -8,6 +8,7 @@ buildscript {
 group = "com.korilin"
 version = "1.0-SNAPSHOT"
 
+val ktormVersion = "3.4.1"
 
 plugins {
     val kotlinVersion = "1.6.10"
@@ -37,14 +38,21 @@ allprojects {
                 implementation(kotlin("stdlib"))
                 implementation(kotlin("reflect"))
                 implementation(kotlin("compiler"))
+
                 // coroutines
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
                 // spring
-//                implementation(springStarter("web"))
+                implementation(springStarter("web"))
                 implementation(springStarter("webflux"))
+
+                // database
+                implementation(springStarter("jdbc"))
+                implementation("org.ktorm:ktorm-core:${ktormVersion}")
+                implementation("org.ktorm:ktorm-jackson:${ktormVersion}")
+                implementation("mysql:mysql-connector-java")
 
                 // jackson
                 implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
@@ -60,6 +68,12 @@ allprojects {
                 implementation(kotlin("test"))
                 implementation(springStarter("test"))
             }
+        }
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "11"
         }
     }
 }
