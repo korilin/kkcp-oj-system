@@ -83,7 +83,7 @@ class VerificationService(
      */
     internal fun doAdminLogin(email: String) = adminAccountRepository.adminLogin(email)?.let {
         val json = it.encodeJson()
-        val token = AESUtil.aesEncode(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, json)
+        val token = AESUtil.encrypt(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, json)
         LoginResponseBody(token, it)
     }
 }

@@ -26,9 +26,9 @@ object AESUtil {
 
     /**
      * AES 对称加密 - 加密操作
-     * @see aesDecode
+     * @see decrypt
      */
-    fun aesEncode(key: Key, input: String): String {
+    fun encrypt(key: Key, input: String): String {
         val cipher = Cipher.getInstance("AES")
         cipher.init(Cipher.ENCRYPT_MODE, key)
         val outputByte = cipher.doFinal(input.toByteArray())
@@ -37,9 +37,9 @@ object AESUtil {
 
     /**
      * AES 对称加密 - 解密操作
-     * @see aesEncode
+     * @see encrypt
      */
-    fun aesDecode(key: Key, input: String): String {
+    fun decrypt(key: Key, input: String): String {
         val decode = Base64.getDecoder().decode(input)
         val cipher = Cipher.getInstance("AES")
         cipher.init(Cipher.DECRYPT_MODE, key)
