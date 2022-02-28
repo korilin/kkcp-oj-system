@@ -4,7 +4,6 @@ import com.korilin.AdminModuleConfig
 import com.korilin.model.LoginResponseBody
 import com.korilin.repository.AdminAccountRepository
 import com.korilin.repository.encodeJson
-import com.korilin.table.AdminAccount
 import com.korilin.utils.AESUtil
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
@@ -14,7 +13,7 @@ import kotlin.random.Random
 import kotlin.random.nextInt
 
 @Service
-class LoginService(
+class VerificationService(
     private val redisTemplate: StringRedisTemplate, private val adminAccountRepository: AdminAccountRepository
 ) {
 
