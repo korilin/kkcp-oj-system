@@ -78,12 +78,12 @@ class LoginService(
 
     /**
      * 进行管理员登录，
-     * 获取管理员账号，并进行 JSON 序列化和加密得到 token
+     * 获取管理员账号，并进行 JSON 序列化和加密得到 token，
      * @param email 管理员邮箱
      */
     internal fun doAdminLogin(email: String) = adminAccountRepository.adminLogin(email)?.let {
         val json = it.encodeJson()
         val token = AESUtil.aesEncode(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, json)
-        LoginResponseBody(token, AdminAccount(it))
+        LoginResponseBody(token, it)
     }
 }
