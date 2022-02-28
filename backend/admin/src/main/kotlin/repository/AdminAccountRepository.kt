@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
- class AdminAccountRepository(private val database: Database) {
+class AdminAccountRepository(private val database: Database) {
 
     /**
      * 查询对应 Email 的管理员账号，

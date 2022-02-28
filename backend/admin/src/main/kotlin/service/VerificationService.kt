@@ -55,9 +55,10 @@ class VerificationService(
      * @param email 管理员邮箱
      * @return 是否发送成功
      */
-    internal fun sendCodeToEmail(email: String): Boolean {
+    internal suspend fun sendCodeToEmail(email: String): Boolean {
         // TODO 检查是否存在该邮箱
         val code = generateCode(6)
+        // TODO 使用协程异步发送到邮箱
         val key = emailVerificationCodeKeyConvert(email)
         // 存入 redis 的验证码 5 分钟有效
         redisTemplate.opsForValue().set(key, code, 5, TimeUnit.MINUTES)

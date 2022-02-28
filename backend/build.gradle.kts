@@ -45,7 +45,6 @@ allprojects {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
                 // spring
-                implementation(springStarter("web"))
                 implementation(springStarter("webflux"))
 
                 // database
