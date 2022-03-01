@@ -42,18 +42,9 @@ const question = reactive({
     tags: "Vue|Kotlin|More",
     description: {
         lastUpdateTime: "2022/2/20 23:20:00",
-        mdText: ""
+        mdText: "hi"
     },
-    useContests: [
-        {
-            contestId: 0,
-            title: "contest 1",
-        },
-        {
-            contestId: 1,
-            title: "contest 2",
-        }
-    ],
+    useContests: [],
     submiteTimes: 1000,
     passTimes: 800,
 });
@@ -78,7 +69,9 @@ const question = reactive({
                 style="width: 120px"
                 :disabled="readMode"
             >
-                <a-select-option value="1">hi</a-select-option>
+                <a-select-option :value="1">实用技巧</a-select-option>
+                <a-select-option :value="2">算法解题</a-select-option>
+                <a-select-option :value="3">源码模拟</a-select-option>
             </a-select>
         </a-descriptions-item>
         <a-descriptions-item label="难度">{{ question.level }}</a-descriptions-item>
@@ -95,7 +88,11 @@ const question = reactive({
         </a-descriptions-item>
         <a-descriptions-item :span="3" class="contests">
             <a-divider>引用场次</a-divider>
-            <a-list size="small" :data-source="question.useContests" bordered>
+            <a-list
+                size="small"
+                :data-source="question.useContests"
+                :locale="{ emptyText: '没有引用本题目的竞赛场次' }"
+            >
                 <template #renderItem="{ item }">
                     <a-list-item>
                         <a-button type="link">{{ item.title }}</a-button>
@@ -103,44 +100,39 @@ const question = reactive({
                 </template>
             </a-list>
         </a-descriptions-item>
-        <a-descriptions-item :span="3">
-            <a-divider>代码模板</a-divider>
-        </a-descriptions-item>
-        <a-descriptions-item :span="3">
-            <a-divider>测试数据</a-divider>
-        </a-descriptions-item>
-        <a-descriptions-item label="题目描述" :span="3" class="desc">
-            <a-spin tip="解析中" :spinning="spinning">
-                <a-collapse v-model:activeKey="collapseKey">
-                    <a-collapse-panel key="1" header="题目描述">
-                        <div
-                            class="desc-md-space markdown-h tml"
-                            v-html="resolveMarkdownAsHtml(question.description.mdText)"
-                            v-highlight
-                        ></div>
-                    </a-collapse-panel>
-                    <div class="file-space" v-if="!readMode">
-                        <a-upload-dragger
-                            name="file"
-                            @change="handleChange"
-                            :before-upload="beforeUpload"
-                            v-model:file-list="fileList"
-                        >
-                            <div style="padding: 30px;">
-                                <p class="ant-upload-drag-icon">
-                                    <inbox-outlined></inbox-outlined>
-                                </p>
-                                <p class="ant-upload-text">上传 Markdown 文件进行解析</p>
-                                <p
-                                    class="ant-upload-hint"
-                                >最后上传时间: {{ question.description.lastUpdateTime }}</p>
-                            </div>
-                        </a-upload-dragger>
-                    </div>
-                </a-collapse>
-            </a-spin>
+        <a-descriptions-item :span="3" class="files">
+            <a-divider>题目文件</a-divider>
         </a-descriptions-item>
     </a-descriptions>
+    <a-spin tip="解析中" :spinning="spinning">
+        <a-collapse v-model:activeKey="collapseKey">
+            <a-collapse-panel key="1" header="题目描述">
+                <div class="file-space" v-if="!readMode">
+                    <a-upload-dragger
+                        name="file"
+                        @change="handleChange"
+                        :before-upload="beforeUpload"
+                        v-model:file-list="fileList"
+                    >
+                        <div style="padding: 30px;">
+                            <p class="ant-upload-drag-icon">
+                                <inbox-outlined></inbox-outlined>
+                            </p>
+                            <p class="ant-upload-text">上传 Markdown 文件进行解析</p>
+                            <p
+                                class="ant-upload-hint"
+                            >最后上传时间: {{ question.description.lastUpdateTime }}</p>
+                        </div>
+                    </a-upload-dragger>
+                </div>
+                <div
+                    class="desc-md-space markdown-h tml"
+                    v-html="resolveMarkdownAsHtml(question.description.mdText)"
+                    v-highlight
+                ></div>
+            </a-collapse-panel>
+        </a-collapse>
+    </a-spin>
 </template>
 
 <style scoped lang="scss">
@@ -169,7 +161,7 @@ const question = reactive({
         font-weight: 400;
     }
 
-    .desc,
+    .files,
     .contests {
         .ant-descriptions-item-container {
             .ant-descriptions-item-label {
