@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Pointcut
 import org.aspectj.lang.reflect.MethodSignature
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSuperclassOf
 
@@ -59,23 +60,25 @@ class ExceptionMessageHandlerAspect {
 
     @Around("exceptionMessageHandlerPointcut()")
     @Suppress("UNCHECKED_CAST")
-    fun around(joinPoint: ProceedingJoinPoint): IResponseBody<Unit> {
-        return try {
-            joinPoint.proceed() as IResponseBody<Unit>
-        } catch (e: ClassCastException) {
-            throw ClassCastException(castExceptionMessage)
-        } catch (e: Exception) {
-            val method = (joinPoint.signature as MethodSignature).method
-            val annotations = method.getAnnotationsByType(RegisterExceptionMessage::class.java)
-            for (annotation in annotations) {
-                val exceptionKClass = annotation.exceptionKClass
-                if (exceptionKClass.isSuperclassOf(e::class)) {
-                    return IResponseBody.error(annotation.message)
+    fun around(joinPoint: ProceedingJoinPoint): Mono<IResponseBody<Unit>> {
+        return Mono.create {
+            val response = try {
+                joinPoint.proceed() as IResponseBody<Unit>
+            } catch (e: Exception) {
+                val method = (joinPoint.signature as MethodSignature).method
+                val annotations = method.getAnnotationsByType(RegisterExceptionMessage::class.java)
+                var message = unregisteredExceptionMessage(e)
+                for (annotation in annotations) {
+                    val exceptionKClass = annotation.exceptionKClass
+                    if (exceptionKClass.isSuperclassOf(e::class)) {
+                        message = annotation.message
+                        break
+                    }
                 }
+                e.printStackTrace()
+                IResponseBody.error(message)
             }
-            val message = unregisteredExceptionMessage(e)
-            e.printStackTrace()
-            IResponseBody.error(message)
+            it.success(response)
         }
     }
 }
