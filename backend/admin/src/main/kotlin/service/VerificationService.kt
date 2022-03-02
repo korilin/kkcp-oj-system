@@ -1,12 +1,15 @@
 package com.korilin.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.korilin.AdminModuleConfig
 import com.korilin.model.LoginResponseBody
-import com.korilin.repository.AdminAccountRepository
-import com.korilin.repository.encodeJson
+import com.korilin.model.table.AdminAccount
+import com.korilin.model.table.AdminAccounts
 import com.korilin.utils.AESUtil
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -14,7 +17,7 @@ import kotlin.random.nextInt
 
 @Service
 class VerificationService(
-    private val redisTemplate: StringRedisTemplate, private val adminAccountRepository: AdminAccountRepository
+    private val redisTemplate: StringRedisTemplate
 ) {
 
     /**
@@ -77,13 +80,18 @@ class VerificationService(
     }
 
     /**
-     * 进行管理员登录，
+     * 进行管理员登录，更新最后登录时间
      * 获取管理员账号，并进行 JSON 序列化和加密得到 token，
      * @param email 管理员邮箱
      */
-    internal fun doAdminLogin(email: String) = adminAccountRepository.adminLogin(email)?.let {
-        val json = it.encodeJson()
-        val token = AESUtil.encrypt(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, json)
-        LoginResponseBody(token, it)
+    internal fun doAdminLogin(email: String) = transaction {
+        AdminAccount.find {
+            AdminAccounts.email eq email
+        }.firstOrNull()?.let {
+            it.lastLoginTime = LocalDateTime.now()
+            val json = ObjectMapper().writeValueAsString(it)
+            val token = AESUtil.encrypt(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, json)
+            LoginResponseBody(token, it)
+        }
     }
 }

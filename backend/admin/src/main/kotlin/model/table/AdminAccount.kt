@@ -21,7 +21,8 @@ object AdminAccounts : IntIdTable("admin_account") {
  * 管理员实体
  */
 class AdminAccount(id: EntityID<Int>) : IntEntity(id) {
-    companion object: EntityClass<Int, AdminAccount>(AdminAccounts)
+    companion object : EntityClass<Int, AdminAccount>(AdminAccounts)
+
     var email: String by AdminAccounts.email
     var name: String by AdminAccounts.name
     var level: Int by AdminAccounts.level
