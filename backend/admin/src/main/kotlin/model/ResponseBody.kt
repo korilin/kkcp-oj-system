@@ -1,6 +1,6 @@
 package com.korilin.model
 
-import com.korilin.table.AdminAccount
+import com.korilin.model.table.AdminAccount
 
 /**
  * 登录响应数据模型

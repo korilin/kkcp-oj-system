@@ -1,7 +1,7 @@
 package com.korilin.repository
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.korilin.table.AdminAccounts
+import com.korilin.model.table.AdminAccounts
 import org.ktorm.database.Database
 import org.ktorm.entity.Entity
 import org.ktorm.entity.sequenceOf
