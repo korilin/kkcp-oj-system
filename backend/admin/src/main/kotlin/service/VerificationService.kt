@@ -21,6 +21,10 @@ class VerificationService(
     private val redisTemplate: StringRedisTemplate
 ) {
 
+    private val jsonMapper = ObjectMapper().apply {
+        findAndRegisterModules()
+    }
+
     /**
      * 将邮箱转化为存入 Redis 的 Key
      */
@@ -91,7 +95,7 @@ class VerificationService(
         }.firstOrNull()?.let {
             it.lastLoginTime = LocalDateTime.now()
             val admin = AdminLoginInfo(it.email, it.lastLoginTime)
-            val json = ObjectMapper().writeValueAsString(admin)
+            val json = jsonMapper.writeValueAsString(admin)
             val token = AESUtil.encrypt(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, json)
             LoginResponseBody(token, admin)
         }
