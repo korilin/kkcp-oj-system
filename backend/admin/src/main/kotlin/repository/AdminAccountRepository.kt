@@ -3,11 +3,13 @@ package com.korilin.repository
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
-@Component
-class AdminAccountRepository(private val database: Database) {
+@Repository
+class AdminAccountRepository(database: Database) {
+
+    private val adminAccounts = database.adminAccounts
 
     /**
      * 查询对应 Email 的管理员账号，

@@ -47,6 +47,9 @@ class AdminFilter : WebFilter {
                 exchange.response.statusCode = HttpStatus.UNAUTHORIZED
                 return Mono.empty() // <- return@filter
             }
+            // TODO 以下行为待定
+            // 校验 adminAccount 对象
+            // 记录管理员的操作行为 -> 增删改
             println(adminAccount)
         }
         return chain.filter(exchange)
