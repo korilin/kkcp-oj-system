@@ -5,6 +5,7 @@ import com.korilin.AdminModuleConfig
 import com.korilin.model.LoginResponseBody
 import com.korilin.model.table.AdminAccount
 import com.korilin.model.table.AdminAccounts
+import com.korilin.model.vo.AdminLoginInfo
 import com.korilin.utils.AESUtil
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.data.redis.core.StringRedisTemplate
@@ -89,9 +90,10 @@ class VerificationService(
             AdminAccounts.email eq email
         }.firstOrNull()?.let {
             it.lastLoginTime = LocalDateTime.now()
-            val json = ObjectMapper().writeValueAsString(it)
+            val admin = AdminLoginInfo(it.email, it.lastLoginTime)
+            val json = ObjectMapper().writeValueAsString(admin)
             val token = AESUtil.encrypt(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, json)
-            LoginResponseBody(token, it)
+            LoginResponseBody(token, admin)
         }
     }
 }

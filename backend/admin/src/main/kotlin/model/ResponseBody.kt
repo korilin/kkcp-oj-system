@@ -1,6 +1,6 @@
 package com.korilin.model
 
-import com.korilin.model.table.AdminAccount
+import com.korilin.model.vo.AdminLoginInfo
 
 /**
  * 登录响应数据模型
@@ -9,5 +9,5 @@ import com.korilin.model.table.AdminAccount
  */
 data class LoginResponseBody(
     val token: String,
-    var account: AdminAccount
+    var account: AdminLoginInfo
 )
