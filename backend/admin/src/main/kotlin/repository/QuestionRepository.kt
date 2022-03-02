@@ -17,12 +17,12 @@ class QuestionRepository(database: Database) {
      * 获取所有问题
      * @return 问题列表 [Question]
      */
-    internal fun queryAllQuestions() = questions.toList()
+    internal suspend fun queryAllQuestions() = questions.toList()
 
     /**
      * 获取指定 ID 的问题实体对象
      */
-    internal fun queryQuestionById(questionId: Int) = questions.find {
+    internal suspend fun queryQuestionById(questionId: Int) = questions.find {
         it.questionId eq questionId
     }
 }

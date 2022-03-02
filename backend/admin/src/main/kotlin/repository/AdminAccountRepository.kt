@@ -17,7 +17,7 @@ class AdminAccountRepository(database: Database) {
      * @param email 管理员邮箱
      * @return 管理员账号对象
      */
-    internal fun adminLogin(email: String) = database.adminAccounts.run {
+    internal fun adminLogin(email: String) = adminAccounts.run {
         find {
             // 根据 email 查询管理员账号
             it.email eq email

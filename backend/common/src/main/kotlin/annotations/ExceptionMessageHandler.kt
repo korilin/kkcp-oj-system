@@ -60,25 +60,22 @@ class ExceptionMessageHandlerAspect {
 
     @Around("exceptionMessageHandlerPointcut()")
     @Suppress("UNCHECKED_CAST")
-    fun around(joinPoint: ProceedingJoinPoint): Mono<IResponseBody<Unit>> {
-        return Mono.create {
-            val response = try {
-                joinPoint.proceed() as IResponseBody<Unit>
-            } catch (e: Exception) {
-                val method = (joinPoint.signature as MethodSignature).method
-                val annotations = method.getAnnotationsByType(RegisterExceptionMessage::class.java)
-                var message = unregisteredExceptionMessage(e)
-                for (annotation in annotations) {
-                    val exceptionKClass = annotation.exceptionKClass
-                    if (exceptionKClass.isSuperclassOf(e::class)) {
-                        message = annotation.message
-                        break
-                    }
+    fun around(joinPoint: ProceedingJoinPoint): IResponseBody<Unit> {
+        return try {
+            joinPoint.proceed() as IResponseBody<Unit>
+        } catch (e: Exception) {
+            val method = (joinPoint.signature as MethodSignature).method
+            val annotations = method.getAnnotationsByType(RegisterExceptionMessage::class.java)
+            var message = unregisteredExceptionMessage(e)
+            for (annotation in annotations) {
+                val exceptionKClass = annotation.exceptionKClass
+                if (exceptionKClass.isSuperclassOf(e::class)) {
+                    message = annotation.message
+                    break
                 }
-                e.printStackTrace()
-                IResponseBody.error(message)
             }
-            it.success(response)
+            e.printStackTrace()
+            IResponseBody.error(message)
         }
     }
 }
