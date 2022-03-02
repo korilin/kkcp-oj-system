@@ -1,35 +1,41 @@
 package com.korilin.model.table
 
-import org.ktorm.entity.Entity
-import org.ktorm.schema.Table
-import org.ktorm.schema.int
-import org.ktorm.schema.text
-import org.ktorm.schema.varchar
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.Column
+
 
 /**
  * 题目实体
  */
-interface Question : Entity<Question> {
-    companion object : Entity.Factory<Question>()
+class Question(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Question>(Questions)
 
-    val questionId: Int
-    var type: Int
-    var title: String
-    var description: String
-    var codeTemplateFilePath: String
-    var testDataFilePath: String
-    var level: Int // Lv1 ~ Lv5
+    var type: Int by Questions.type
+    var title: String by Questions.title
+    var description: String by Questions.description
+    var codeTemplateFilePath: String by Questions.codeTemplateFilePath
+    var testDataFilePath: String by Questions.testDataFilePath
+    var level: Int by Questions.level // Lv1 ~ Lv5
 }
 
 /**
  * 题目表
  */
-object Questions: Table<Question>("t_question") {
-    val questionId = int("question_id").primaryKey().bindTo { it.questionId }
-    val type = int("type").bindTo { it.type }
-    val title = varchar("title").bindTo { it.title }
-    val description = text("description").bindTo { it.description }
-    val codeTemplateFilePath = text("code_template_file_path").bindTo { it.codeTemplateFilePath }
-    val testDataFilePath = text("test_data_file_path").bindTo { it.testDataFilePath }
-    val level = int("level").bindTo { it.level }
+object Questions : IdTable<Int>("t_question") {
+
+    override val id = integer("question_id").autoIncrement().entityId()
+    val type = integer("type")
+    val title = varchar("title", 45).uniqueIndex()
+    val description = text("description")
+    val codeTemplateFilePath = text("code_template_file_path")
+    val testDataFilePath = text("test_data_file_path")
+    val level = integer("level")
+
+    override val primaryKey = PrimaryKey(id)
 }
