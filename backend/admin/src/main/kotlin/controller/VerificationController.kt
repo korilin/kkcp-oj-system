@@ -4,7 +4,7 @@ import com.korilin.AdminModuleConfig
 import com.korilin.IResponseBody
 import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.model.LoginRequestBody
-import com.korilin.model.LoginResponseBody
+import com.korilin.model.vo.AdminLoginModel
 import com.korilin.service.VerificationService
 import org.springframework.web.bind.annotation.*
 
@@ -31,7 +31,7 @@ class VerificationController(
      */
     @PostMapping("/login")
     @ExceptionMessageHandler
-    suspend fun login(body: LoginRequestBody): IResponseBody<LoginResponseBody> {
+    suspend fun login(body: LoginRequestBody): IResponseBody<AdminLoginModel> {
         val result = verificationService.verifyLoginCode(body.email, body.code)
         if (!result) return IResponseBody.error("请重新发送验证码")
         verificationService.doAdminLogin(body.email)?.let {
