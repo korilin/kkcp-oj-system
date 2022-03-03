@@ -1,16 +1,10 @@
 package com.korilin.service
 
-import com.korilin.model.table.Question
-import com.korilin.model.vo.QuestionModel
-import org.jetbrains.exposed.sql.transactions.transaction
+import com.korilin.repository.QuestionRepository
 import org.springframework.stereotype.Service
 
 @Service
-internal class QueryService() {
+internal class QueryService(private val questionRepository: QuestionRepository) {
 
-    internal suspend fun getAllQuestions() = transaction {
-        Question.all().map {
-            QuestionModel.fromEntity(it)
-        }
-    }
+    internal suspend fun getAllQuestions() = questionRepository.queryAllQuestions()
 }
