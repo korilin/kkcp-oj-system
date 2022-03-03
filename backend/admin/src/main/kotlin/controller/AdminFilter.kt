@@ -1,9 +1,8 @@
 package com.korilin.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.korilin.AdminModuleConfig
+import com.korilin.ktorm.decodeJson
 import com.korilin.model.table.AdminAccount
-import com.korilin.model.vo.AdminLoginInfo
 import com.korilin.utils.AESUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,10 +21,6 @@ private val patterns = arrayOf(
     PathPatternParser().parse("${AdminModuleConfig.QUERY_URL_PREFIX}/**")
 )
 
-private val jsonMapper = ObjectMapper().apply {
-    findAndRegisterModules()
-}
-
 @Component
 class AdminFilter : WebFilter {
     var logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -41,7 +36,7 @@ class AdminFilter : WebFilter {
             val adminAccount = try {
                 val token = request.headers["Admin-Token"]?.get(0) ?: throw NullPointerException("Admin Token is Null")
                 val json = AESUtil.decrypt(AdminModuleConfig.ADMIN_ACCOUNT_AES_KEY, token)
-                jsonMapper.readValue(json, AdminLoginInfo::class.java)
+                json.decodeJson<AdminAccount>()
             } catch (e: Exception) {
                 val msg = "Admin Token Cast Failure: ${request.localAddress}/${request.remoteAddress} -> ${e.message}"
                 logger.warn(msg)

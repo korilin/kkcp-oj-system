@@ -1,11 +1,8 @@
 package com.korilin.model.vo
 
+import com.korilin.model.table.AdminAccount
 import java.time.LocalDateTime
 
-data class AdminLoginInfo(
-    val email: String,
-    val period: LocalDateTime
-)
 
 /**
  * 登录响应数据模型
@@ -14,5 +11,5 @@ data class AdminLoginInfo(
  */
 data class AdminLoginModel(
     val token: String,
-    var account: AdminLoginInfo
+    var account: AdminAccount
 )
