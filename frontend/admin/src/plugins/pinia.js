@@ -13,14 +13,14 @@ export const useAccountStore = defineStore("account", {
 
 const contests = [];
 
-for (let index = 0; index < 20; index++) {
+for (let index = 0; index < 15; index++) {
     contests[index] = {
         contestId: index,
         title: "测试数据" + index,
         description: "这可能是一个非常长的描述",
         duration: 3600,
         startTime: "2022/2/20 02:25:00",
-        status: index > 10 ? 1 : 0,
+        status: index > 5 ? 1 : 0,
         questionCount: 10,
     };
 }
@@ -41,7 +41,6 @@ for (let index = 0; index < 20; index++) {
         type: 0,
         title: "模拟问题" + index,
         description: "很长的问题描述，可能是一个 html 片段",
-        tags: "Kotlin|Coroutine|Compose",
         level: (index % 3) + 1,
     };
 }

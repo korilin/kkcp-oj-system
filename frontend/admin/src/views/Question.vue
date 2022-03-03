@@ -11,6 +11,27 @@ const readMode = ref(true)
 const spinning = ref(false)
 const collapseKey = ref("1")
 
+const questionTypes = [
+    "请题目选择类型",
+    "实用技巧",
+    "算法解题",
+    "源码模拟"
+];
+
+const question = reactive({
+    questionId: questionId,
+    title: "模拟题目",
+    type: 1,
+    level: 1,
+    description: {
+        lastUpdateTime: "2022/2/20 23:20:00",
+        mdText: "hi"
+    },
+    useContests: [],
+    submiteTimes: 1000,
+    passTimes: 800,
+});
+
 // 新文件列表，需要保证列表只有一个 file
 const fileList = ref([]);
 
@@ -33,22 +54,6 @@ const handleChange = ({
     reader.readAsText(file);
 };
 
-
-const question = reactive({
-    questionId: questionId,
-    title: "模拟题目",
-    type: 1,
-    level: 1,
-    tags: "Vue|Kotlin|More",
-    description: {
-        lastUpdateTime: "2022/2/20 23:20:00",
-        mdText: "hi"
-    },
-    useContests: [],
-    submiteTimes: 1000,
-    passTimes: 800,
-});
-
 </script>
 <template>
     <a-descriptions class="global-question-desc-style">
@@ -68,15 +73,13 @@ const question = reactive({
                 v-model:value="question.type"
                 style="width: 120px"
                 :disabled="readMode"
+                :bordered="false"
             >
-                <a-select-option :value="1">实用技巧</a-select-option>
-                <a-select-option :value="2">算法解题</a-select-option>
-                <a-select-option :value="3">源码模拟</a-select-option>
+                <a-select-option v-for="(type, index) in questionTypes" :value="index">{{ type }}</a-select-option>
             </a-select>
         </a-descriptions-item>
         <a-descriptions-item label="难度">{{ question.level }}</a-descriptions-item>
-        <a-descriptions-item label="标签">{{ question.tags }}</a-descriptions-item>
-        <a-descriptions-item label="通过/提交（次数）" :span="2">
+        <a-descriptions-item label="通过/提交（次数）" :span="3">
             <a-statistic value="/">
                 <template #prefix>
                     <span class="text-success">{{ question.passTimes }}</span>

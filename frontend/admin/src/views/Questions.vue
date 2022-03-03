@@ -21,10 +21,6 @@ const columns = [
         key: "level",
     },
     {
-        title: "标签",
-        key: "tags",
-    },
-    {
         title: "ACTION",
         key: "action",
     },
@@ -44,12 +40,7 @@ function goQuestion(questionId) {
 <template>
     <a-table :columns="columns" :data-source="questionsStore.data" rowKey="questionId">
         <template #bodyCell="{ column, record }">
-            <template v-if="column.key == 'tags'">
-                <template v-for="tag in record.tags.split('|')">
-                    <a-tag color="blue">{{ tag }}</a-tag>
-                </template>
-            </template>
-            <template v-else-if="column.key == 'level'">
+            <template v-if="column.key == 'level'">
                 <a-tag :color="levels.bg[record.level]">{{ levels.text[record.level] }}</a-tag>
             </template>
             <template v-else-if="column.key == 'action'">
