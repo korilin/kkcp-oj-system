@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useRoute, } from "vue-router";
-import { InboxOutlined } from "@ant-design/icons-vue";
 import { resolveMarkdownAsHtml } from "../utils/tool-fun";
 import * as echarts from 'echarts';
+import InstantUploadBox from "../components/InstantUploadBox.vue";
 
 const route = useRoute();
 
@@ -26,22 +26,12 @@ const question = reactive({
     level: 1,
     description: {
         lastUpdateTime: "2022/2/20 23:20:00",
-        mdText: "hi"
+        htmlText: "hi"
     },
     useContests: [],
     submiteTimes: 1000,
     passTimes: 800,
 });
-
-// 新文件列表，需要保证列表只有一个 file
-const fileList = ref([]);
-
-// 拦截上传
-const beforeUpload = file => {
-    fileList.value[0] = file;
-    return false;
-};
-
 // 文件变化
 const handleChange = ({
     file,
@@ -50,17 +40,16 @@ const handleChange = ({
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
         // 当读取完成时，内容只在`reader.result`中
-        question.description.mdText = reader.result;
+        question.description.htmlText = resolveMarkdownAsHtml(reader.result);
     };
     reader.readAsText(file);
 };
 
 const loadSubmitCountEchart = (submiteTimes, passTimes) => {
     const option = {
-        
-  tooltip: {
-    trigger: 'item'
-  },
+        tooltip: {
+            trigger: 'item'
+        },
         title: {
             text: submiteTimes,
             left: 'center',
@@ -116,7 +105,7 @@ onMounted(() => {
         </a-descriptions-item>
         <a-descriptions-item label="难度">{{ question.level }}</a-descriptions-item>
         <a-descriptions-item label="通过/提交（次数）" :span="3" style="text-align: center;">
-            <div id="submitCountEchart" :style="{ width: '100%', height: '250px',}"></div>
+            <div id="submitCountEchart" :style="{ width: '100%', height: '250px', }"></div>
         </a-descriptions-item>
         <a-descriptions-item :span="3" class="contests">
             <a-divider>引用场次</a-divider>
@@ -133,33 +122,35 @@ onMounted(() => {
             </a-list>
         </a-descriptions-item>
         <a-descriptions-item :span="3" class="files">
-            <a-divider>题目文件</a-divider>
+            <a-divider>题目数据/文件</a-divider>
+            <div class="file-space">
+                <InstantUploadBox
+                    class="upload-box"
+                    :text="'代码模版：上传 Kotlin 文件进行注册'"
+                    :lastUpdateTime="question.description.lastUpdateTime"
+                    :handleChange="handleChange"
+                />
+                <InstantUploadBox
+                    class="upload-box"
+                    :text="'测试数据：上传 JSON 文件进行存储'"
+                    :lastUpdateTime="question.description.lastUpdateTime"
+                    :handleChange="handleChange"
+                />
+                <InstantUploadBox
+                    class="upload-box"
+                    :text="'题目描述：上传 Markdown 文件进行解析'"
+                    :lastUpdateTime="question.description.lastUpdateTime"
+                    :handleChange="handleChange"
+                />
+            </div>
         </a-descriptions-item>
     </a-descriptions>
     <a-spin tip="解析中" :spinning="spinning">
-        <a-collapse v-model:activeKey="collapseKey">
+        <a-collapse v-model:activeKey="collapseKey" ghost>
             <a-collapse-panel key="1" header="题目描述">
-                <div class="file-space" v-if="!readMode">
-                    <a-upload-dragger
-                        name="file"
-                        @change="handleChange"
-                        :before-upload="beforeUpload"
-                        v-model:file-list="fileList"
-                    >
-                        <div style="padding: 30px;">
-                            <p class="ant-upload-drag-icon">
-                                <inbox-outlined></inbox-outlined>
-                            </p>
-                            <p class="ant-upload-text">上传 Markdown 文件进行解析</p>
-                            <p
-                                class="ant-upload-hint"
-                            >最后上传时间: {{ question.description.lastUpdateTime }}</p>
-                        </div>
-                    </a-upload-dragger>
-                </div>
                 <div
                     class="desc-md-space markdown-h tml"
-                    v-html="resolveMarkdownAsHtml(question.description.mdText)"
+                    v-html="question.description.htmlText"
                     v-highlight
                 ></div>
             </a-collapse-panel>
@@ -168,9 +159,15 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-.desc-md-space,
 .file-space {
-    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .upload-box {
+        width: 45%;
+        margin-top: 20px;
+    }
 }
 </style>
 
