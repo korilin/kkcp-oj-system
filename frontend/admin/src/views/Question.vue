@@ -1,8 +1,9 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRoute, } from "vue-router";
 import { InboxOutlined } from "@ant-design/icons-vue";
 import { resolveMarkdownAsHtml } from "../utils/tool-fun";
+import * as echarts from 'echarts';
 
 const route = useRoute();
 
@@ -54,6 +55,41 @@ const handleChange = ({
     reader.readAsText(file);
 };
 
+const loadSubmitCountEchart = (submiteTimes, passTimes) => {
+    const option = {
+        
+  tooltip: {
+    trigger: 'item'
+  },
+        title: {
+            text: submiteTimes,
+            left: 'center',
+            top: 'center',
+        },
+        series: [
+            {
+                type: 'pie',
+                data: [
+                    {
+                        value: submiteTimes - passTimes,
+                        name: '未通过次数'
+                    },
+                    {
+                        value: passTimes,
+                        name: '通过次数'
+                    },
+                ],
+                radius: ['50%', '70%']
+            }
+        ]
+    };
+
+    const submitCountEchart = echarts.init(document.getElementById('submitCountEchart'));
+    submitCountEchart.setOption(option)
+}
+onMounted(() => {
+    loadSubmitCountEchart(question.submiteTimes, question.passTimes)
+})
 </script>
 <template>
     <a-descriptions class="global-question-desc-style">
@@ -79,15 +115,8 @@ const handleChange = ({
             </a-select>
         </a-descriptions-item>
         <a-descriptions-item label="难度">{{ question.level }}</a-descriptions-item>
-        <a-descriptions-item label="通过/提交（次数）" :span="3">
-            <a-statistic value="/">
-                <template #prefix>
-                    <span class="text-success">{{ question.passTimes }}</span>
-                </template>
-                <template #suffix>
-                    <span>{{ question.submiteTimes }}</span>
-                </template>
-            </a-statistic>
+        <a-descriptions-item label="通过/提交（次数）" :span="3" style="text-align: center;">
+            <div id="submitCountEchart" :style="{ width: '100%', height: '250px',}"></div>
         </a-descriptions-item>
         <a-descriptions-item :span="3" class="contests">
             <a-divider>引用场次</a-divider>
