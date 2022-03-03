@@ -9,7 +9,6 @@ group = "com.korilin"
 version = "1.0-SNAPSHOT"
 
 val ktormVersion = "3.4.1"
-val exposedVersion: String by project
 
 plugins {
     val kotlinVersion = "1.6.10"
@@ -50,13 +49,8 @@ allprojects {
 
                 // database
                 implementation(springStarter("jdbc"))
-                // implementation("org.ktorm:ktorm-core:${ktormVersion}")
-                // implementation("org.ktorm:ktorm-jackson:${ktormVersion}")
-                implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-                implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-                implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-                implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
-                implementation("org.jetbrains.exposed:exposed-spring-boot-starter:$exposedVersion")
+                implementation("org.ktorm:ktorm-core:${ktormVersion}")
+                implementation("org.ktorm:ktorm-jackson:${ktormVersion}")
                 implementation("mysql:mysql-connector-java")
 
                 // jackson
