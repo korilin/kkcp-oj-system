@@ -49,9 +49,9 @@ allprojects {
 
                 // database
                 implementation(springStarter("jdbc"))
+                implementation("mysql:mysql-connector-java")
                 implementation("org.ktorm:ktorm-core:${ktormVersion}")
                 implementation("org.ktorm:ktorm-jackson:${ktormVersion}")
-                implementation("mysql:mysql-connector-java")
 
                 // jackson
                 implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")

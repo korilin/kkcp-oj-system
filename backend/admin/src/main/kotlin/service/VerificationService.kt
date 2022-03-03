@@ -1,6 +1,5 @@
 package com.korilin.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.korilin.AdminModuleConfig
 import com.korilin.ktorm.encodeJson
 import com.korilin.model.vo.AdminLoginModel

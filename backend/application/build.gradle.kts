@@ -6,4 +6,5 @@ parent?.let {
 dependencies {
     implementation(project(":user"))
     implementation(project(":admin"))
+    implementation(project(":repository"))
 }

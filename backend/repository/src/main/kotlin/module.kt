@@ -1,7 +1,7 @@
-package com.korilin.repository
+package com.korilin
 
-import com.korilin.model.table.AdminAccounts
-import com.korilin.model.table.Questions
+import com.korilin.table.AdminAccounts
+import com.korilin.table.Questions
 import org.ktorm.database.Database
 import org.ktorm.entity.sequenceOf
 

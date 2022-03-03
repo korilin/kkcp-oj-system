@@ -1,4 +1,4 @@
-package com.korilin.model.table
+package com.korilin.table
 
 import org.ktorm.entity.Entity
 import org.ktorm.schema.Table

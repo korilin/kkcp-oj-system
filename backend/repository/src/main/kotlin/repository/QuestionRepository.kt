@@ -1,5 +1,6 @@
 package com.korilin.repository
 
+import com.korilin.questions
 import org.ktorm.database.Database
 import org.ktorm.entity.toList
 import org.springframework.stereotype.Repository
@@ -8,5 +9,5 @@ import org.springframework.stereotype.Repository
 class QuestionRepository(database: Database) {
     private val questions = database.questions
 
-    internal fun queryAllQuestions() = questions.toList()
+    fun queryAllQuestions() = questions.toList()
 }

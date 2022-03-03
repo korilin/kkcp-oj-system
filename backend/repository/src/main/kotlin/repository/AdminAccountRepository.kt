@@ -1,5 +1,6 @@
 package com.korilin.repository
 
+import com.korilin.adminAccounts
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
@@ -10,7 +11,7 @@ class AdminAccountRepository(database: Database) {
 
     private val adminAccounts = database.adminAccounts
 
-    internal suspend fun queryAdminAccount(email: String) = adminAccounts.find {
+    suspend fun queryAdminAccount(email: String) = adminAccounts.find {
         it.email eq email
     }
 }
