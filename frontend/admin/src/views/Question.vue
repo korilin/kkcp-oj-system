@@ -82,7 +82,10 @@ onMounted(() => {
 <template>
     <a-descriptions class="global-question-desc-style">
         <template #extra>
-            <a-button v-if="readMode" @click="readMode = false">Edit</a-button>
+            <span v-if="readMode">
+                <a-button @click="readMode = false">Edit</a-button>
+                <a-button @click="readMode = false" type="danger" style="margin-left: 20px;">Delete</a-button>
+            </span>
             <span v-else>
                 <a-button @click="readMode = true" type="primary">Done</a-button>
                 <a-button @click="readMode = true" style="margin-left: 20px;">Cancel</a-button>
@@ -103,8 +106,8 @@ onMounted(() => {
             </a-select>
         </a-descriptions-item>
         <a-descriptions-item label="难度">{{ question.level }}</a-descriptions-item>
-        <a-descriptions-item label="通过/提交（次数）" :span="3" style="text-align: center;">
-            <div id="submitCountEchart" :style="{ width: '100%', height: '250px', }"></div>
+        <a-descriptions-item label="答案提交次数" :span="3" style="text-align: center;">
+            <div id="submitCountEchart" :style="{ width: '500px', height: '250px', }"></div>
         </a-descriptions-item>
         <a-descriptions-item :span="3" class="contests">
             <a-divider>引用场次</a-divider>
@@ -148,7 +151,7 @@ onMounted(() => {
         <a-collapse v-model:activeKey="collapseKey" ghost>
             <a-collapse-panel key="1" header="题目描述">
                 <div
-                    class="desc-md-space markdown-h tml"
+                    class="desc-md-space markdown-html"
                     v-html="question.description.htmlText"
                     v-highlight
                 ></div>
@@ -157,7 +160,7 @@ onMounted(() => {
     </a-spin>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .file-space {
     display: flex;
     flex-wrap: wrap;
@@ -170,6 +173,7 @@ onMounted(() => {
     }
 }
 </style>
+
 
 <style lang="scss">
 .global-question-desc-style {
