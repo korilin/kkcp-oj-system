@@ -33,14 +33,13 @@ const question = reactive({
     passTimes: 800,
 });
 // 文件变化
-const handleChange = ({
-    file,
-    fileList,
-}) => {
+const handleChange = (file) => {
+    spinning.value = true;
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
         // 当读取完成时，内容只在`reader.result`中
         question.description.htmlText = resolveMarkdownAsHtml(reader.result);
+        spinning.value = false;
     };
     reader.readAsText(file);
 };
@@ -163,6 +162,7 @@ onMounted(() => {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    padding: 20px;
 
     .upload-box {
         width: 45%;
