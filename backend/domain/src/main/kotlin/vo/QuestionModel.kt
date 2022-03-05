@@ -1,4 +1,4 @@
-package com.korilin.model.vo
+package com.korilin.vo
 
 /**
  * 问题类型

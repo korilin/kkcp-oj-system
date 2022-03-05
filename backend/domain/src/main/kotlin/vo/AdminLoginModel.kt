@@ -1,4 +1,4 @@
-package com.korilin.model.vo
+package com.korilin.vo
 
 import com.korilin.model.table.AdminAccount
 import java.time.LocalDateTime

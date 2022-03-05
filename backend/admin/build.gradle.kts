@@ -5,6 +5,6 @@ parent?.let {
 
 dependencies{
     implementation(project(":common"))
-    implementation(project(":repository"))
+    implementation(project(":domain"))
     implementation(springStarter("data-redis"))
 }

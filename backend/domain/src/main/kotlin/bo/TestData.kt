@@ -1,4 +1,4 @@
-package com.korilin.model.bo
+package com.korilin.bo
 
 data class TestData(
     val input: Any,
