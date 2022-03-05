@@ -1,8 +1,12 @@
 <script setup>
 import { MailOutlined, LockOutlined } from '@ant-design/icons-vue';
-import { reactive } from 'vue';
+import { message } from 'ant-design-vue';
+import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAccountStore } from './plugins/pinia';
+import HttpService from './utils/axios-service';
+
+const ADMIN_TOKEN_KEY = import.meta.env.VITE_ADMIN_TOKEN_KEY
 
 const accountStore = useAccountStore();
 const router = useRouter();
@@ -12,31 +16,63 @@ const loginState = reactive({
     code: "",
 })
 
+const sendCodeText = ref("Send Code")
+const sendCodeDisabled = ref(false)
+let count = 60;
+let counter = null;
+
+const loginLoading = ref(false)
+
 function checkToken() {
-    const token = window.sessionStorage.getItem('admin_login_token');
+    const token = window.sessionStorage.getItem(ADMIN_TOKEN_KEY);
     if (token != null) {
         router.push({ name: "profile" })
     }
 }
 
-function saveIntoStore(token, account) {
-    accountStore.loginToken = token;
-    accountStore.account = account;
-    window.sessionStorage.setItem('admin_login_token', token);
-    window.sessionStorage.setItem('admin_account_info',
-        JSON.stringify(account));
+function saveIntoStorage(token) {
+    accountStore.kkcpAdminToken = token;
+    window.sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+}
+
+function sendCode() {
+    const url = "/admin/verify/sendCode?email=" + loginState.email;
+    HttpService.post(url).then((response) => {
+        const body = response.data;
+        if (body.status) {
+            message.success(body.message);
+            sendCodeDisabled.value = true;
+            sendCodeText.value = count;
+            counter = setInterval(() => {
+                count -= 1;
+                if (count < 0) {
+                    count = 60;
+                    sendCodeDisabled.value = false;
+                    sendCodeText.value = "Send Code";
+                    window.clearInterval(counter);
+                } else {
+                    sendCodeText.value = count;
+                }
+            }, 1000)
+        }
+    })
 }
 
 function tryLogin() {
-    // mock data
-    const loginToken = "xxxxx";
-    const account = {
+    const data = {
         email: loginState.email,
-        name: "mock_kori",
-        level: 5
-    };
-    saveIntoStore(loginToken, account);
-    router.push({ name: "profile" });
+        code: loginState.code
+    }
+    loginLoading.value = true;
+    const url = "/admin/verify/login";
+    HttpService.post(url, data).then((response) => {
+        const body = response.data;
+        if (body.status) {
+            saveIntoStorage(body.data.token)
+        }
+    }).finally(() => {
+        loginLoading.value = false;
+    })
 }
 
 checkToken();
@@ -74,13 +110,19 @@ checkToken();
                             <LockOutlined style="color: rgba(0, 0, 0, 0.25)" />
                         </template>
                     </a-input>
-                    <a-button type="primary" style="margin-left: 20px;">Send Code</a-button>
+                    <a-button
+                        type="primary"
+                        style="margin-left: 20px;"
+                        @click="sendCode"
+                        :disabled="sendCodeDisabled"
+                    >{{ sendCodeText }}</a-button>
                 </a-form-item>
                 <a-form-item>
                     <a-button
                         block
                         type="primary"
                         html-type="submit"
+                        :loading="loginLoading"
                         :disabled="loginState.email === '' || loginState.code === ''"
                     >Log In</a-button>
                 </a-form-item>

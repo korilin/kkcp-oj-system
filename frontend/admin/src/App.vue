@@ -8,14 +8,13 @@ const router = useRouter();
 const route = useRoute();
 const accountStore = useAccountStore();
 
-accountStore.loginToken = window.sessionStorage.getItem("admin_login_token");
-accountStore.account = JSON.parse(window.sessionStorage.getItem("admin_account_info"));
+const collapsed = ref(false);
 
-if (accountStore.loginToken == null) {
+accountStore.kkcpAdminToken = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
+
+if (accountStore.kkcpAdminToken == null) {
   router.push({ name: "login" });
 }
-
-const collapsed = ref(false);
 </script>
 
 <template>
