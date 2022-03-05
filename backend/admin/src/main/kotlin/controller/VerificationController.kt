@@ -23,7 +23,7 @@ class VerificationController(
     suspend fun sendVerificationCode(@RequestParam("email") email: String): IResponseBody<Unit> {
         val result = verificationService.sendCodeToEmail(email)
         return if (result) IResponseBody.success("~ verification code send success ~")
-        else IResponseBody.error("! verification code send failure !")
+        else IResponseBody.error("The admin account doesn't exit !")
     }
 
     /**

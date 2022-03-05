@@ -57,7 +57,7 @@ class VerificationService(
      * @return 是否发送成功
      */
     internal suspend fun sendCodeToEmail(email: String): Boolean {
-        // TODO 检查是否存在该邮箱
+        adminAccountRepository.queryAdminAccount(email) ?: return false
         val code = generateCode(6)
         // TODO 使用协程异步发送到邮箱
         val key = emailVerificationCodeKeyConvert(email)
