@@ -31,6 +31,8 @@ enum class QuestionLevel(val id: Int, val text: String) {
 }
 
 
-data class TestData(
+data class TestDataItem(
     val input: Any, val output: Any
 )
+
+val testDataArrayType: ArrayType = globalJsonMapper.typeFactory.constructArrayType(TestDataItem::class.java)!!

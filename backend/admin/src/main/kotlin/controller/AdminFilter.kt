@@ -14,11 +14,15 @@ import org.springframework.web.server.WebFilterChain
 import org.springframework.web.util.pattern.PathPatternParser
 import reactor.core.publisher.Mono
 
+
+private val parser = PathPatternParser()
+
 /**
  * 拦截规则列表
  */
 private val patterns = arrayOf(
-    PathPatternParser().parse("${AdminModuleConfig.QUERY_URL_PREFIX}/**")
+//    parser.parse("${AdminModuleConfig.QUESTION_URL_PREFIX}/**"),
+    parser.parse("${AdminModuleConfig.CONTEST_URL_PREFIX}/**")
 )
 
 @Component

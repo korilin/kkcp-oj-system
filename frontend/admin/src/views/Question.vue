@@ -128,13 +128,19 @@ onMounted(() => {
             <div class="file-space">
                 <InstantUploadBox
                     class="upload-box"
-                    :text="'代码模版：上传 Kotlin 文件进行注册'"
+                    :text="'用户代码模版：上传 Kotlin 文件进行更新'"
                     :lastUpdateTime="question.description.lastUpdateTime"
                     :handleChange="handleChange"
                 />
                 <InstantUploadBox
                     class="upload-box"
-                    :text="'测试数据：上传 JSON 文件进行存储'"
+                    :text="'测试代码模版：上传 Kotlin 文件进行更新'"
+                    :lastUpdateTime="question.description.lastUpdateTime"
+                    :handleChange="handleChange"
+                />
+                <InstantUploadBox
+                    class="upload-box"
+                    :text="'测试数据：上传 JSON 文件进行更新'"
                     :lastUpdateTime="question.description.lastUpdateTime"
                     :handleChange="handleChange"
                 />
