@@ -1,8 +1,6 @@
-package com.korilin.vo
+package com.korilin.model
 
-import com.korilin.model.table.AdminAccount
-import java.time.LocalDateTime
-
+import com.korilin.table.AdminAccount
 
 /**
  * 登录响应数据模型

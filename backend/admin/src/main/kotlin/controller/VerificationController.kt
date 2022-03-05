@@ -3,8 +3,8 @@ package com.korilin.controller
 import com.korilin.AdminModuleConfig
 import com.korilin.IResponseBody
 import com.korilin.annotations.ExceptionMessageHandler
+import com.korilin.model.AdminLoginModel
 import com.korilin.model.LoginRequestBody
-import com.korilin.vo.AdminLoginModel
 import com.korilin.service.VerificationService
 import org.springframework.web.bind.annotation.*
 

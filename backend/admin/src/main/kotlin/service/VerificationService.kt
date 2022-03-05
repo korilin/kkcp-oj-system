@@ -2,7 +2,7 @@ package com.korilin.service
 
 import com.korilin.AdminModuleConfig
 import com.korilin.ktorm.encodeJson
-import com.korilin.vo.AdminLoginModel
+import com.korilin.model.AdminLoginModel
 import com.korilin.repository.AdminAccountRepository
 import com.korilin.utils.AESUtil
 import org.springframework.data.redis.core.StringRedisTemplate
