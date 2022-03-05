@@ -4,6 +4,7 @@ parent?.let {
 }
 
 dependencies {
+    implementation(project(":common"))
     implementation(project(":user"))
     implementation(project(":admin"))
     implementation(project(":domain"))

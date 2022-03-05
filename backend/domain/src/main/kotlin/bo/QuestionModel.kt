@@ -4,7 +4,11 @@ package com.korilin.bo
  * 问题类型
  */
 enum class QuestionType(val id: Int, val text: String) {
-    TP1(1, "实用技巧"), TP2(2, "算法解题"), TP3(3, "源码模拟");
+    Skills(1, "实用技巧"), Algorithm(2, "算法解题"), Source(3, "源码模拟");
+
+    companion object {
+        fun toArray() = arrayOf(Skills, Algorithm, Source)
+    }
 }
 
 /**
@@ -12,6 +16,10 @@ enum class QuestionType(val id: Int, val text: String) {
  */
 enum class QuestionLevel(val level: Int, val text: String) {
     Easy(1, "easy"), Medium(2, "medium"), Hard(3, "hard");
+
+    companion object {
+        fun toArray() = arrayOf(Easy, Medium, Hard)
+    }
 }
 
 

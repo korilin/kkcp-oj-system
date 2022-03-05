@@ -19,6 +19,4 @@ internal class QuestionController(private val questionService: QuestionService) 
         val questions = questionService.getAllQuestions()
         return IResponseBody.success(data = questions)
     }
-
-    
 }
