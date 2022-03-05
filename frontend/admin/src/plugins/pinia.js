@@ -43,7 +43,7 @@ export const useContestsStore = defineStore("contests", {
 
 const questions = [];
 
-for (let index = 0; index < 20; index++) {
+for (let index = 0; index < 30; index++) {
     questions[index] = {
         questionId: index,
         type: 0,

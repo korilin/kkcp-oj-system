@@ -76,7 +76,13 @@ doDataInit();
     </a-layout-sider>
     <a-layout class="main-layout">
       <a-layout-content>
-        <router-view />
+        <router-view v-slot="{ Component, route }">
+          <transition name="fade" mode="out-in">
+            <div :key="route.name">
+              <component :is="Component"></component>
+            </div>
+          </transition>
+        </router-view>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -87,6 +93,19 @@ doDataInit();
     <router-view />
   </template>
 </template>
+
+<style scoped lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+</style>
 
 <style lang="scss">
 html,
