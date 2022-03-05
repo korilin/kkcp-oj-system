@@ -38,16 +38,27 @@ function goQuestion(questionId) {
 }
 </script>
 <template>
+    <div class="bar">
+        <h3 class="text-dark">Question Pool</h3>
+        <a-button type="primary">Add</a-button>
+    </div>
     <a-table :columns="columns" :data-source="questionsStore.data" rowKey="questionId">
         <template #bodyCell="{ column, record }">
             <template v-if="column.key == 'level'">
                 <a-tag :color="levels.bg[record.level]">{{ levels.text[record.level] }}</a-tag>
             </template>
             <template v-else-if="column.key == 'action'">
-                <a-button type="link" size="small" @click="goQuestion(record.questionId)">more&edit</a-button>
+                <a-button type="link" size="small" @click="goQuestion(record.questionId)">More&Edit</a-button>
                 <a-divider type="vertical" />
-                <a-button type="link" size="small" style="color: #ff7875;">del</a-button>
+                <a-button type="link" size="small" style="color: #ff7875;">Del</a-button>
             </template>
         </template>
     </a-table>
 </template>
+
+<style scoped lang="scss">
+.bar {
+    display: flex;
+    justify-content: space-between;
+}
+</style>
