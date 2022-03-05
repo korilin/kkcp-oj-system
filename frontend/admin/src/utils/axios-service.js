@@ -17,7 +17,7 @@ instance.interceptors.response.use(
         if (!body.status) {
             message.error(body.message);
         }
-        return body;
+        return response;
     },
     (error) => {
         console.error(error);

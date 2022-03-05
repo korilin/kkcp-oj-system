@@ -65,9 +65,9 @@ function tryLogin() {
     }
     loginLoading.value = true;
     const url = "/admin/verify/login";
-    HttpService.post(url, data).then((response) => {
+    HttpService.post(url, data).then((response)=> {
         const body = response.data;
-        if (body.status) {
+        if(body.status) {
             saveIntoStorage(body.data.token)
         }
     }).finally(() => {
