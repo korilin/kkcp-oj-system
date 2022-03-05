@@ -10,10 +10,21 @@ const accountStore = useAccountStore();
 
 const collapsed = ref(false);
 
-const kkcpAdminToken = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
-accountStore.kkcpAdminToken = kkcpAdminToken
-if (kkcpAdminToken == null || kkcpAdminToken == "undefined") {
-  router.push({ name: "login" });
+function doAccountInit() {
+  const kkcpAdminToken = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
+  const accountJson = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_ACCOUNT_KEY);
+  const account = JSON.parse(accountJson);
+  if (kkcpAdminToken == null ||
+    kkcpAdminToken == "undefined" ||
+    account == null ||
+    account == "undefined") {
+    router.push({ name: "login" });
+    window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
+    window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_ACCOUNT_KEY);
+  } else {
+    accountStore.kkcpAdminToken = kkcpAdminToken;
+    accountStore.account = account;
+  }
 }
 </script>
 

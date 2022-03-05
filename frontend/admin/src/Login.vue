@@ -6,8 +6,6 @@ import { useRouter } from 'vue-router';
 import { useAccountStore } from './plugins/pinia';
 import HttpService from './utils/axios-service';
 
-const ADMIN_TOKEN_KEY = import.meta.env.VITE_ADMIN_TOKEN_KEY
-
 const accountStore = useAccountStore();
 const router = useRouter();
 
@@ -24,37 +22,50 @@ let counter = null;
 const loginLoading = ref(false)
 
 function checkToken() {
-    const token = window.sessionStorage.getItem(ADMIN_TOKEN_KEY);
+    const token = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
     if (token != null) {
         router.push({ name: "profile" })
     }
 }
 
-function saveIntoStorage(token) {
+function saveIntoStorage(token, account) {
+    window.sessionStorage.setItem(import.meta.env.VITE_ADMIN_TOKEN_KEY, token);
+    window.sessionStorage.setItem(import.meta.env.VITE_ADMIN_TOKEN_KEY, JSON.stringify(account));
     accountStore.kkcpAdminToken = token;
-    window.sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+    accountStore.account = account;
 }
 
+function stopCounter() {
+    count = 60;
+    sendCodeDisabled.value = false;
+    sendCodeText.value = "Send Code";
+    window.clearInterval(counter);
+}
+
+function startCounter() {
+    sendCodeDisabled.value = true;
+    sendCodeText.value = count;
+    counter = setInterval(() => {
+        count -= 1;
+        if (count < 0) {
+            stopCounter();
+        } else {
+            sendCodeText.value = count;
+        }
+    }, 1000);
+}
 function sendCode() {
     const url = "/admin/verify/sendCode?email=" + loginState.email;
+    startCounter();
     HttpService.post(url).then((response) => {
         const body = response.data;
         if (body.status) {
             message.success(body.message);
-            sendCodeDisabled.value = true;
-            sendCodeText.value = count;
-            counter = setInterval(() => {
-                count -= 1;
-                if (count < 0) {
-                    count = 60;
-                    sendCodeDisabled.value = false;
-                    sendCodeText.value = "Send Code";
-                    window.clearInterval(counter);
-                } else {
-                    sendCodeText.value = count;
-                }
-            }, 1000)
+        } else {
+            stopCounter();
         }
+    }).catch((error) => {
+        stopCounter();
     })
 }
 
@@ -65,10 +76,10 @@ function tryLogin() {
     }
     loginLoading.value = true;
     const url = "/admin/verify/login";
-    HttpService.post(url, data).then((response)=> {
+    HttpService.post(url, data).then((response) => {
         const body = response.data;
-        if(body.status) {
-            saveIntoStorage(body.data.token)
+        if (body.status) {
+            saveIntoStorage(body.data.token, body.data.account)
         }
     }).finally(() => {
         loginLoading.value = false;
