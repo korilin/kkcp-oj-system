@@ -10,6 +10,15 @@ export const useAccountStore = defineStore("account", {
     },
 });
 
+export const useCommonStore = defineStore("common", {
+    state: () => {
+        return {
+            questionTypes: [],
+            questionLevels: []
+        }
+    }
+})
+
 const contests = [];
 
 for (let index = 0; index < 15; index++) {

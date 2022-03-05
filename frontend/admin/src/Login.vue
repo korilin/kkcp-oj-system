@@ -30,7 +30,7 @@ function checkToken() {
 
 function saveIntoStorage(token, account) {
     window.sessionStorage.setItem(import.meta.env.VITE_ADMIN_TOKEN_KEY, token);
-    window.sessionStorage.setItem(import.meta.env.VITE_ADMIN_TOKEN_KEY, JSON.stringify(account));
+    window.sessionStorage.setItem(import.meta.env.VITE_ADMIN_ACCOUNT_KEY, JSON.stringify(account));
     accountStore.kkcpAdminToken = token;
     accountStore.account = account;
 }
@@ -80,6 +80,7 @@ function tryLogin() {
         const body = response.data;
         if (body.status) {
             saveIntoStorage(body.data.token, body.data.account)
+            router.push({ name: "profile" });
         }
     }).finally(() => {
         loginLoading.value = false;

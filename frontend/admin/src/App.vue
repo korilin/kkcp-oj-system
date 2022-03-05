@@ -3,12 +3,31 @@ import { ref, watch } from 'vue';
 import Sidebar from "./components/Sidebar.vue"
 import KotlinSVGVue from './components/KotlinSVG.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useAccountStore } from "./plugins/pinia";
+import { useAccountStore, useCommonStore } from "./plugins/pinia";
+import HttpService from './utils/axios-service';
 const router = useRouter();
 const route = useRoute();
 const accountStore = useAccountStore();
+const commonStore = useCommonStore();
 
 const collapsed = ref(false);
+
+function doDataInit() {
+  const levelsUrl = "/common/question/levels"
+  HttpService.get(levelsUrl).then((response) => {
+    const body = response.data;
+    if (body.status) {
+      commonStore.questionLevels = body.data;
+    }
+  })
+  const typesUrl = "/common/question/types"
+  HttpService.get(typesUrl).then((response) => {
+    const body = response.data;
+    if (body.status) {
+      commonStore.questionTypes = body.data;
+    }
+  })
+}
 
 function doAccountInit() {
   const kkcpAdminToken = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
@@ -26,6 +45,9 @@ function doAccountInit() {
     accountStore.account = account;
   }
 }
+
+doAccountInit();
+doDataInit();
 </script>
 
 <template>
