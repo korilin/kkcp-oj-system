@@ -12,6 +12,11 @@ const commonStore = useCommonStore();
 
 const collapsed = ref(false);
 
+/**
+ * 请求平台基本数据，包括：
+ * - 问题类型列表
+ * - 问题难度列表
+ */
 function doDataInit() {
   const levelsUrl = "/common/question/levels"
   HttpService.get(levelsUrl).then((response) => {
@@ -29,6 +34,10 @@ function doDataInit() {
   })
 }
 
+/**
+ * 初始化用户，当用户登录状态不可用时，移除所有登录信息，跳转到登录页面重新登录。
+ * 当登录状态可时，将 token 和用户信息存储到 pinia 中
+ */
 function doAccountInit() {
   const kkcpAdminToken = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
   const accountJson = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_ACCOUNT_KEY);
@@ -38,8 +47,6 @@ function doAccountInit() {
     account == null ||
     account == "undefined") {
     router.push({ name: "login" });
-    window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
-    window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_ACCOUNT_KEY);
   } else {
     accountStore.kkcpAdminToken = kkcpAdminToken;
     accountStore.account = account;

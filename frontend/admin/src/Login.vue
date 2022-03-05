@@ -6,27 +6,28 @@ import { useRouter } from 'vue-router';
 import { useAccountStore } from './plugins/pinia';
 import HttpService from './utils/axios-service';
 
+// 强制性退出~
+window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
+window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_ACCOUNT_KEY);
+
 const accountStore = useAccountStore();
 const router = useRouter();
 
+/**
+ * 登录表单 State
+ */
 const loginState = reactive({
     email: "",
     code: "",
 })
 
+// UI State
 const sendCodeText = ref("Send Code")
 const sendCodeDisabled = ref(false)
 let count = 60;
 let counter = null;
 
 const loginLoading = ref(false)
-
-function checkToken() {
-    const token = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
-    if (token != null) {
-        router.push({ name: "profile" })
-    }
-}
 
 function saveIntoStorage(token, account) {
     window.sessionStorage.setItem(import.meta.env.VITE_ADMIN_TOKEN_KEY, token);
@@ -54,6 +55,7 @@ function startCounter() {
         }
     }, 1000);
 }
+
 function sendCode() {
     const url = "/admin/verify/sendCode?email=" + loginState.email;
     startCounter();
@@ -86,8 +88,6 @@ function tryLogin() {
         loginLoading.value = false;
     })
 }
-
-checkToken();
 </script>
 <template>
     <div class="flex-wrapper">

@@ -4,23 +4,23 @@ import { useAccountStore } from '../plugins/pinia';
 
 const accountStore = useAccountStore();
 const account = ref(accountStore.account);
-
-// TODO check account is null?
-// TODO check token is vaild?
-
 </script>
 
 <template>
     <a-descriptions
-        title="管理员信息"
+        title="Admin Infomation"
         class="global-style-profile-desc"
         :column="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }"
     >
-        <a-descriptions-item label="账户名">{{ account.name }}</a-descriptions-item>
-        <a-descriptions-item label="邮箱">{{ account.email }}</a-descriptions-item>
-        <a-descriptions-item label="权限级别">{{ account.level }}</a-descriptions-item>
+        <a-descriptions-item label="Name">{{ account.name }}</a-descriptions-item>
+        <a-descriptions-item label="Email">{{ account.email }}</a-descriptions-item>
+        <a-descriptions-item label="Level">{{ account.level }}</a-descriptions-item>
     </a-descriptions>
-    <a-alert style="margin-top: 30px" message="更改账户权限/密码请联系 Super Admin" type="info" />
+    <a-alert
+        style="margin-top: 30px"
+        message="Contact Lv5 administrator to change your account infomation."
+        type="info"
+    />
 </template>
 
 <style lang="scss">
