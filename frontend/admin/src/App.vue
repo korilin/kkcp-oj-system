@@ -97,7 +97,7 @@ doDataInit();
 <style scoped lang="scss">
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
 }
 
 .fade-enter-from,

@@ -31,16 +31,23 @@ const levels = {
     text: [undefined, "easy", "medium", "hard"]
 }
 
-function goQuestion(questionId) {
+function goQuestionItem(questionId) {
     router.push({
-        path: "/question/" + questionId
+        name: "questionItem",
+        params: {
+            questionId: questionId
+        }
     })
+}
+
+function newQuestion() {
+    router.push({ name: "questionNew" })
 }
 </script>
 <template>
     <div class="bar">
         <h3 class="text-dark">Question Pool</h3>
-        <a-button type="primary">Add</a-button>
+        <a-button type="primary" @click="newQuestion">Add</a-button>
     </div>
     <a-table :columns="columns" :data-source="questionsStore.data" rowKey="questionId">
         <template #bodyCell="{ column, record }">
@@ -48,7 +55,11 @@ function goQuestion(questionId) {
                 <a-tag :color="levels.bg[record.level]">{{ levels.text[record.level] }}</a-tag>
             </template>
             <template v-else-if="column.key == 'action'">
-                <a-button type="link" size="small" @click="goQuestion(record.questionId)">More&Edit</a-button>
+                <a-button
+                    type="link"
+                    size="small"
+                    @click="goQuestionItem(record.questionId)"
+                >More&Edit</a-button>
                 <a-divider type="vertical" />
                 <a-button type="link" size="small" style="color: #ff7875;">Del</a-button>
             </template>
