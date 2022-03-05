@@ -3,10 +3,10 @@ package com.korilin.ktorm
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.ktorm.entity.Entity
 
-val entityJsonMapper = ObjectMapper().apply {
+val globalJsonMapper = ObjectMapper().apply {
     findAndRegisterModules()
 }
 
-fun Entity<*>.encodeJson() : String = entityJsonMapper.writeValueAsString(this)
+fun Entity<*>.encodeJson() : String = globalJsonMapper.writeValueAsString(this)
 
-inline fun <reified T: Entity<T>> String.decodeJson() : T = entityJsonMapper.readValue(this, T::class.java)
+inline fun <reified T: Entity<T>> String.decodeJson() : T = globalJsonMapper.readValue(this, T::class.java)

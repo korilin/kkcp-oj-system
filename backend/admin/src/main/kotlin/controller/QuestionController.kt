@@ -21,4 +21,12 @@ internal class QuestionController(private val questionService: QuestionService) 
         val questions = questionService.getAllQuestions()
         return IResponseBody.success(data = questions)
     }
+
+    @PostMapping("/new")
+    @ExceptionMessageHandler
+    suspend fun newQuestion(form: NewQuestionForm): IResponseBody<Int> {
+        return questionService.newQuestion(form)?.let {
+            IResponseBody.success(data = it)
+        } ?: IResponseBody.error("")
+    }
 }

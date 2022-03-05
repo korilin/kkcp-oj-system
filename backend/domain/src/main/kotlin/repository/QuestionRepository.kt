@@ -12,4 +12,15 @@ class QuestionRepository(database: Database) {
     private val questions = database.questions
 
     fun queryAllQuestions() = questions.toList()
+
+    /**
+     * 添加一个新的问题
+     * @param question 新增加的问题，不需要设置 questionId
+     */
+    fun newQuestion(question: Question): Int {
+        val now = LocalDateTime.now()
+        question.codeTemplateLastUpdateTime = now
+        question.testJsonDataLastUpdateTime = now
+        return questions.add(question)
+    }
 }

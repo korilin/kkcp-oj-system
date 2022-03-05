@@ -1,5 +1,8 @@
 package com.korilin.bo
 
+import com.fasterxml.jackson.databind.type.ArrayType
+import com.korilin.ktorm.globalJsonMapper
+
 /**
  * 问题类型
  */
