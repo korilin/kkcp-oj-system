@@ -31,9 +31,9 @@ class VerificationController(
      */
     @PostMapping("/login")
     @ExceptionMessageHandler
-    suspend fun login(body: LoginRequestBody): IResponseBody<AdminLoginModel> {
+    suspend fun login(@RequestBody body: LoginRequestBody): IResponseBody<AdminLoginModel> {
         val result = verificationService.verifyLoginCode(body.email, body.code)
-        if (!result) return IResponseBody.error("请重新发送验证码")
+        if (!result) return IResponseBody.error("验证码错误或已过期")
         verificationService.doAdminLogin(body.email)?.let {
             return IResponseBody.success("登录成功", it)
         }

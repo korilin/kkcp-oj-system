@@ -10,9 +10,9 @@ const accountStore = useAccountStore();
 
 const collapsed = ref(false);
 
-accountStore.kkcpAdminToken = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
-
-if (accountStore.kkcpAdminToken == null) {
+const kkcpAdminToken = window.sessionStorage.getItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
+accountStore.kkcpAdminToken = kkcpAdminToken
+if (kkcpAdminToken == null || kkcpAdminToken == "undefined") {
   router.push({ name: "login" });
 }
 </script>
