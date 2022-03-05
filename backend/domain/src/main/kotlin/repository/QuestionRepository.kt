@@ -1,6 +1,5 @@
 package com.korilin.repository
 
-import com.korilin.questions
 import org.ktorm.database.Database
 import org.ktorm.entity.toList
 import org.springframework.stereotype.Repository

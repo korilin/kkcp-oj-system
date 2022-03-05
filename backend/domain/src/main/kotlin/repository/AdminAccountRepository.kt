@@ -1,6 +1,5 @@
 package com.korilin.repository
 
-import com.korilin.adminAccounts
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
