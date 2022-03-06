@@ -1,21 +1,27 @@
 
 <script setup>
 import { ref } from 'vue';
-import { InboxOutlined } from "@ant-design/icons-vue";
+import { createFromIconfontCN, InboxOutlined } from "@ant-design/icons-vue";
+
+const KKCPIcon = createFromIconfontCN({
+    scriptUrl: "//at.alicdn.com/t/font_3225437_iqqela7vpnq.js"
+});
+
+const props = defineProps({
+    text: String,
+    hint: String,
+    handleChange: Function,
+    kkcpIcon: String,
+})
+
+// 新文件列表，需要保证列表只有一个 file
+const fileList = ref([]);
 
 // 拦截上传
 const beforeUpload = file => {
     fileList.value[0] = file;
     return false;
 };
-
-const props = defineProps({
-    text: String,
-    lastUpdateTime: String,
-    handleChange: Function,
-})
-// 新文件列表，需要保证列表只有一个 file
-const fileList = ref([]);
 
 const doChange = async ({
     file,
@@ -24,6 +30,7 @@ const doChange = async ({
     props.handleChange(file);
     fileList.pop(0);
 }
+
 </script>
 
 <template>
@@ -36,10 +43,11 @@ const doChange = async ({
         >
             <div style="padding: 30px;">
                 <p class="ant-upload-drag-icon">
-                    <inbox-outlined></inbox-outlined>
+                    <KKCPIcon :type="kkcpIcon" v-if="kkcpIcon != null" />
+                    <InboxOutlined v-else />
                 </p>
                 <p class="ant-upload-text">{{ text }}</p>
-                <p class="ant-upload-hint">最后上传时间: {{ lastUpdateTime }}</p>
+                <p class="ant-upload-hint">{{ hint }}</p>
             </div>
         </a-upload-dragger>
     </div>
