@@ -14,14 +14,14 @@ interface Question : Entity<Question> {
     companion object : Entity.Factory<Question>()
 
     val questionId: Int
-    var type: Int
     var title: String
+    var type: Int
+    var level: Int // Lv1 ~ Lv5
     var description: String
     var codeTemplate: String
     var codeTemplateLastUpdateTime: LocalDateTime
-    var testJsonData: Array<TestDataItem>
-    var testJsonDataLastUpdateTime: LocalDateTime
-    var level: Int // Lv1 ~ Lv5
+    var testDataJson: Array<TestDataItem>
+    var testDataJsonLastUpdateTime: LocalDateTime
 }
 
 /**
@@ -37,7 +37,7 @@ object Questions : Table<Question>("t_question") {
     val codeTemplate = text("code_template").bindTo { it.codeTemplate }
     val codeTemplateLastUpdateTime =
         datetime("code_template_last_update_time").bindTo { it.codeTemplateLastUpdateTime }
-    val testJsonData = json<Array<TestDataItem>>("test_json_data").bindTo { it.testJsonData }
-    val testJsonDataLastUpdateTime =
-        datetime("test_json_data_last_update_time").bindTo { it.testJsonDataLastUpdateTime }
+    val testDataJson = json<Array<TestDataItem>>("test_json_data").bindTo { it.testDataJson }
+    val testDataJsonLastUpdateTime =
+        datetime("test_json_data_last_update_time").bindTo { it.testDataJsonLastUpdateTime }
 }

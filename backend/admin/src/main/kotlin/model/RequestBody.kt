@@ -9,5 +9,5 @@ data class NewQuestionForm(
     val title: String,
     val description: String, // 65,535 bytes
     val codeTemplate: String,
-    val testJsonData: String // key 与 String 类型 value 必须使用双引号
+    val testDataJson: String // key 与 String 类型 value 必须使用双引号
 )

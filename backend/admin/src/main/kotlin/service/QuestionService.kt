@@ -1,6 +1,5 @@
 package com.korilin.service
 
-import com.korilin.bo.TestDataItem
 import com.korilin.bo.testDataArrayType
 import com.korilin.ktorm.globalJsonMapper
 import com.korilin.model.NewQuestionForm
@@ -24,7 +23,7 @@ internal class QuestionService(private val questionRepository: QuestionRepositor
             title = questionForm.title
             description = questionForm.description
             codeTemplate = questionForm.codeTemplate
-            testJsonData =globalJsonMapper.readValue(questionForm.testJsonData, testDataArrayType)
+            testDataJson =globalJsonMapper.readValue(questionForm.testDataJson, testDataArrayType)
         }
         val int = questionRepository.newQuestion(question)
         return if (int == 1) {
