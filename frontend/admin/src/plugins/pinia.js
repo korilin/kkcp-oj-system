@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import HttpService from "../utils/axios-service";
 
 // useStore could be anything like useUser, useCart
 // the first argument is a unique id of the store across your application
@@ -14,10 +15,20 @@ export const useCommonStore = defineStore("common", {
     state: () => {
         return {
             questionTypes: [],
-            questionLevels: []
-        }
-    }
-})
+            questionLevels: [],
+        };
+    },
+    getters: {
+        getTypeById: (state) => {
+            return (typeId) =>
+                state.questionTypes.find((type) => type.id == typeId);
+        },
+        getLevelById: (state) => {
+            return (levelId) =>
+                state.questionLevels.find((level) => level.id == levelId);
+        },
+    },
+});
 
 const contests = [];
 
@@ -41,22 +52,11 @@ export const useContestsStore = defineStore("contests", {
     },
 });
 
-const questions = [];
-
-for (let index = 0; index < 30; index++) {
-    questions[index] = {
-        questionId: index,
-        type: 0,
-        title: "模拟问题" + index,
-        description: "很长的问题描述，可能是一个 html 片段",
-        level: (index % 3) + 1,
-    };
-}
-
 export const useQuestionsStore = defineStore("questions", {
     state: () => {
         return {
-            data: questions,
+            init: false,
+            data: [],
         };
     },
 });

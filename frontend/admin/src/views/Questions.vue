@@ -1,9 +1,12 @@
 <script setup>
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useQuestionsStore } from "../plugins/pinia"
+import { useCommonStore, useQuestionsStore } from "../plugins/pinia"
+import HttpService from "../utils/axios-service";
 
 const router = useRouter();
 const questionsStore = useQuestionsStore();
+const commonStore = useCommonStore();
 
 const columns = [
     {
@@ -26,10 +29,7 @@ const columns = [
     },
 ];
 
-const levels = {
-    bg: [undefined, "green", "orange", "red"],
-    text: [undefined, "easy", "medium", "hard"]
-}
+const levelsColor = [undefined, "green", "orange", "red"];
 
 function goQuestionItem(questionId) {
     router.push({
@@ -43,6 +43,19 @@ function goQuestionItem(questionId) {
 function newQuestion() {
     router.push({ name: "questionNew" })
 }
+
+function initQuestionsData() {
+    HttpService.get("/admin/question/query/all").then((body) => {
+        if (body.status) {
+            questionsStore.data = body.data;
+        }
+    })
+}
+
+if (!questionsStore.init) {
+    initQuestionsData();
+    questionsStore.init = true;
+}
 </script>
 <template>
     <div class="bar">
@@ -51,8 +64,13 @@ function newQuestion() {
     </div>
     <a-table :columns="columns" :data-source="questionsStore.data" rowKey="questionId">
         <template #bodyCell="{ column, record }">
-            <template v-if="column.key == 'level'">
-                <a-tag :color="levels.bg[record.level]">{{ levels.text[record.level] }}</a-tag>
+            <template v-if="column.key == 'type'">
+                <a-tag color="blue">{{ commonStore.getTypeById([record.type]).text }}</a-tag>
+            </template>
+            <template v-else-if="column.key == 'level'">
+                <a-tag
+                    :color="levelsColor[record.level]"
+                >{{ commonStore.getLevelById([record.level]).text }}</a-tag>
             </template>
             <template v-else-if="column.key == 'action'">
                 <a-button
