@@ -59,8 +59,7 @@ function startCounter() {
 function sendCode() {
     const url = "/admin/verify/sendCode?email=" + loginState.email;
     startCounter();
-    HttpService.post(url).then((response) => {
-        const body = response.data;
+    HttpService.post(url).then((body) => {
         if (body.status) {
             message.success(body.message);
         } else {
@@ -78,8 +77,7 @@ function tryLogin() {
     }
     loginLoading.value = true;
     const url = "/admin/verify/login";
-    HttpService.post(url, data).then((response) => {
-        const body = response.data;
+    HttpService.post(url, data).then((body) => {
         if (body.status) {
             saveIntoStorage(body.data.token, body.data.account)
             router.push({ name: "profile" });

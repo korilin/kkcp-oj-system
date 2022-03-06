@@ -19,15 +19,13 @@ const collapsed = ref(false);
  */
 function doDataInit() {
   const levelsUrl = "/common/question/levels"
-  HttpService.get(levelsUrl).then((response) => {
-    const body = response.data;
+  HttpService.get(levelsUrl).then((body) => {
     if (body.status) {
       commonStore.questionLevels = body.data;
     }
   })
   const typesUrl = "/common/question/types"
-  HttpService.get(typesUrl).then((response) => {
-    const body = response.data;
+  HttpService.get(typesUrl).then((body) => {
     if (body.status) {
       commonStore.questionTypes = body.data;
     }
