@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import { useRoute, } from "vue-router";
 import { resolveMarkdownAsHtml } from "../utils/tool-fun";
 import * as echarts from 'echarts';
@@ -11,13 +11,6 @@ const questionId = route.params.questionId
 const readMode = ref(true)
 const spinning = ref(false)
 const collapseKey = ref("1")
-
-const questionTypes = [
-    "请题目选择类型",
-    "实用技巧",
-    "算法解题",
-    "源码模拟"
-];
 
 const question = reactive({
     questionId: questionId,
@@ -32,6 +25,7 @@ const question = reactive({
     submiteTimes: 1000,
     passTimes: 800,
 });
+
 // 文件变化
 const handleChange = (file) => {
     spinning.value = true;
@@ -128,27 +122,25 @@ onMounted(() => {
             <div class="file-space">
                 <InstantUploadBox
                     class="upload-box"
-                    :text="'用户代码模版：上传 Kotlin 文件进行更新'"
-                    :lastUpdateTime="question.description.lastUpdateTime"
+                    text="代码模版：上传 Kotlin 文件进行更新"
+                    :hint="'最后更新时间：' + question.description.lastUpdateTime"
                     :handleChange="handleChange"
-                />
-                <InstantUploadBox
-                    class="upload-box"
-                    :text="'测试代码模版：上传 Kotlin 文件进行更新'"
-                    :lastUpdateTime="question.description.lastUpdateTime"
-                    :handleChange="handleChange"
+                    kkcpIcon="icon-kotlin-file"
                 />
                 <InstantUploadBox
                     class="upload-box"
                     :text="'测试数据：上传 JSON 文件进行更新'"
-                    :lastUpdateTime="question.description.lastUpdateTime"
+                    :hint="'最后更新时间：' + question.description.lastUpdateTime"
                     :handleChange="handleChange"
+                    kkcpIcon="icon-JSON"
                 />
                 <InstantUploadBox
                     class="upload-box"
+                    style="width: 80%;"
                     :text="'题目描述：上传 Markdown 文件进行解析'"
-                    :lastUpdateTime="question.description.lastUpdateTime"
+                    :hint="'最后更新时间：' + question.description.lastUpdateTime"
                     :handleChange="handleChange"
+                    kkcp-icon="icon-markdown"
                 />
             </div>
         </a-descriptions-item>
