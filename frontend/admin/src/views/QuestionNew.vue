@@ -4,8 +4,11 @@ import { useCommonStore } from '../plugins/pinia';
 import InstantUploadBox from '../components/InstantUploadBox.vue';
 import { resolveMarkdownAsHtml } from '../utils/tool-fun';
 import { message } from 'ant-design-vue';
+import HttpService from '../utils/axios-service';
+import { useRouter } from 'vue-router';
 
 const commonStore = useCommonStore()
+const router = useRouter()
 
 const formRef = ref();
 const collapseKey = ref("1");
@@ -108,8 +111,17 @@ const handleTestDataJsonChange = (file) => {
     });
 }
 
-const handleFinish = values => {
-    console.log(values, formState);
+const handleFinish = (_) => {
+    HttpService.post("/admin/question/new", formState).then((body) => {
+        if (body.status) {
+            message.success("问题创建成功");
+            router.push({
+                name: "questionItem", params: {
+                    questionId: body.data
+                }
+            });
+        }
+    })
 };
 
 const handleFinishFailed = errors => {

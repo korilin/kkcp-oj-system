@@ -6,10 +6,7 @@ import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.model.NewQuestionForm
 import com.korilin.service.QuestionService
 import com.korilin.table.Question
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(AdminModuleConfig.QUESTION_URL_PREFIX)
@@ -24,7 +21,7 @@ internal class QuestionController(private val questionService: QuestionService) 
 
     @PostMapping("/new")
     @ExceptionMessageHandler
-    suspend fun newQuestion(form: NewQuestionForm): IResponseBody<Int> {
+    suspend fun newQuestion(@RequestBody form: NewQuestionForm): IResponseBody<Int> {
         return questionService.newQuestion(form)?.let {
             IResponseBody.success(data = it)
         } ?: IResponseBody.error("")
