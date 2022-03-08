@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue';
 import { useCommonStore } from '../plugins/pinia';
 import InstantUploadBox from '../components/InstantUploadBox.vue';
 import { resolveMarkdownAsHtml } from '../utils/tool-fun';
+import { message } from 'ant-design-vue';
 
 const commonStore = useCommonStore()
 
@@ -47,7 +48,7 @@ let descriptionRole = async (_rule, value) => {
 };
 
 let codeTemplateRole = async (_rule, value) => {
-    if (codePromise == null || await descPromise == "") {
+    if (codePromise == null || await codePromise == "") {
         return Promise.reject('Please upload the corresponding file');
     } else {
         return Promise.resolve();
@@ -55,7 +56,7 @@ let codeTemplateRole = async (_rule, value) => {
 };
 
 let testDataJsonRole = async (_rule, value) => {
-    if (dataPromise == null || await descPromise == "") {
+    if (dataPromise == null || await dataPromise == "") {
         return Promise.reject('Please upload the corresponding file');
     } else {
         return Promise.resolve();
@@ -77,7 +78,6 @@ const handleDescriptionChange = (file) => {
     descPromise = new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = function fileReadCompleted() {
-            // 当读取完成时，内容只在`reader.result`中
             formState.description = resolveMarkdownAsHtml(reader.result);
             // spinning.value = false;
             resolve();
@@ -86,12 +86,34 @@ const handleDescriptionChange = (file) => {
     });
 };
 
+const handleCodeTemplateChange = (file) => {
+    codePromise = new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function fileReadCompleted() {
+            formState.codeTemplate = reader.result;
+            resolve();
+        }
+        reader.readAsText(file);
+    });
+}
+
+const handleTestDataJsonChange = (file) => {
+    dataPromise = new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function fileReadCompleted() {
+            formState.testDataJson = reader.result;
+            resolve();
+        }
+        reader.readAsText(file);
+    });
+}
+
 const handleFinish = values => {
     console.log(values, formState);
 };
 
 const handleFinishFailed = errors => {
-    console.log(errors);
+    message.error("请提供所有字段数据");
 };
 </script>
 <template>
@@ -104,6 +126,14 @@ const handleFinishFailed = errors => {
         @finish="handleFinish"
         @finishFailed="handleFinishFailed"
     >
+        <a-form-item>
+            <a-alert
+                message="请先仔细阅读平台文档"
+                type="info"
+                show-icon
+                style="margin:20px 0px 20px 150px;"
+            />
+        </a-form-item>
         <a-form-item label="Title" has-feedback name="title">
             <a-input v-model:value="formState.title" />
         </a-form-item>
@@ -139,14 +169,14 @@ const handleFinishFailed = errors => {
             <InstantUploadBox
                 text="上传 Kotlin 文件"
                 hint="该 Kotlin 模板将用于执行用户代码与测试数据来校验答案"
-                :handleChange="handleDescriptionChange"
+                :handleChange="handleCodeTemplateChange"
             />
         </a-form-item>
         <a-form-item label="Test Data" has-feedback name="testDataJson">
             <InstantUploadBox
                 text="上传 JSON 文件"
                 hint="用于校验用户答案，格式请遵循平台说明文档"
-                :handleChange="handleDescriptionChange"
+                :handleChange="handleTestDataJsonChange"
             />
         </a-form-item>
         <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
