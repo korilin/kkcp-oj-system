@@ -66,7 +66,7 @@ class ExceptionMessageHandlerAspect {
         } catch (e: Exception) {
             val method = (joinPoint.signature as MethodSignature).method
             val annotations = method.getAnnotationsByType(RegisterExceptionMessage::class.java)
-            var message = unregisteredExceptionMessage(e)
+            var message: String? = null
             for (annotation in annotations) {
                 val exceptionKClass = annotation.exceptionKClass
                 if (exceptionKClass.isSuperclassOf(e::class)) {
@@ -74,8 +74,10 @@ class ExceptionMessageHandlerAspect {
                     break
                 }
             }
-            e.printStackTrace()
-            IResponseBody.error(message)
+            IResponseBody.error(message ?: let {
+                e.printStackTrace()
+                unregisteredExceptionMessage(e)
+            })
         }
     }
 }
