@@ -31,6 +31,8 @@ const columns = [
 
 const levelsColor = [undefined, "green", "orange", "red"];
 
+const loading = ref(false);
+
 function goQuestionItem(questionId) {
     router.push({
         name: "questionItem",
@@ -45,9 +47,11 @@ function newQuestion() {
 }
 
 function initQuestionsData() {
+    loading.value = true;
     HttpService.get("/admin/question/query/all").then((body) => {
         if (body.status) {
             questionsStore.data = body.data;
+            loading.value = false;
         }
     })
 }
@@ -62,7 +66,12 @@ if (!questionsStore.init) {
         <h3 class="text-dark">Question Pool</h3>
         <a-button type="primary" @click="newQuestion">Add</a-button>
     </div>
-    <a-table :columns="columns" :data-source="questionsStore.data" rowKey="questionId">
+    <a-table
+        :columns="columns"
+        :data-source="questionsStore.data"
+        rowKey="questionId"
+        :loading="loading"
+    >
         <template #bodyCell="{ column, record }">
             <template v-if="column.key == 'type'">
                 <a-tag color="blue">{{ commonStore.getTypeById([record.type]).text }}</a-tag>
