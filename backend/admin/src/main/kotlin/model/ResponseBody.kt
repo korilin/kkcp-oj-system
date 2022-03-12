@@ -15,7 +15,7 @@ data class AdminLoginModel(
 
 class QuestionDetail(
     val question: Question,
-    val inclusionContests: Array<Unit>,
+    val contest: Array<Unit>,
     val commits: Commits
 )
 
