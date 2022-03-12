@@ -35,7 +35,7 @@ const loading = ref(false);
 
 function goQuestionItem(questionId) {
     router.push({
-        name: "questionItem",
+        name: "question-item",
         params: {
             questionId: questionId
         }
@@ -43,7 +43,7 @@ function goQuestionItem(questionId) {
 }
 
 function newQuestion() {
-    router.push({ name: "questionNew" })
+    router.push({ name: "question-new" })
 }
 
 function initQuestionsData() {

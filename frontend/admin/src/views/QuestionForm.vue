@@ -116,7 +116,7 @@ const handleFinish = (_) => {
         if (body.status) {
             message.success("问题创建成功");
             router.push({
-                name: "questionItem", params: {
+                name: "question-item", params: {
                     questionId: body.data
                 }
             });
