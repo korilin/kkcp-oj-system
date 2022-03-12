@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Pointcut
 import org.aspectj.lang.reflect.MethodSignature
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSuperclassOf
 
@@ -60,9 +61,9 @@ class ExceptionMessageHandlerAspect {
 
     @Around("exceptionMessageHandlerPointcut()")
     @Suppress("UNCHECKED_CAST")
-    fun around(joinPoint: ProceedingJoinPoint): IResponseBody<Unit> {
+    fun around(joinPoint: ProceedingJoinPoint): Any {
         return try {
-            joinPoint.proceed() as IResponseBody<Unit>
+            return joinPoint.proceed()
         } catch (e: Exception) {
             val method = (joinPoint.signature as MethodSignature).method
             val annotations = method.getAnnotationsByType(RegisterExceptionMessage::class.java)
@@ -74,7 +75,7 @@ class ExceptionMessageHandlerAspect {
                     break
                 }
             }
-            IResponseBody.error(message ?: let {
+            IResponseBody.error<Unit>(message ?: let {
                 e.printStackTrace()
                 unregisteredExceptionMessage(e)
             })
