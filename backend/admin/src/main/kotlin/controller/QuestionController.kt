@@ -5,6 +5,7 @@ import com.korilin.IResponseBody
 import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.annotations.RegisterExceptionMessage
 import com.korilin.model.NewQuestionForm
+import com.korilin.model.QuestionDetail
 import com.korilin.service.QuestionService
 import com.korilin.table.Question
 import org.springframework.dao.DuplicateKeyException
@@ -19,6 +20,15 @@ internal class QuestionController(private val questionService: QuestionService) 
     suspend fun queryAllQuestions(): IResponseBody<List<Question>> {
         val questions = questionService.getAllQuestions()
         return IResponseBody.success(data = questions)
+    }
+
+    @GetMapping("/query/detail")
+    @ExceptionMessageHandler
+    suspend fun queryQuestionDetail(questionId: Int): IResponseBody<QuestionDetail> {
+        questionService.getQuestionDetail(questionId = questionId)?.let {
+            return IResponseBody.success(data = it)
+        }
+        return IResponseBody.error("获取不到对应 $questionId 的问题详情")
     }
 
     @PostMapping("/new")
