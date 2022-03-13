@@ -40,5 +40,11 @@ internal class QuestionController(private val questionService: QuestionService) 
             IResponseBody.success(data = it)
         } ?: IResponseBody.error("插入记录 0 条")
     }
+
+    @PutMapping("/update")
+    @ExceptionMessageHandler
+    suspend fun updateQuestion(@RequestParam questionId: Int, @RequestBody form: QuestionForm): IResponseBody<Unit> {
+        val result = questionService.updateQuestion(questionId, form)
+        return IResponseBody(result._1, result._2, null)
     }
 }

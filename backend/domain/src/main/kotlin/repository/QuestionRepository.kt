@@ -1,19 +1,20 @@
 package com.korilin.repository
 
+import com.korilin.bo.TestDataItem
 import com.korilin.table.Question
 import com.korilin.table.Questions
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
-import org.ktorm.dsl.forEach
 import org.ktorm.dsl.map
 import org.ktorm.dsl.select
 import org.ktorm.entity.add
 import org.ktorm.entity.find
+import org.ktorm.entity.update
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
 @Repository
-class QuestionRepository(database: Database) {
+class QuestionRepository(private val database: Database) {
     private val questions = database.questions
     private val questionSource = database.questionsSource
 
@@ -44,4 +45,37 @@ class QuestionRepository(database: Database) {
         question.testDataJsonLastUpdateTime = now
         return questions.add(question)
     }
+
+    /**
+     * 获取指定问题 ID 的 Question 对象，对非 null 参数进行更新，
+     * 如果存在关联更新时间的字段，则对数据库存储的更新时间进行更新
+     * @return 更新的条目数
+     */
+    fun updateQuestion(
+        questionId: Int, title: String?, type: Int?, level: Int?, description: String?, codeTemplate: String?,
+        testDataJson:
+        Array<TestDataItem>?
+    ): Int {
+        val question = findQuestionById(questionId) ?: return 0
+        val now = LocalDateTime.now()
+        return database.useTransaction {
+            title?.let { question.title = it }
+            type?.let { question.type = it }
+            level?.let { question.level = it }
+            description?.let {
+                question.description = it
+                question.descriptionLastUpdateTime = now
+            }
+            codeTemplate?.let {
+                question.codeTemplate = it
+                question.codeTemplateLastUpdateTime = now
+            }
+            testDataJson?.let {
+                question.testDataJson = it
+                question.testDataJsonLastUpdateTime = now
+            }
+            question.flushChanges()
+        }
+    }
+
 }
