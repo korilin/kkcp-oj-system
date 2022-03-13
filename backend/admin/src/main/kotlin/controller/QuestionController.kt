@@ -4,7 +4,7 @@ import com.korilin.AdminModuleConfig
 import com.korilin.IResponseBody
 import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.annotations.RegisterExceptionMessage
-import com.korilin.model.NewQuestionForm
+import com.korilin.model.QuestionForm
 import com.korilin.model.QuestionDetail
 import com.korilin.service.QuestionService
 import com.korilin.table.Question
@@ -33,10 +33,12 @@ internal class QuestionController(private val questionService: QuestionService) 
 
     @PostMapping("/new")
     @ExceptionMessageHandler
+    @RegisterExceptionMessage(NullPointerException::class, "存在空参数")
     @RegisterExceptionMessage(DuplicateKeyException::class, "该题目名称已经被使用")
-    suspend fun newQuestion(@RequestBody form: NewQuestionForm): IResponseBody<Int> {
+    suspend fun newQuestion(@RequestBody form: QuestionForm): IResponseBody<Int> {
         return questionService.newQuestion(form)?.let {
             IResponseBody.success(data = it)
-        } ?: IResponseBody.error("")
+        } ?: IResponseBody.error("插入记录 0 条")
+    }
     }
 }

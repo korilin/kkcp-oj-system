@@ -18,6 +18,7 @@ interface Question : Entity<Question> {
     var type: Int
     var level: Int // Lv1 ~ Lv5
     var description: String
+    var descriptionLastUpdateTime: LocalDateTime
     var codeTemplate: String
     var codeTemplateLastUpdateTime: LocalDateTime
     var testDataJson: Array<TestDataItem>
@@ -34,6 +35,7 @@ object Questions : Table<Question>("t_question") {
     val level = int("level").bindTo { it.level }
     val title = varchar("title").bindTo { it.title }
     val description = text("description").bindTo { it.description } // 65,535 bytes
+    val descriptionLastUpdateTime = datetime("description_last_update_time").bindTo { it.descriptionLastUpdateTime }
     val codeTemplate = text("code_template").bindTo { it.codeTemplate }
     val codeTemplateLastUpdateTime =
         datetime("code_template_last_update_time").bindTo { it.codeTemplateLastUpdateTime }

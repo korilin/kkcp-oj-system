@@ -27,8 +27,9 @@ class QuestionRepository(database: Database) {
 
     /**
      * 获取指定问题的所有信息
+     * @param questionId 问题 ID
      */
-    fun queryQuestionById(questionId: Int) = questions.find {
+    fun findQuestionById(questionId: Int) = questions.find {
         it.questionId eq questionId
     }
 
@@ -38,6 +39,7 @@ class QuestionRepository(database: Database) {
      */
     fun newQuestion(question: Question): Int {
         val now = LocalDateTime.now()
+        question.descriptionLastUpdateTime = now
         question.codeTemplateLastUpdateTime = now
         question.testDataJsonLastUpdateTime = now
         return questions.add(question)
