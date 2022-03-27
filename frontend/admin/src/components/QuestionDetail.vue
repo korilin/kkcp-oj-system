@@ -1,9 +1,8 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, ref } from "vue";
 import InstantUploadBox from "../components/InstantUploadBox.vue";
 import { useCommonStore } from "../plugins/pinia";
 import * as echarts from 'echarts';
-import { func } from "vue-types";
 
 const props = defineProps({
     question: Map,
@@ -57,21 +56,28 @@ onMounted(() => {
     loadSubmitCountEchart(props.commits.commitCount, props.commits.passCount);
 })
 
-function doEdit(){
+const doneLoading = ref(false)
+const deleteLoading = ref(false)
+
+async function doEdit() {
     props.editAction?.();
     readMode.value = false;
 }
 
-function doDelete(){
-    props.deleteAction?.();
+async function doDelete() {
+    deleteLoading.value = true
+    await props.deleteAction?.();
+    deleteLoading.value = false
 }
 
-function doSave(){
-    props.saveAction?.();
+async function doSave() {
+    doneLoading.value = true
+    await props.saveAction?.();
     readMode.value = true;
+    doneLoading.value = false
 }
 
-function doCancel(){
+async function doCancel() {
     props.cancelAction?.();
     readMode.value = true;
 }
@@ -81,10 +87,15 @@ function doCancel(){
         <template #extra>
             <span v-if="readMode">
                 <a-button @click="doEdit">Edit</a-button>
-                <a-button @click="doDelete" type="danger" style="margin-left: 20px;">Delete</a-button>
+                <a-button
+                    @click="doDelete"
+                    type="danger"
+                    style="margin-left: 20px;"
+                    :loading="deleteLoading"
+                >Delete</a-button>
             </span>
             <span v-else>
-                <a-button @click="doSave" type="primary">Done</a-button>
+                <a-button @click="doSave" type="primary" :loading="doneLoading">Done</a-button>
                 <a-button @click="doCancel" style="margin-left: 20px;">Cancel</a-button>
             </span>
         </template>
