@@ -135,7 +135,7 @@ function doCancel(){
                 </template>
             </a-list>
         </a-descriptions-item>
-        <a-descriptions-item :span="3" class="files">
+        <a-descriptions-item :span="3" class="files" v-if="!readMode">
             <a-divider>题目数据/文件</a-divider>
             <div class="file-space">
                 <InstantUploadBox

@@ -3,7 +3,7 @@ import { onMounted, reactive, ref } from "vue";
 import { useRoute, } from "vue-router";
 import { resolveMarkdownAsHtml } from "../utils/tool-fun";
 import HttpService from "../utils/axios-service";
-import QuestionDescriptions from "../components/QuestionDescriptions.vue";
+import QuestionDetail from "../components/QuestionDetail.vue";
 import QuestionCollapse from "../components/QuestionCollapse.vue";
 import { message } from "ant-design-vue";
 
@@ -145,7 +145,7 @@ function deleteAction() {
 </script>
 <template>
     <div v-if="inited">
-        <QuestionDescriptions
+        <QuestionDetail
             :question="question"
             :commits="commits"
             :contests="contests"
