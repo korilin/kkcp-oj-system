@@ -34,9 +34,37 @@ class CommonModuleApis {
   }
 }
 
+const QUERY_QUESTION_LIST_URI = "/admin/question/query/all"
+const QUERY_QUESTION_DETAIL_URI = "/admin/question/query/detail"
+const QUESTION_UPDATE_URI = "/admin/question/update"
+const QUESTION_DELETE_URI = "/admin/question/delete"
+
+class QuestionModuleApis {
+
+  async queryQuestions() {
+    return HttpService.get(QUERY_QUESTION_LIST_URI)
+  }
+
+  async queryQuestionDetail(questionId) {
+    const url = `${QUERY_QUESTION_DETAIL_URI}?questionId=${questionId}`
+    return HttpService.get(url)
+  }
+
+  async updateQuestion(questionId, data) {
+    const url = `${QUESTION_UPDATE_URI}?questionId=${questionId}`
+    return HttpService.put(url, data)
+  }
+
+  async deleteQuestion(questionId) {
+    const url = `${QUESTION_DELETE_URI}?questionId=${questionId}`
+    return HttpService.delete(url)
+  }
+}
+
 const Apis = {
   LoginModule: new LoginModuleApis(),
-  CommonModule: new CommonModuleApis()
+  CommonModule: new CommonModuleApis(),
+  QuestionModule: new QuestionModuleApis(),
 }
 
 export default Apis
