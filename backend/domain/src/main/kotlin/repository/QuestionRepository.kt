@@ -76,5 +76,4 @@ class QuestionRepository(private val database: Database) {
         }
         return question.flushChanges()
     }
-
 }

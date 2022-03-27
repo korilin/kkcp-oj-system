@@ -47,4 +47,13 @@ internal class QuestionController(private val questionService: QuestionService) 
         val result = questionService.updateQuestion(questionId, form)
         return IResponseBody(result._1, result._2, null)
     }
+
+    @DeleteMapping("/delete")
+    @ExceptionMessageHandler
+    suspend fun deleteQuestion(@RequestParam questionId: Int): IResponseBody<Unit> {
+        return questionService.deleteQuestion(questionId)?.let {
+            if (it) IResponseBody.success()
+            else IResponseBody.error("Question[$questionId] exist but delete failure")
+        } ?: IResponseBody.error("Could not found the question by $questionId")
+    }
 }

@@ -72,4 +72,8 @@ internal class QuestionService(private val questionRepository: QuestionRepositor
         )
         return Tuple2(result == 1, if (result == 1) "SUCCESS" else "更新记录 $result 条")
     }
+
+    fun deleteQuestion(questionId: Int) = questionRepository.findQuestionById(questionId)?.let {
+        it.delete() == 1
+    }
 }
