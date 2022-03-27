@@ -5,6 +5,7 @@ import KotlinSVGVue from './components/KotlinSVG.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAccountStore, useCommonStore } from "./plugins/pinia";
 import HttpService from './utils/axios-service';
+import Apis from './utils/apis';
 const router = useRouter();
 const route = useRoute();
 const accountStore = useAccountStore();
@@ -17,17 +18,13 @@ const collapsed = ref(false);
  * - 问题类型列表
  * - 问题难度列表
  */
-function doDataInit() {
-  const levelsUrl = "/common/question/levels"
-  HttpService.get(levelsUrl).then((body) => {
-    if (body.status) {
-      commonStore.questionLevels = body.data;
+function doCommonDataInit() {
+  Apis.CommonModule.questionDefineData().then((result) => {
+    if (result.levels.status) {
+      commonStore.questionLevels = result.levels.data;
     }
-  })
-  const typesUrl = "/common/question/types"
-  HttpService.get(typesUrl).then((body) => {
-    if (body.status) {
-      commonStore.questionTypes = body.data;
+    if (result.types.status) {
+      commonStore.questionTypes = result.types.data;
     }
   })
 }
@@ -52,7 +49,7 @@ function doAccountInit() {
 }
 
 doAccountInit();
-doDataInit();
+doCommonDataInit();
 </script>
 
 <template>
