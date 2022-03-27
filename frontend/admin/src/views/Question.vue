@@ -99,7 +99,7 @@ const inited = ref(false)
             :descriptionSpinning="descriptionSpinning"
             :codeTemplate="question.codeTemplate"
             :codeTemplateSpinning="codeTemplateSpinning"
-            :testDataJson="question.testDataJson"
+            :testDataJson="JSON.stringify(question.testDataJson)"
             :testDataJsonSpinning="testDataJsonSpinning"
         />
     </div>

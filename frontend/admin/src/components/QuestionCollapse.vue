@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { resolveMarkdownAsHtml } from '../utils/tool-fun';
 
 /**
  * Question的3个特殊数据：HTML描述，Kotlin代码模板，测试数据JSON
@@ -13,7 +14,16 @@ const props = defineProps({
   testDataJsonSpinning: Boolean
 });
 
-const activeKey = ref("1")
+const activeKey = ref("0")
+
+const toCodeMdHtml = (code, lang) => {
+  const prefix = "```" + lang
+  const suffix = "```"
+  const md = `${prefix}
+${code}
+${suffix}`;
+  return resolveMarkdownAsHtml(md)
+}
 </script>
 
 
@@ -26,12 +36,12 @@ const activeKey = ref("1")
     </a-collapse-panel>
     <a-collapse-panel key="2" header="Kotlin 代码模板">
       <a-spin tip="解析中" :spinning="codeTemplateSpinning">
-        <div v-html="codeTemplate" v-highlight></div>
+        <div v-html="toCodeMdHtml(codeTemplate, 'Kotlin')" v-highlight></div>
       </a-spin>
     </a-collapse-panel>
     <a-collapse-panel key="3" header="测试数据（JSON）">
       <a-spin tip="解析中" :spinning="testDataJsonSpinning">
-        <div v-html="testDataJson" v-highlight></div>
+        <div v-html="toCodeMdHtml(testDataJson, 'JSON')" v-highlight></div>
       </a-spin>
     </a-collapse-panel>
   </a-collapse>
