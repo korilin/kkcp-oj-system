@@ -3,7 +3,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useCommonStore, useQuestionsStore } from "../plugins/pinia"
 import Apis from "../utils/apis";
-import HttpService from "../utils/axios-service";
 
 const router = useRouter();
 const questionsStore = useQuestionsStore();
