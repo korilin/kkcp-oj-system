@@ -5,6 +5,7 @@ import { resolveMarkdownAsHtml } from "../utils/tool-fun";
 import HttpService from "../utils/axios-service";
 import QuestionDescriptions from "../components/QuestionDescriptions.vue";
 import QuestionCollapse from "../components/QuestionCollapse.vue";
+import { message } from "ant-design-vue";
 
 const route = useRoute();
 
@@ -17,36 +18,38 @@ const inited = ref(false)
  * @see convertData 唯一备份点
  */
 const backup = {
-    question: {},
-    commits: {},
-    contests: []
+    question: "",
+    commits: "",
+    contests: ""
 };
 
-// 深度备份
-function backupData() {
-    Object.assign(backup.question, question.value);
-    Object.assign(backup.commits, commits.value);
-    Object.assign(backup.contests, contests.value);
+// 数据备份
+function backupData(data) {
+    // 保证数据不为 null
+    backup.question = JSON.stringify(data.question ?? {})
+    backup.commits = JSON.stringify(data.commits ?? {})
+    backup.contests = JSON.stringify(data.contests ?? [])
 }
 
-// 深度恢复
+// 数据恢复
 function recoverData() {
-    Object.assign(question.value, backup.question);
-    Object.assign(commits.value, backup.commits);
-    Object.assign(contests.value, backup.contests);
+    Object.assign(question, JSON.parse(backup.question));
+    Object.assign(commits, JSON.parse(backup.commits));
+    Object.assign(contests, JSON.parse(backup.contests));
 }
 
-const question = ref(backup.question);
-const commits = ref(backup.commits);
-const contests = ref(backup.contests)
+// 实际操作数据
+const question = reactive({});
+const commits = reactive({});
+const contests = reactive([])
 
 function convertData(data) {
-    // 保证数据不为 null
-    question.value = data.question ?? {};
-    commits.value = data.commits ?? {};
-    contests.value = data.contests ?? [];
-    backupData();
+    data.question.testDataJson = JSON.stringify(data.question.testDataJson)
+    backupData(data);
+    recoverData();
 }
+
+// ========================= 接口请求 =========================
 
 const getQuestionDetail = async () => {
     const url = "/admin/question/query/detail?questionId=" + questionId;
@@ -59,7 +62,22 @@ const getQuestionDetail = async () => {
     })
 }
 
-// ========================= 文件数据更新 =================================
+const updateQuestionDetail = async (values) => {
+    const url = "/admin/question/update?questionId=" + questionId;
+    const data = {
+        type: values.type,
+        level: values.level,
+        title: values.title,
+        description: values.description,
+        codeTemplate: values.codeTemplate,
+        testDataJson: values.testDataJson
+    }
+    return HttpService.put(url, data).then((body) => {
+        return body;
+    })
+}
+
+// ========================= 文件数据更新 =========================
 
 const descriptionSpinning = ref(false)
 const handleDescriptionChange = (file) => {
@@ -101,6 +119,29 @@ getQuestionDetail();
 function cancelAction() {
     recoverData()
 }
+
+async function saveAction() {
+    const compare = backup.question
+    const values = {}
+    // 取变化数据，减少请求体大小
+    if (question.type != compare.type) values.type = question.type
+    if (question.level != compare.level) values.level = question.level
+    if (question.title != compare.title) values.title = question.title
+    if (question.ccodeTemplate != compare.ccodeTemplate) values.ccodeTemplate = question.ccodeTemplate
+    if (question.testDataJson != compare.testDataJson) values.testDataJson = question.testDataJson
+    if (question.ddescription != compare.ddescription) values.ddescription = question.ddescription
+    const result = await updateQuestionDetail(values)
+    if (result.status) {
+        message.success("更新成功")
+        getQuestionDetail()
+    } else {
+        recoverData()
+    }
+}
+
+function deleteAction() {
+
+}
 </script>
 <template>
     <div v-if="inited">
@@ -112,6 +153,8 @@ function cancelAction() {
             :handleCodeTemplateChange="handleCodeTemplateChange"
             :handleTestDataJsonChange="handleTestDataJsonChange"
             :cancelAction="cancelAction"
+            :saveAction="saveAction"
+            :deleteAction="deleteAction"
         />
 
         <QuestionCollapse
