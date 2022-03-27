@@ -11,6 +11,7 @@ import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.ktorm.entity.update
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Repository
@@ -58,24 +59,22 @@ class QuestionRepository(private val database: Database) {
     ): Int {
         val question = findQuestionById(questionId) ?: return 0
         val now = LocalDateTime.now()
-        return database.useTransaction {
-            title?.let { question.title = it }
-            type?.let { question.type = it }
-            level?.let { question.level = it }
-            description?.let {
-                question.description = it
-                question.descriptionLastUpdateTime = now
-            }
-            codeTemplate?.let {
-                question.codeTemplate = it
-                question.codeTemplateLastUpdateTime = now
-            }
-            testDataJson?.let {
-                question.testDataJson = it
-                question.testDataJsonLastUpdateTime = now
-            }
-            question.flushChanges()
+        title?.let { question.title = it }
+        type?.let { question.type = it }
+        level?.let { question.level = it }
+        description?.let {
+            question.description = it
+            question.descriptionLastUpdateTime = now
         }
+        codeTemplate?.let {
+            question.codeTemplate = it
+            question.codeTemplateLastUpdateTime = now
+        }
+        testDataJson?.let {
+            question.testDataJson = it
+            question.testDataJsonLastUpdateTime = now
+        }
+        return question.flushChanges()
     }
 
 }

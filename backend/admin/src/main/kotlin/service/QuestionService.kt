@@ -58,7 +58,9 @@ internal class QuestionService(private val questionRepository: QuestionRepositor
         val level = questionForm.level
         val description = questionForm.description
         val codeTemplate = questionForm.codeTemplate
-        val testDataJson: Array<TestDataItem> = globalJsonMapper.readValue(questionForm.testDataJson, testDataArrayType)
+        val testDataJson: Array<TestDataItem>? = questionForm.testDataJson?.let {
+            globalJsonMapper.readValue(it, testDataArrayType)
+        }
         val result = questionRepository.updateQuestion(
             questionId = questionId,
             title = title,
