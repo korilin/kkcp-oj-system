@@ -5,9 +5,9 @@ import { useCommonStore } from "../plugins/pinia";
 import * as echarts from 'echarts';
 
 const props = defineProps({
-  question: Map,
-  commits: Map,
-  contests: Array,
+  question: Object,
+  commits: Object,
+  contests: Object,
   handleCodeTemplateChange: Function,
   handleTestDataJsonChange: Function,
   handleDescriptionChange: Function,
@@ -89,7 +89,8 @@ async function doCancel() {
         <a-button @click="doEdit">Edit</a-button>
         <a-button
           @click="doDelete"
-          type="danger"
+          danger
+          type="primary"
           style="margin-left: 20px;"
           :loading="deleteLoading"
         >Delete</a-button>

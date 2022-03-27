@@ -17,10 +17,10 @@ const app = createApp(App);
 const pinia = createPinia();
 
 app.directive("highlight", function (el) {
-    hljs.configure({ useBR: true });
+    hljs.configure({ useBR: true, ignoreUnescapedHTML: true });
     let blocks = el.querySelectorAll("pre");
     blocks.forEach((block) => {
-        hljs.highlightBlock(block);
+        hljs.highlightElement(block);
     });
 });
 
