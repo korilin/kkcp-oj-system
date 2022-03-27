@@ -4,12 +4,15 @@ import { useRoute, } from "vue-router";
 import { resolveMarkdownAsHtml } from "../utils/tool-fun";
 import HttpService from "../utils/axios-service";
 import QuestionDescriptions from "../components/QuestionDescriptions.vue";
+import QuestionCollapse from "../components/QuestionCollapse.vue";
 
 const route = useRoute();
 
 const questionId = route.params.questionId
-const collapseKey = ref("1")
 
+/**
+ * 编辑时备份原有的数据
+ */
 const backup = {
     question: {},
     commits: {},
@@ -43,14 +46,12 @@ const getQuestionDetail = async () => {
     })
 }
 
-// 文件变化
-// 当读取完成时，内容只在`reader.result`中
 const descriptionSpinning = ref(false)
 const handleDescriptionChange = (file) => {
     descriptionSpinning.value = true;
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
-        question.description =  (reader.result);
+        question.description = resolveMarkdownAsHtml(reader.result);
         descriptionSpinning.value = false;
     };
     reader.readAsText(file);
@@ -61,7 +62,7 @@ const handleCodeTemplateChange = (file) => {
     codeTemplateSpinning.value = true;
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
-        question.description = resolveMarkdownAsHtml(reader.result);
+        question.codeTemplate = reader.result;
         codeTemplateSpinning.value = false;
     };
     reader.readAsText(file);
@@ -72,7 +73,7 @@ const handleTestDataJsonChange = (file) => {
     testDataJsonSpinning.value = true;
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
-        question.description = resolveMarkdownAsHtml(reader.result);
+        question.testDataJson = reader.result;
         testDataJsonSpinning.value = false;
     };
     reader.readAsText(file);
@@ -92,17 +93,15 @@ const inited = ref(false)
             :handleCodeTemplateChange="handleCodeTemplateChange"
             :handleTestDataJsonChange="handleTestDataJsonChange"
         />
-        <a-collapse v-model:activeKey="collapseKey" ghost>
-            <a-collapse-panel key="1" header="题目描述">
-                <a-spin tip="解析中" :spinning="descriptionSpinning">
-                    <div
-                        class="desc-md-space markdown-html"
-                        v-html="question.description"
-                        v-highlight
-                    ></div>
-                </a-spin>
-            </a-collapse-panel>
-        </a-collapse>
+
+        <QuestionCollapse 
+            :description="question.description"
+            :descriptionSpinning="descriptionSpinning"
+            :codeTemplate="question.codeTemplate"
+            :codeTemplateSpinning="codeTemplateSpinning"
+            :testDataJson="question.testDataJson"
+            :testDataJsonSpinning="testDataJsonSpinning"
+        />
     </div>
     <div v-else style="text-align: center;">
         <a-spin />
