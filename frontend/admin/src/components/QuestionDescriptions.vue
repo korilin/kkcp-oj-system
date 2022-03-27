@@ -3,6 +3,7 @@ import { onMounted, reactive, ref } from "vue";
 import InstantUploadBox from "../components/InstantUploadBox.vue";
 import { useCommonStore } from "../plugins/pinia";
 import * as echarts from 'echarts';
+import { func } from "vue-types";
 
 const props = defineProps({
     question: Map,
@@ -10,7 +11,11 @@ const props = defineProps({
     contests: Array,
     handleCodeTemplateChange: Function,
     handleTestDataJsonChange: Function,
-    handleDescriptionChange: Function
+    handleDescriptionChange: Function,
+    editAction: Function,
+    deleteAction: Function,
+    saveAction: Function,
+    cancelAction: Function
 })
 
 const readMode = ref(true)
@@ -51,17 +56,36 @@ const loadSubmitCountEchart = (submiteTimes, passTimes) => {
 onMounted(() => {
     loadSubmitCountEchart(props.commits.commitCount, props.commits.passCount);
 })
+
+function doEdit(){
+    props.editAction?.();
+    readMode.value = false;
+}
+
+function doDelete(){
+    props.deleteAction?.();
+}
+
+function doSave(){
+    props.saveAction?.();
+    readMode.value = true;
+}
+
+function doCancel(){
+    props.cancelAction?.();
+    readMode.value = true;
+}
 </script>
 <template>
     <a-descriptions class="global-question-desc-style">
         <template #extra>
             <span v-if="readMode">
-                <a-button @click="readMode = false">Edit</a-button>
-                <a-button @click="readMode = false" type="danger" style="margin-left: 20px;">Delete</a-button>
+                <a-button @click="doEdit">Edit</a-button>
+                <a-button @click="doDelete" type="danger" style="margin-left: 20px;">Delete</a-button>
             </span>
             <span v-else>
-                <a-button @click="readMode = true" type="primary">Done</a-button>
-                <a-button @click="readMode = true" style="margin-left: 20px;">Cancel</a-button>
+                <a-button @click="doSave" type="primary">Done</a-button>
+                <a-button @click="doCancel" style="margin-left: 20px;">Cancel</a-button>
             </span>
         </template>
         <a-descriptions-item label="题目">
