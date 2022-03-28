@@ -1,10 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import Sidebar from "./components/Sidebar.vue"
 import KotlinSVGVue from './components/KotlinSVG.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAccountStore, useCommonStore } from "./plugins/pinia";
-import HttpService from './utils/axios-service';
 import Apis from './utils/apis';
 const router = useRouter();
 const route = useRoute();

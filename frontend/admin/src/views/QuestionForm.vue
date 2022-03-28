@@ -2,10 +2,11 @@
 import { reactive, ref } from 'vue';
 import { useCommonStore, useQuestionsStore } from '../plugins/pinia';
 import InstantUploadBox from '../components/InstantUploadBox.vue';
-import { resolveMarkdownAsHtml } from '../utils/tool-fun';
+import { resolveMarkdownAsHtml } from '../utils/utils';
 import { message } from 'ant-design-vue';
 import HttpService from '../utils/axios-service';
 import { useRouter } from 'vue-router';
+import { goQuestionItem } from '../utils/router-helper';
 
 const commonStore = useCommonStore()
 const questionStore = useQuestionsStore()
@@ -117,11 +118,7 @@ const handleFinish = (_) => {
     if (body.status) {
       message.success("问题创建成功");
       questionStore.reQueryData();
-      router.push({
-        name: "question-item", params: {
-          questionId: body.data
-        }
-      });
+      goQuestionItem(body.data)
     }
   })
 };

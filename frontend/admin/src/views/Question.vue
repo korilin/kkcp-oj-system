@@ -1,13 +1,12 @@
 <script setup>
-import { createVNode, onMounted, reactive, ref } from "vue";
-import { useRoute, useRouter, } from "vue-router";
-import { resolveMarkdownAsHtml } from "../utils/tool-fun";
-import HttpService from "../utils/axios-service";
+import { createVNode, reactive, ref } from "vue";
+import { useRoute, } from "vue-router";
+import { resolveMarkdownAsHtml } from "../utils/utils";
 import QuestionDetail from "../components/QuestionDetail.vue";
 import QuestionCollapse from "../components/QuestionCollapse.vue";
 import { message, Modal } from "ant-design-vue";
 import Apis from "../utils/apis";
-import { ExclamationCircleOutlined, ExclamationOutlined } from "@ant-design/icons-vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { goQuestions } from "../utils/router-helper";
 import { useQuestionsStore } from "../plugins/pinia";
 

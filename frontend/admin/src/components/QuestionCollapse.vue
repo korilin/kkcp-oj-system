@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { resolveMarkdownAsHtml } from '../utils/tool-fun';
+import { resolveMarkdownAsHtml } from '../utils/utils';
 
 /**
  * Question的3个特殊数据：HTML描述，Kotlin代码模板，测试数据JSON

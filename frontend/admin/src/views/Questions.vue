@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useCommonStore, useQuestionsStore } from "../plugins/pinia"
 import Apis from "../utils/apis";
+import { goNewQuestion, goQuestionItem } from "../utils/router-helper";
 
 const router = useRouter();
 const questionsStore = useQuestionsStore();
@@ -33,19 +34,6 @@ const levelsColor = [undefined, "green", "orange", "red"];
 
 const loading = ref(false);
 
-function goQuestionItem(questionId) {
-  router.push({
-    name: "question-item",
-    params: {
-      questionId: questionId
-    }
-  })
-}
-
-function newQuestion() {
-  router.push({ name: "question-new" })
-}
-
 function initQuestionsData() {
   loading.value = true;
   Apis.QuestionModule.queryQuestions().then((body) => {
@@ -64,7 +52,7 @@ if (!questionsStore.init) {
 <template>
   <div class="bar">
     <h3 class="text-dark">Question Pool</h3>
-    <a-button type="primary" @click="newQuestion">Add</a-button>
+    <a-button type="primary" @click="goNewQuestion">Add</a-button>
   </div>
   <a-table
     :columns="columns"
