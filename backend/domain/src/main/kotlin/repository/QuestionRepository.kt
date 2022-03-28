@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Repository
-class QuestionRepository(private val database: Database) {
+class QuestionRepository(database: Database) {
     private val questions = database.questions
     private val questionSource = database.questionsSource
 
