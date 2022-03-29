@@ -23,21 +23,6 @@ class ContestRepository(database: Database) {
         Contests.createEntity(it)
     }
 
-    fun newContest(contest: Contest) {
-        contests.add(contest)
-    }
+    fun newContest(contest: Contest) = contests.add(contest) == 1
 
-    fun updateContest(contestId: Int): Int {
-        val contest = findContestById(contestId) ?: return 0
-
-        return contest.flushChanges()
-    }
-
-    companion object {
-        var a = 1
-
-        fun hei() {
-            this.a = 1
-        }
-    }
 }
