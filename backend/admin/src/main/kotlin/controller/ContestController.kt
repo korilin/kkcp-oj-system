@@ -18,4 +18,12 @@ class ContestController(private val contestService: ContestService) {
         } ?: IResponseBody.error("添加失败")
     }
 
+    @PutMapping("/update")
+    suspend fun updateContest(
+        @RequestParam contestId: Int, @RequestBody contestForm: ContestForm
+    ): IResponseBody<Unit> {
+        val result = contestService.updateContest(contestId, contestForm)
+        return IResponseBody(result._1, result._2, null)
+    }
+
 }

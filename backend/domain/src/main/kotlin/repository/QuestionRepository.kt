@@ -53,9 +53,13 @@ class QuestionRepository(database: Database) {
      * @return 更新的条目数
      */
     fun updateQuestion(
-        questionId: Int, title: String?, type: Int?, level: Int?, description: String?, codeTemplate: String?,
-        testDataJson:
-        Array<TestDataItem>?
+        questionId: Int,
+        title: String?,
+        type: Int?,
+        level: Int?,
+        description: String?,
+        codeTemplate: String?,
+        testDataJson: Array<TestDataItem>?
     ): Int {
         val question = findQuestionById(questionId) ?: return 0
         val now = LocalDateTime.now()
