@@ -1,6 +1,7 @@
 package com.korilin.model
 
 import com.korilin.table.AdminAccount
+import com.korilin.table.Contest
 import com.korilin.table.Question
 
 /**
@@ -23,3 +24,26 @@ data class Commits(
     val commitCount: Int,
     val passCount: Int,
 )
+
+data class ContestInfo(
+    val contest: Contest,
+    val questions: Array<Question>
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ContestInfo
+
+        if (contest != other.contest) return false
+        if (!questions.contentEquals(other.questions)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = contest.hashCode()
+        result = 31 * result + questions.contentHashCode()
+        return result
+    }
+}
