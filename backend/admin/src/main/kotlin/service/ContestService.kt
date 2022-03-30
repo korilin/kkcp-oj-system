@@ -3,15 +3,24 @@ package com.korilin.service
 import com.korilin.model.ContestForm
 import com.korilin.model.ContestInfo
 import com.korilin.repository.ContestRepository
+import com.korilin.repository.InclusionRepository
 import com.korilin.table.Contest
 import javaslang.Tuple2
 import org.springframework.stereotype.Service
 
 @Service
 class ContestService(
-    private val contestsRepository: ContestRepository
-
+    private val contestsRepository: ContestRepository,
+    private val inclusionRepository: InclusionRepository
 ) {
+
+    suspend fun getAllContestsInfo(): Array<ContestInfo> {
+        val contests = contestsRepository.queryContests()
+        return contests.map { contest ->
+            val inclusion = inclusionRepository.getAllByContestsId(contest.contestId)
+            ContestInfo(contest, inclusion.map { it.question }.toTypedArray())
+        }.toTypedArray()
+    }
 
     suspend fun createContest(form: ContestForm): Int? {
         val contest = Contest {

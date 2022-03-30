@@ -26,4 +26,8 @@ class ContestController(private val contestService: ContestService) {
         return IResponseBody(result._1, result._2, null)
     }
 
+    @GetMapping("/query/all")
+    suspend fun queryContests() : IResponseBody<Array<ContestInfo>> {
+        return IResponseBody.success(data = contestService.getAllContestsInfo())
+    }
 }
