@@ -51,6 +51,7 @@ const QUERY_QUESTION_LIST_URI = "/admin/question/query/all"
 const QUERY_QUESTION_DETAIL_URI = "/admin/question/query/detail"
 const QUESTION_UPDATE_URI = "/admin/question/update"
 const QUESTION_DELETE_URI = "/admin/question/delete"
+const CREATE_QUESTION_URI = "/admin/question/new"
 
 class QuestionModuleApis {
 
@@ -72,13 +73,22 @@ class QuestionModuleApis {
     const url = `${QUESTION_DELETE_URI}?questionId=${questionId}`
     return HttpService.delete(url)
   }
+
+  async newQuestion(form) {
+    return HttpService.post(CREATE_QUESTION_URI, form)
+  }
 }
 
-const QUERY_CONTEST_LIST_URL = "/admin/contest/query/all"
+const QUERY_CONTEST_LIST_URI = "/admin/contest/query/all"
+const CREATE_CONTEST_URI = "/admin/contest/new"
 
 class ContestModuleApis {
   async queryAllContest() {
-    return HttpService.get(QUERY_CONTEST_LIST_URL)
+    return HttpService.get(QUERY_CONTEST_LIST_URI)
+  }
+
+  async newContest(form) {
+    return HttpService.post(CREATE_CONTEST_URI, form)
   }
 }
 

@@ -24,3 +24,12 @@ export const goNewQuestion = function () {
 export const goNewContest = function () {
   router.push({ name: "contest-new" })
 }
+
+export const goContestItem = function (contestId) {
+  router.push({
+    name: "contest-item",
+    params: {
+      contestId: contestId
+    }
+  })
+}

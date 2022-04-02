@@ -16,6 +16,7 @@ export const useCommonStore = defineStore("common", {
     return {
       questionTypes: [],
       questionLevels: [],
+      contestType: []
     };
   },
   getters: {
@@ -29,13 +30,19 @@ export const useCommonStore = defineStore("common", {
     },
   },
 });
-export const useContestsStore = defineStore("contests", {
+export const useContestStore = defineStore("contests", {
   state: () => {
     return {
       init: false,
       data: [],
     };
   },
+  actions: {
+    refreshData() {
+      this.init = false
+      this.data = []
+    }
+  }
 });
 
 export const useQuestionsStore = defineStore("questions", {
@@ -44,7 +51,7 @@ export const useQuestionsStore = defineStore("questions", {
     data: [],
   }),
   actions: {
-    reQueryData() {
+    refreshData() {
       this.init = false
       this.data = []
     }

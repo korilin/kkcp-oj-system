@@ -1,5 +1,12 @@
 <script setup>
+import { message } from 'ant-design-vue';
 import { reactive } from 'vue';
+import { useCommonStore, useContestStore } from '../plugins/pinia';
+import Apis from '../utils/apis';
+import { goContestItem } from '../utils/router-helper';
+
+const commonStore = useCommonStore();
+const contestStore = useContestStore()
 
 const state = reactive({
   title: null,
@@ -8,11 +15,6 @@ const state = reactive({
   duration: null,
   startTime: null
 })
-
-const types = [
-  { id: 0, text: "hi1" },
-  { id: 1, text: "hi2" }
-]
 
 const durationMark = {
   60: '1h',
@@ -28,9 +30,25 @@ function getDurationTime() {
   let min = state.duration - h * 60
   return `${h}h ${min}min`
 }
+
+function onFinish() {
+  Apis.ContestModule.newContest(state).then(body => {
+    if (body.status) {
+      contestStore.refreshData()
+      message.success("Contest Create Success")
+      goContestItem(body.data)
+    }
+  })
+}
 </script>
 <template>
-  <a-form :model="state" class="contest-form">
+  <a-form
+    :model="state"
+    class="contest-form"
+    :label-col="{ style: { width: '150px' } }"
+    :wrapper-col="{ span: 14 }"
+    @finish="onFinish"
+  >
     <a-form-item
       label="Title"
       name="title"
@@ -44,7 +62,7 @@ function getDurationTime() {
       :rules="[{ required: true, message: 'Please select contest type!' }]"
     >
       <a-radio-group v-model:value="state.type">
-        <a-radio v-for="cType in types" :value="cType.id">{{ cType.text }}</a-radio>
+        <a-radio v-for="cType in commonStore.contestType" :value="cType.id">{{ cType.text }}</a-radio>
       </a-radio-group>
     </a-form-item>
     <a-form-item
@@ -59,7 +77,12 @@ function getDurationTime() {
       name="startTime"
       :rules="[{ required: true, message: 'Please select the start time!' }]"
     >
-      <a-date-picker show-time placeholder="Select Time" v-model:value="state.startTime" />
+      <a-date-picker
+        :show-time="{ format: 'HH:mm' }"
+        :format="'YYYY/MM/DD HH:mm'"
+        placeholder="Select Time"
+        v-model:value="state.startTime"
+      />
     </a-form-item>
     <a-form-item
       label="Duration"
@@ -83,6 +106,6 @@ function getDurationTime() {
 
 <style lang="scss" scoped>
 .contest-form {
-  width: 600px;
+  margin-top: 50px;
 }
 </style>
