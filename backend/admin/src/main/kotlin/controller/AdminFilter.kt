@@ -21,8 +21,9 @@ private val parser = PathPatternParser()
  * 拦截规则列表
  */
 private val patterns = arrayOf(
-//    parser.parse("${AdminModuleConfig.QUESTION_URL_PREFIX}/**"),
-    parser.parse("${AdminModuleConfig.CONTEST_URL_PREFIX}/**")
+    parser.parse("${AdminModuleConfig.QUESTION_URL_PREFIX}/**"),
+    parser.parse("${AdminModuleConfig.CONTEST_URL_PREFIX}/**"
+    )
 )
 
 @Component

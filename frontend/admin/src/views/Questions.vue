@@ -40,13 +40,13 @@ function initQuestionsData() {
     if (body.status) {
       questionsStore.data = body.data;
       loading.value = false;
+      questionsStore.init = true;
     }
   })
 }
 
 if (!questionsStore.init) {
   initQuestionsData();
-  questionsStore.init = true;
 }
 </script>
 <template>

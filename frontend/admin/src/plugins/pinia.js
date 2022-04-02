@@ -29,25 +29,11 @@ export const useCommonStore = defineStore("common", {
     },
   },
 });
-
-const contests = [];
-
-for (let index = 0; index < 15; index++) {
-  contests[index] = {
-    contestId: index,
-    title: "测试数据" + index,
-    description: "这可能是一个非常长的描述",
-    duration: 3600,
-    startTime: "2022/2/20 02:25:00",
-    status: index > 5 ? 1 : 0,
-    questionCount: 10,
-  };
-}
-
 export const useContestsStore = defineStore("contests", {
   state: () => {
     return {
-      data: contests,
+      init: false,
+      data: [],
     };
   },
 });

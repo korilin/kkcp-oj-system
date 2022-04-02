@@ -20,3 +20,7 @@ export const goQuestionItem = function (questionId) {
 export const goNewQuestion = function () {
   router.push({ name: "question-new" })
 }
+
+export const goNewContest = function () {
+  router.push({ name: "contest-new" })
+}

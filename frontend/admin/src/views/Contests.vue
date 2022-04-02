@@ -1,17 +1,28 @@
 <script setup>
 import { useContestsStore } from "../plugins/pinia"
+import Apis from "../utils/apis";
+import { goNewContest } from "../utils/router-helper";
 
 const contestsStore = useContestsStore();
+
+if (!contestsStore.init) {
+  Apis.ContestModule.queryAllContest().then(body => {
+    if (body.status) {
+      contestsStore.init = true
+      contestsStore.status = body.data
+    }
+  })
+}
 
 const columns = [
   {
     title: "标题",
-    dataIndex: "title",
+    dataIndex: "contest.title",
     key: "title"
   },
   {
     title: "开始时间",
-    dataIndex: "startTime",
+    dataIndex: "contest.startTime",
     key: "startTime"
   },
   {
@@ -33,13 +44,17 @@ const columns = [
     key: "action",
   },
 ]
+
 </script>
 <template>
+  <div style="text-align: right; margin-bottom: 20px; padding-right: 50px;">
+    <a-button type="primary" @click="goNewContest">New Contest</a-button>
+  </div>
   <a-table :columns="columns" :data-source="contestsStore.data" rowKey="contestId">
     <template #bodyCell="{ column, record }">
-      <template v-if="column.key == 'questionCount'">{{ record.questionCount }}</template>
+      <template v-if="column.key == 'questionCount'">{{ len(record.questions) }}</template>
       <template v-if="column.key == 'status'">
-        <a-tag v-if="record.status == 0" color="purple">进行中</a-tag>
+        <a-tag v-if="record.contest.status == 0" color="purple">进行中</a-tag>
         <a-tag v-else color="green">已完成</a-tag>
       </template>
       <template v-if="column.key == 'action'">

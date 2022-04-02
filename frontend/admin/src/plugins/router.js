@@ -5,6 +5,7 @@ import Contests from "../views/Contests.vue";
 import Questions from "../views/Questions.vue";
 import Question from "../views/Question.vue";
 import QuestionForm from "../views/QuestionForm.vue";
+import ContestForm from "../views/ContestForm.vue";
 import Login from "../Login.vue";
 
 const routes = [
@@ -18,6 +19,7 @@ const routes = [
   { path: "/profile", component: Profile, name: "profile" },
   { path: "/dashboard", component: Profile, name: "dashboard" },
   { path: "/contests", component: Contests, name: "contests" },
+  { path: "/contets/new", component: ContestForm, name: "contest-new" },
   { path: "/questions", component: Questions, name: "questions" },
   { path: "/question/new", component: QuestionForm, name: "question-new" },
   {

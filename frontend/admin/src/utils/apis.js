@@ -61,10 +61,19 @@ class QuestionModuleApis {
   }
 }
 
+const QUERY_CONTEST_LIST_URL = "/admin/contest/query/all"
+
+class ContestModuleApis {
+  async queryAllContest() {
+    return HttpService.get(QUERY_CONTEST_LIST_URL)
+  }
+}
+
 const Apis = {
   LoginModule: new LoginModuleApis(),
   CommonModule: new CommonModuleApis(),
   QuestionModule: new QuestionModuleApis(),
+  ContestModule: new ContestModuleApis()
 }
 
 export default Apis
