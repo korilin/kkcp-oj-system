@@ -13,7 +13,7 @@ object AESUtil {
 
     /**
      * 创建一个对称加密密钥，随机生成一个 UUID 来作为 seed，
-     * 调用 [createKey(seed: String)] 方法来生成一个 Key
+     * 调用 [createKey] 方法来生成一个 Key
      */
     fun createKey(): Key = createKey(UUID.randomUUID().toString())
 

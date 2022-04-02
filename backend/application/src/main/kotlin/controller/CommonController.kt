@@ -1,6 +1,7 @@
 package com.korilin.controller
 
 import com.korilin.IResponseBody
+import com.korilin.bo.ContestType
 import com.korilin.bo.QuestionLevel
 import com.korilin.bo.QuestionType
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,4 +17,7 @@ class CommonController {
 
     @GetMapping("/question/types")
     suspend fun questionTypes() = IResponseBody.success(data = QuestionType.toArray())
+
+    @GetMapping("/contest/types")
+    suspend fun contestTypes() = IResponseBody.success(data = ContestType.toArray())
 }
