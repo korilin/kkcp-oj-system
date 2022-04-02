@@ -138,7 +138,7 @@ function showDeleteConfirmModal() {
       return Apis.QuestionModule.deleteQuestion(questionId).then((body) => {
         if (body.status) {
           message.success("删除成功")
-          questionStore.reQueryData()
+          questionStore.refreshData()
           goQuestions()
         } else {
           message.error(body.message)

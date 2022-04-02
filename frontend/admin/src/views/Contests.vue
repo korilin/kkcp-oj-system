@@ -1,15 +1,15 @@
 <script setup>
-import { useContestsStore } from "../plugins/pinia"
+import { useContestStore } from "../plugins/pinia"
 import Apis from "../utils/apis";
 import { goNewContest } from "../utils/router-helper";
 
-const contestsStore = useContestsStore();
+const contestStore = useContestStore();
 
-if (!contestsStore.init) {
+if (!contestStore.init) {
   Apis.ContestModule.queryAllContest().then(body => {
     if (body.status) {
-      contestsStore.init = true
-      contestsStore.status = body.data
+      contestStore.init = true
+      contestStore.status = body.data
     }
   })
 }
@@ -50,7 +50,7 @@ const columns = [
   <div style="text-align: right; margin-bottom: 20px; padding-right: 50px;">
     <a-button type="primary" @click="goNewContest">New Contest</a-button>
   </div>
-  <a-table :columns="columns" :data-source="contestsStore.data" rowKey="contestId">
+  <a-table :columns="columns" :data-source="contestStore.data" rowKey="contestId">
     <template #bodyCell="{ column, record }">
       <template v-if="column.key == 'questionCount'">{{ len(record.questions) }}</template>
       <template v-if="column.key == 'status'">

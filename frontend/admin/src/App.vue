@@ -26,6 +26,12 @@ function doCommonDataInit() {
       commonStore.questionTypes = result.types.data;
     }
   })
+
+  Apis.CommonModule.contestDefineData().then(result => {
+    if (result.types.status) {
+      commonStore.contestType = result.types.data
+    }
+  })
 }
 
 /**

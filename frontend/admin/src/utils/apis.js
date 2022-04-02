@@ -19,6 +19,8 @@ class LoginModuleApis {
 const QUESTION_LEVELS_URI = "/common/question/levels"
 const QUESTION_TYPES_URI = "/common/question/types"
 
+const CONTEST_TYPES_URL = "/common/contest/types"
+
 class CommonModuleApis {
 
   async questionDefineData() {
@@ -28,9 +30,20 @@ class CommonModuleApis {
       types: mock
     }
     const levelsPromise = HttpService.get(QUESTION_LEVELS_URI)
-    result.types = await HttpService.get(QUESTION_TYPES_URI)
+    const typesPromis = HttpService.get(QUESTION_TYPES_URI)
+    result.types = await typesPromis;
     result.levels = await levelsPromise;
     return result;
+  }
+
+  async contestDefineData() {
+    const mock = { status: false }
+    const result = {
+      types: mock
+    }
+    const typesPromis = HttpService.get(CONTEST_TYPES_URL)
+    result.types = await typesPromis
+    return result
   }
 }
 

@@ -114,17 +114,17 @@ const handleTestDataJsonChange = (file) => {
 }
 
 const handleFinish = (_) => {
-  HttpService.post("/admin/question/new", formState).then((body) => {
+  Apis.QuestionModule.newQuestion(formState).then((body) => {
     if (body.status) {
-      message.success("问题创建成功");
-      questionStore.reQueryData();
+      message.success("Question Create Success");
+      questionStore.refreshData();
       goQuestionItem(body.data)
     }
   })
 };
 
 const handleFinishFailed = errors => {
-  message.error("请提供所有字段数据");
+  message.error("Please provide all field value");
 };
 </script>
 <template>

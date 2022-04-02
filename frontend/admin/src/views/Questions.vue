@@ -1,11 +1,9 @@
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { useCommonStore, useQuestionsStore } from "../plugins/pinia"
 import Apis from "../utils/apis";
 import { goNewQuestion, goQuestionItem } from "../utils/router-helper";
 
-const router = useRouter();
 const questionsStore = useQuestionsStore();
 const commonStore = useCommonStore();
 
