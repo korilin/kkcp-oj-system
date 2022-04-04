@@ -1,9 +1,24 @@
 <script setup >
+import { Modal } from 'ant-design-vue';
 import { ref } from 'vue';
 import { useAccountStore } from '../plugins/pinia';
+import { goLogin } from '../utils/router-helper';
 
 const accountStore = useAccountStore();
 const account = ref(accountStore.account);
+
+function logout() {
+  Modal.confirm({
+    title: "Do you want to logout?",
+    okType: 'danger',
+    onOk() {
+      accountStore.clean()
+      window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
+      window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_ACCOUNT_KEY);
+      goLogin();
+    },
+  })
+}
 </script>
 
 <template>
@@ -21,6 +36,9 @@ const account = ref(accountStore.account);
     message="Contact Lv5 administrator to change your account infomation."
     type="info"
   />
+  <div style="text-align: center;">
+    <a-button type="primary" danger style="margin: 40px auto;" @click="logout">Logout</a-button>
+  </div>
 </template>
 
 <style lang="scss">

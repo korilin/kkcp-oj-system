@@ -5,7 +5,7 @@ import KotlinSVGVue from './components/KotlinSVG.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAccountStore, useCommonStore } from "./plugins/pinia";
 import Apis from './utils/apis';
-const router = useRouter();
+import { goLogin } from './utils/router-helper';
 const route = useRoute();
 const accountStore = useAccountStore();
 const commonStore = useCommonStore();
@@ -51,7 +51,7 @@ function doAccountInit() {
     kkcpAdminToken == "undefined" ||
     account == null ||
     account == "undefined") {
-    router.push({ name: "login" });
+    goLogin()
   } else {
     accountStore.kkcpAdminToken = kkcpAdminToken;
     accountStore.account = account;
@@ -144,6 +144,7 @@ body {
   line-height: 3 !important;
   font-size: 15px !important;
   font-weight: 400 !important;
+  display: inline-block !important;
 }
 
 .ant-input {

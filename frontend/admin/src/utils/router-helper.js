@@ -4,6 +4,10 @@ export const goHome = function () {
   router.push('/')
 }
 
+export const goLogin = function () {
+  router.push({ name: "login" });
+}
+
 export const goQuestions = function () {
   router.push({ name: "questions" })
 }

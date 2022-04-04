@@ -7,8 +7,15 @@ export const useAccountStore = defineStore("account", {
   state: () => {
     return {
       kkcpAdminToken: null,
+      account: null
     };
   },
+  actions: {
+    clean() {
+      this.kkcpAdminToken = null;
+      this.account = null;
+    }
+  }
 });
 
 export const useCommonStore = defineStore("common", {

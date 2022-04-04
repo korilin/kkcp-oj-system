@@ -21,7 +21,12 @@ instance.interceptors.response.use(
   },
   (error) => {
     console.error(error);
-    message.error("(＃°Д°)~网络出小差啦");
+    if (error.request.status == 401) {
+      message.error("Unauthorized Or Permission Denied");
+    } else {
+      message.error("(＃°Д°)~网络出小差啦");
+    }
+    return { status: false }
   }
 );
 
