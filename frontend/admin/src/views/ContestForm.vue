@@ -4,6 +4,7 @@ import { reactive } from 'vue';
 import { useCommonStore, useContestStore } from '../plugins/pinia';
 import Apis from '../utils/apis';
 import { goContestItem } from '../utils/router-helper';
+import { getDurationTime } from "../utils/utils"
 
 const commonStore = useCommonStore();
 const contestStore = useContestStore()
@@ -22,13 +23,6 @@ const durationMark = {
   180: '3h',
   240: '4h',
   300: '5h',
-}
-
-function getDurationTime() {
-  if (state.duration == null) return "0h 0min"
-  let h = parseInt(state.duration / 60)
-  let min = state.duration - h * 60
-  return `${h}h ${min}min`
 }
 
 function onFinish() {
@@ -94,7 +88,7 @@ function onFinish() {
           <a-slider v-model:value="state.duration" :marks="durationMark" :max="300" />
         </a-col>
         <a-col :span="2">
-          <a-tag color="cyan">{{ getDurationTime() }}</a-tag>
+          <a-tag color="cyan">{{ getDurationTime(state.duration) }}</a-tag>
         </a-col>
       </a-row>
     </a-form-item>

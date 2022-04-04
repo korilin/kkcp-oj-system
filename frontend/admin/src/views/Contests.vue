@@ -1,6 +1,7 @@
 <script setup>
 import { useCommonStore, useContestStore } from "../plugins/pinia"
 import { goContestItem, goNewContest } from "../utils/router-helper";
+import { getDurationTime } from "../utils/utils"
 
 const contestStore = useContestStore();
 const commonStore = useCommonStore();
@@ -23,7 +24,6 @@ const columns = [
   },
   {
     title: "Duration",
-    dataIndex: ["contest", "duration"],
     key: "duration"
   },
   {
@@ -57,13 +57,16 @@ const colors = [
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.key == 'questionCount'">{{ record.questions.length }}</template>
-      <template v-if="column.key == 'startTime'">
-        {{ record.contest.startTime.format('YYYY/MM/DD HH:mm:ss') }}
-      </template>
+      <template
+        v-if="column.key == 'startTime'"
+      >{{ record.contest.startTime.format('YYYY/MM/DD HH:mm:ss') }}</template>
       <template v-if="column.key == 'status'">
         <a-tag
           :color="colors[record.contest.status]"
         >{{ commonStore.getContestStatusById([record.contest.status]).text }}</a-tag>
+      </template>
+      <template v-if="column.key == 'duration'">
+        <a-tag>{{ getDurationTime(record.duration) }}</a-tag>
       </template>
       <template v-if="column.key == 'action'">
         <a-button

@@ -6,6 +6,8 @@ import { useContestStore, useCommonStore, useQuestionStore } from '../plugins/pi
 import Apis from '../utils/apis';
 import QuesionInclusionList from '../components/QuesionInclusionList.vue';
 import dayjs from 'dayjs';
+import { goContests } from '../utils/router-helper';
+import { getDurationTime } from "../utils/utils"
 
 const route = useRoute()
 const contestStore = useContestStore()
@@ -85,13 +87,6 @@ const durationMark = {
   180: '3h',
   240: '4h',
   300: '5h',
-}
-
-function getDurationTime() {
-  if (contestInfo.duration == null) return "0h 0min"
-  let h = parseInt(state.duration / 60)
-  let min = contestInfo.duration - h * 60
-  return `${h}h ${min}min`
 }
 
 function updateQuestions(data) {
@@ -209,7 +204,7 @@ function deleteContest() {
           />
         </a-col>
         <a-col :span="2">
-          <a-tag color="cyan">{{ getDurationTime() }}</a-tag>
+          <a-tag color="cyan">{{ getDurationTime(contestInfo.duration) }}</a-tag>
         </a-col>
       </a-row>
     </a-descriptions-item>
