@@ -12,6 +12,10 @@ export const goQuestions = function () {
   router.push({ name: "questions" })
 }
 
+export const goContests = function () {
+  router.push({ name: "contests" })
+}
+
 export const goQuestionItem = function (questionId) {
   router.push({
     name: "question-item",

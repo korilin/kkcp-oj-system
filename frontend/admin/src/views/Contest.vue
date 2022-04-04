@@ -131,7 +131,13 @@ function deleteContest() {
   Modal.confirm({
     title: "Do you want to delete this contest?",
     onOk() {
-      
+      return Apis.ContestModule.deleteContest(contestId).then(body => {
+        if (body.status) {
+          message.success("~ delete success ~")
+          contestStore.refreshData()
+          goContests()
+        }
+      })
     }
   })
 }
@@ -151,7 +157,13 @@ function deleteContest() {
         @click="doEdit"
         :loading="editLoading"
       >{{ readMode ? "Edit" : "Save" }}</a-button>
-      <a-button v-if="readMode" danger type="primary" style="margin-left: 20px;" @click="deleteContest">Delete</a-button>
+      <a-button
+        v-if="readMode"
+        danger
+        type="primary"
+        style="margin-left: 20px;"
+        @click="deleteContest"
+      >Delete</a-button>
       <a-button v-else @click="doCancel" style="margin-left: 20px;">Cancel</a-button>
     </template>
     <a-descriptions-item label="Status">
