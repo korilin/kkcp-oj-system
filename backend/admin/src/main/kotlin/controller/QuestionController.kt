@@ -43,6 +43,7 @@ internal class QuestionController(private val questionService: QuestionService) 
 
     @PutMapping("/update")
     @ExceptionMessageHandler
+    @RegisterExceptionMessage(DuplicateKeyException::class, "该题目名称已经被使用")
     suspend fun updateQuestion(@RequestParam questionId: Int, @RequestBody form: QuestionForm): IResponseBody<Unit> {
         val result = questionService.updateQuestion(questionId, form)
         return IResponseBody(result._1, result._2, null)

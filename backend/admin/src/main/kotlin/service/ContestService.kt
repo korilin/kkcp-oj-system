@@ -11,6 +11,8 @@ import javaslang.Tuple2
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 
 @Service
 class ContestService(
@@ -41,7 +43,7 @@ class ContestService(
         } else null
     }
 
-    suspend fun updateContest(contestId: Int, form: ContestForm): Tuple2<Boolean, String> {
+    suspend fun updateContest(@RequestParam contestId: Int, @RequestBody form: ContestForm): Tuple2<Boolean, String> {
         val contest = contestsRepository.findContestById(contestId) ?: return Tuple2(false, "找不到对应活动")
         form.title?.let { contest.title = it }
         form.type?.let { contest.type = it }

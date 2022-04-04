@@ -2,11 +2,14 @@ package com.korilin.controller
 
 import com.korilin.AdminModuleConfig
 import com.korilin.IResponseBody
+import com.korilin.annotations.ExceptionMessageHandler
+import com.korilin.annotations.RegisterExceptionMessage
 import com.korilin.model.ContestForm
 import com.korilin.model.ContestInfo
 import com.korilin.model.InclusionRequest
 import com.korilin.service.ContestService
 import com.korilin.table.Question
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.*
 class ContestController(private val contestService: ContestService) {
 
     @PostMapping("/new")
+    @ExceptionMessageHandler
+    @RegisterExceptionMessage(DuplicateKeyException::class, "该题目名称已经被使用")
     suspend fun newContest(@RequestBody contestForm: ContestForm): IResponseBody<Int> {
         return contestService.createContest(contestForm)?.let {
             IResponseBody.success(data = it)
@@ -21,6 +26,8 @@ class ContestController(private val contestService: ContestService) {
     }
 
     @PutMapping("/update")
+    @ExceptionMessageHandler
+    @RegisterExceptionMessage(DuplicateKeyException::class, "该题目名称已经被使用")
     suspend fun updateContest(
         @RequestParam contestId: Int, @RequestBody contestForm: ContestForm
     ): IResponseBody<Unit> {
