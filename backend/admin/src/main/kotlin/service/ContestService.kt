@@ -4,21 +4,24 @@ import com.korilin.model.ContestForm
 import com.korilin.model.ContestInfo
 import com.korilin.repository.ContestRepository
 import com.korilin.repository.InclusionRepository
+import com.korilin.repository.QuestionRepository
 import com.korilin.table.Contest
+import com.korilin.table.Question
 import javaslang.Tuple2
 import org.springframework.stereotype.Service
 
 @Service
 class ContestService(
     private val contestsRepository: ContestRepository,
+    private val questionRepository: QuestionRepository,
     private val inclusionRepository: InclusionRepository
 ) {
 
     suspend fun getAllContestsInfo(): Array<ContestInfo> {
         val contests = contestsRepository.queryContests()
         return contests.map { contest ->
-            val inclusion = inclusionRepository.getAllByContestsId(contest.contestId)
-            ContestInfo(contest, inclusion.map { it.question }.toTypedArray())
+            val inclusions = inclusionRepository.getAllByContestsId(contest.contestId)
+            ContestInfo(contest, inclusions.map { it.question }.toTypedArray())
         }.toTypedArray()
     }
 
@@ -45,5 +48,29 @@ class ContestService(
         form.startTime?.let { contest.startTime = it }
         val result = contest.flushChanges()
         return Tuple2(result == 1, "更新记录 $result 条")
+    }
+
+    suspend fun addInclusion(contestId: Int, questions: Array<Int>): Triple<Int, String, List<Question>> {
+        val messages = StringBuilder()
+        val contest = contestsRepository.findContestById(contestId) ?: return run {
+            messages.append("The contest#$contestId could not be found!\n")
+            Triple(-1, messages.toString(), emptyList())
+        }
+        var count = inclusionRepository.getAllByContestsId(contestId).size
+        var optCount = 0
+        for (questionId in questions) {
+            val question = questionRepository.findQuestionById(questionId)
+            if (question == null) {
+                messages.append("The question#$questionId could not be found!\n")
+                continue
+            }
+            if (inclusionRepository.addInclusion(contest, question, count++)) {
+                optCount++
+            } else {
+                messages.append("The question#$questionId named ${question.title} could not be added to this contest.\n")
+            }
+        }
+        val inclusions = inclusionRepository.getAllByContestsId(contest.contestId)
+        return Triple(optCount, messages.toString(), inclusions.map { it.question })
     }
 }

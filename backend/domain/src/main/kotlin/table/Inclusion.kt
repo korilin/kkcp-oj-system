@@ -5,9 +5,11 @@ import org.ktorm.schema.Table
 import org.ktorm.schema.int
 
 interface Inclusion : Entity<Inclusion> {
-    val contest: Contest
-    val question: Question
-    val sort: Int
+    companion object : Entity.Factory<Inclusion>()
+
+    var contest: Contest
+    var question: Question
+    var sort: Int
 }
 
 object Inclusions: Table<Inclusion>("t_inclusion") {

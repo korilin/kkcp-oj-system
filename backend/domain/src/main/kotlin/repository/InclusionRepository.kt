@@ -1,21 +1,41 @@
 package com.korilin.repository
 
+import com.korilin.bo.TestDataItem
+import com.korilin.table.Contest
 import com.korilin.table.Inclusion
+import com.korilin.table.Inclusions
+import com.korilin.table.Question
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
+import org.ktorm.dsl.insert
 import org.ktorm.entity.*
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class InclusionRepository(database: Database) {
     private val inclusions = database.inclusions
     private val inclusionSource = database.inclusionsSource
 
-    fun getAllByContestsId(contestId: Int): Array<Inclusion> {
+    fun getAllByContestsId(contestId: Int): List<Inclusion> {
         val resultSet = inclusions.filter {
             it.contestId eq contestId
-        }.toList()
-        return resultSet.toTypedArray()
+        }.map {
+            it.question.apply {
+                codeTemplate = "REMOVE"
+                description = "REMOVE"
+                testDataJson = emptyArray()
+            }
+            it
+        }
+        return resultSet
     }
 
+    fun addInclusion(contest: Contest, question: Question, sort: Int): Boolean {
+        return inclusions.add(Inclusion {
+                this.contest= contest
+                this.question = question
+                this.sort = sort
+            }) == 1
+    }
 }
