@@ -17,6 +17,8 @@ const contestInfo = ref({})
 const questions = ref([])
 const readMode = ref(true)
 
+let backup = null
+
 function getDataFromStore() {
   const contest = contestStore.getContestById(contestId)
   contestInfo.value = contest.contest
@@ -31,11 +33,16 @@ questionsStore.ensureInit()
 
 function doEdit() {
   if (readMode.value) {
+    Object.assign(backup, contestInfo.value)
     readMode.value = false
   } else {
     readMode.value = true
     // TODO 提交修改
   }
+}
+
+function doCancel() {
+  contestInfo.value = backup
 }
 
 const colors = [
@@ -62,16 +69,29 @@ function getDurationTime() {
   return `${h}h ${min}min`
 }
 
+function updateQuestions(data) {
+  const contest = contestStore.getContestById(contestId)
+  contest.questions = data
+  questions.value = contest.questions
+}
+
 function addQuestions(value) {
   Apis.ContestModule.addInclusion(contestId, value)
     .then(body => {
       if (body.status) {
         message.info(body.message)
-        const contest = contestStore.getContestById(contestId)
-        contest.questions = body.data
-        questions.value = contest.questions
+        updateQuestions(body.data)
       }
     })
+}
+
+function removeQuestion(questionId) {
+  Apis.ContestModule.removeInclusion(contestId, questionId).then(body => {
+    if (body.status) {
+      message.info("~remove success~")
+      updateQuestions(body.data)
+    }
+  })
 }
 </script>
 <template>
@@ -154,6 +174,7 @@ function addQuestions(value) {
     style="margin-top: 25px;"
     :questions="questions"
     :addQuestions="addQuestions"
+    :removeQuestion="removeQuestion"
   />
 </template>
 

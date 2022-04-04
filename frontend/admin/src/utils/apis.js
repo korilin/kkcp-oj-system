@@ -85,7 +85,8 @@ class QuestionModuleApis {
 
 const QUERY_CONTEST_LIST_URI = "/admin/contest/query/all"
 const CREATE_CONTEST_URI = "/admin/contest/new"
-const ADD_QUESION_TO_CONTEST = "/admin/contest/inclusion/add"
+const ADD_QUESTION_TO_CONTEST = "/admin/contest/inclusion/add"
+const REMOVE_QUESTION_FROM_CONTEST = "/admin/contest/inclusion/remove"
 
 class ContestModuleApis {
   async queryAllContest() {
@@ -101,7 +102,12 @@ class ContestModuleApis {
       contestId: contestId,
       questions: questions
     }
-    return HttpService.post(ADD_QUESION_TO_CONTEST, data)
+    return HttpService.post(ADD_QUESTION_TO_CONTEST, data)
+  }
+
+  async removeInclusion(contestId, questionId) {
+    const url = `${REMOVE_QUESTION_FROM_CONTEST}?contestId=${contestId}&questionId=${questionId}`
+    return HttpService.delete(url)
   }
 }
 

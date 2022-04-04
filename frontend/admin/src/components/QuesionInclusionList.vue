@@ -4,7 +4,8 @@ import { useCommonStore, useQuestionsStore } from '../plugins/pinia';
 
 const props = defineProps({
   questions: Array,
-  addQuestions: Function
+  addQuestions: Function,
+  removeQuestion: Function
 })
 
 const commonStore = useCommonStore()
@@ -33,6 +34,7 @@ async function modalOk() {
   await props.addQuestions(selectedQuestions.value)
   addQuestionLoading.value = false
   opentAddQuestionModal.value = false
+  selectedQuestions.value = []
 }
 
 const getCheckboxProps = record => ({
@@ -71,7 +73,7 @@ const questionColumns = [
           >{{ commonStore.getQuestionLevelById(item.level).text }}</a-tag>
         </div>
         <div style="width: 20%; text-align: center;">
-          <a-button type="link" danger size="small">Remove</a-button>
+          <a-button type="link" danger size="small" @click="removeQuestion(item.questionId)">Remove</a-button>
         </div>
       </a-list-item>
     </template>
