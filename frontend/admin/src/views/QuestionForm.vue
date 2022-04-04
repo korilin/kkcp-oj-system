@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref } from 'vue';
-import { useCommonStore, useQuestionsStore } from '../plugins/pinia';
+import { useCommonStore, useQuestionStore } from '../plugins/pinia';
 import InstantUploadBox from '../components/InstantUploadBox.vue';
 import { resolveMarkdownAsHtml } from '../utils/utils';
 import { message } from 'ant-design-vue';
@@ -8,7 +8,7 @@ import { goQuestionItem } from '../utils/router-helper';
 import Apis from '../utils/apis';
 
 const commonStore = useCommonStore()
-const questionStore = useQuestionsStore()
+const questionStore = useQuestionStore()
 
 const formRef = ref();
 const collapseKey = ref("0");

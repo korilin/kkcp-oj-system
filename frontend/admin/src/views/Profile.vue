@@ -1,11 +1,11 @@
 <script setup >
 import { Modal } from 'ant-design-vue';
 import { ref } from 'vue';
-import { useAccountStore, useContestStore, useQuestionsStore } from '../plugins/pinia';
+import { useAccountStore, useContestStore, useQuestionStore } from '../plugins/pinia';
 import { goLogin } from '../utils/router-helper';
 
 const accountStore = useAccountStore();
-const questionStore = useQuestionsStore();
+const questionStore = useQuestionStore();
 const contestStore = useContestStore();
 const account = ref(accountStore.account);
 

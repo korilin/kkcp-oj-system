@@ -1,11 +1,11 @@
 <script setup>
-import { useCommonStore, useQuestionsStore } from "../plugins/pinia"
+import { useCommonStore, useQuestionStore } from "../plugins/pinia"
 import { goNewQuestion, goQuestionItem } from "../utils/router-helper";
 
-const questionsStore = useQuestionsStore();
+const questionStore = useQuestionStore();
 const commonStore = useCommonStore();
 
-questionsStore.ensureInit();
+questionStore.ensureInit();
 
 const columns = [
   {
@@ -38,9 +38,9 @@ const levelsColor = [undefined, "green", "orange", "red"];
   </div>
   <a-table
     :columns="columns"
-    :data-source="questionsStore.data"
+    :data-source="questionStore.data"
     rowKey="questionId"
-    :loading="!questionsStore.init"
+    :loading="!questionStore.init"
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.key == 'type'">

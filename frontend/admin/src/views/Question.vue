@@ -8,10 +8,10 @@ import { message, Modal } from "ant-design-vue";
 import Apis from "../utils/apis";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { goQuestions } from "../utils/router-helper";
-import { useQuestionsStore } from "../plugins/pinia";
+import { useQuestionStore } from "../plugins/pinia";
 
 const route = useRoute();
-const questionStore = useQuestionsStore();
+const questionStore = useQuestionStore();
 
 const questionId = route.params.questionId
 

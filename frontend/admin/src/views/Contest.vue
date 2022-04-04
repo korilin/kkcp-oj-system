@@ -2,7 +2,7 @@
 import { message } from 'ant-design-vue';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useContestStore, useCommonStore, useQuestionsStore } from '../plugins/pinia';
+import { useContestStore, useCommonStore, useQuestionStore } from '../plugins/pinia';
 import Apis from '../utils/apis';
 import QuesionInclusionList from '../components/QuesionInclusionList.vue';
 import dayjs from 'dayjs';
@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 const route = useRoute()
 const contestStore = useContestStore()
 const commonStore = useCommonStore()
-const questionsStore = useQuestionsStore()
+const questionStore = useQuestionStore()
 
 const contestId = route.params.contestId
 
@@ -30,7 +30,7 @@ contestStore.ensureInit().then(() => {
   getDataFromStore()
 })
 
-questionsStore.ensureInit()
+questionStore.ensureInit()
 
 const editLoading = ref(false)
 

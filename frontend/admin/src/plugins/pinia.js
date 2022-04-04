@@ -87,7 +87,7 @@ export const useContestStore = defineStore("contests", {
   }
 });
 
-export const useQuestionsStore = defineStore("questions", {
+export const useQuestionStore = defineStore("questions", {
   state: () => ({
     init: false,
     data: [],
