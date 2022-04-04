@@ -9,17 +9,17 @@ questionsStore.ensureInit();
 
 const columns = [
   {
-    title: "标题",
+    title: "Title",
     dataIndex: "title",
     key: "title"
   },
   {
-    title: "题目类型",
+    title: "Type",
     dataIndex: "type",
     key: "type"
   },
   {
-    title: "难度",
+    title: "Level",
     key: "level",
   },
   {

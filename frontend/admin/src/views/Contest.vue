@@ -2,11 +2,12 @@
 import dayjs from 'dayjs';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useContestStore, useCommonStore } from '../plugins/pinia';
+import { useContestStore, useCommonStore, useQuestionsStore } from '../plugins/pinia';
 
 const route = useRoute()
 const contestStore = useContestStore()
 const commonStore = useCommonStore()
+const questionsStore = useQuestionsStore()
 
 const contestId = route.params.contestId
 
@@ -24,6 +25,8 @@ function getDataFromStore() {
 contestStore.ensureInit().then(() => {
   getDataFromStore()
 })
+
+questionsStore.ensureInit()
 
 function doEdit() {
   if (readMode.value) {
@@ -57,8 +60,30 @@ function getDurationTime() {
   return `${h}h ${min}min`
 }
 
-function addQuestion() {
+const opentAddQuestionModal = ref(false)
+const selectedQuestions = ref([])
+const onSelectChange = selectedRowKeys => {
+  console.log('selectedRowKeys changed: ', selectedRowKeys);
+  selectedQuestions.value = selectedRowKeys;
+};
+const questionColumns = [
+  {
+    title: "Title",
+    dataIndex: "title",
+    key: "title"
+  },
+  {
+    title: "Type",
+    dataIndex: "type",
+    key: "type"
+  },
+  {
+    title: "Level",
+    key: "level",
+  }]
   
+function addQuestion() {
+
 }
 </script>
 <template>
@@ -143,8 +168,23 @@ function addQuestion() {
     <template #header>
       <div style="display: flex; justify-content: space-between;">
         <div style="line-height: 34px; font-weight: bold;">Included Questions</div>
-        <a-button size="small" type="link" @click="addQuestion">Add Question</a-button>
+        <a-button size="small" type="link" @click="opentAddQuestionModal = true">Add Question</a-button>
       </div>
+
+      <a-modal
+        v-model:visible="opentAddQuestionModal"
+        width="800px"
+        title="Select Question"
+        @ok="addQuestion"
+      >
+        <a-table
+          :row-selection="{ selectedRowKeys: selectedQuestions, onChange: onSelectChange }"
+          rowKey="questionId"
+          :loading="!questionsStore.init"
+          :columns="questionColumns"
+          :data-source="questionsStore.data"
+        />
+      </a-modal>
     </template>
     <template #footer>
       <div>Number of questions included: {{ questions.length }}</div>
