@@ -1,44 +1,49 @@
 <script setup>
-import { ref } from "vue";
-import { useContestStore } from "../plugins/pinia"
-import Apis from "../utils/apis";
+import { useCommonStore, useContestStore } from "../plugins/pinia"
 import { goContestItem, goNewContest } from "../utils/router-helper";
 
 const contestStore = useContestStore();
+const commonStore = useCommonStore();
 
 contestStore.ensureInit()
 
 const columns = [
   {
-    title: "标题",
+    title: "Title",
     dataIndex: ["contest", "title"],
     key: "title"
   },
   {
-    title: "开始时间",
-    dataIndex: ["contest", "startTime"],
+    title: "Start Time",
     key: "startTime"
   },
   {
-    title: "题数",
+    title: "Question Count",
     key: "questionCount",
   },
   {
-    title: "时长",
+    title: "Duration",
     dataIndex: ["contest", "duration"],
     key: "duration"
   },
   {
-    title: "状态",
+    title: "Status",
     dataIndex: ["contest", "status"],
     key: "status",
   },
   {
-    title: "ACTION",
+    title: "Action",
     key: "action",
   },
 ]
 
+const colors = [
+  'pink',
+  'purple',
+  'blue',
+  'geekblue',
+  'green',
+];
 </script>
 <template>
   <div style="text-align: right; margin-bottom: 20px; padding-right: 50px;">
@@ -52,18 +57,21 @@ const columns = [
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.key == 'questionCount'">{{ record.questions.length }}</template>
+      <template v-if="column.key == 'startTime'">
+        {{ record.contest.startTime.format('YYYY/MM/DD HH:mm:ss') }}
+      </template>
       <template v-if="column.key == 'status'">
-        <a-tag v-if="record.contest.status == 0" color="purple">进行中</a-tag>
-        <a-tag v-else color="green">已完成</a-tag>
+        <a-tag
+          :color="colors[record.contest.status]"
+        >{{ commonStore.getContestStatusById([record.contest.status]).text }}</a-tag>
       </template>
       <template v-if="column.key == 'action'">
         <a-button
           type="link"
           size="small"
+          style="padding: 0;"
           @click="goContestItem(record.contest.contestId)"
-        >more&edit</a-button>
-        <a-divider type="vertical" />
-        <a-button type="link" size="small" style="color: #ff7875;">del</a-button>
+        >More & Edit</a-button>
       </template>
     </template>
   </a-table>

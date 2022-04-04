@@ -17,7 +17,6 @@ const readMode = ref(true)
 
 function getDataFromStore() {
   const contest = contestStore.getContestById(contestId)
-  contest.contest.startTime = dayjs(contest.contest.startTime)
   contestInfo.value = contest.contest
   questions.value = contest.questions
 }
@@ -61,6 +60,7 @@ function getDurationTime() {
 }
 
 const opentAddQuestionModal = ref(false)
+const addQuestionLoading = ref(false)
 const selectedQuestions = ref([])
 const onSelectChange = selectedRowKeys => {
   console.log('selectedRowKeys changed: ', selectedRowKeys);
@@ -81,9 +81,9 @@ const questionColumns = [
     title: "Level",
     key: "level",
   }]
-  
-function addQuestion() {
 
+function addQuestion() {
+  addQuestionLoading.value = true
 }
 </script>
 <template>
@@ -161,7 +161,7 @@ function addQuestion() {
       />
     </a-descriptions-item>
   </a-descriptions>
-  <a-list v-if="contestStore.init" bordered :data-source="questions" style="margin-top: 25px;">
+  <a-list v-if="contestStore.init" :data-source="questions" style="margin-top: 25px;">
     <template #renderItem="{ item }">
       <a-list-item>{{ item }}</a-list-item>
     </template>
@@ -175,6 +175,8 @@ function addQuestion() {
         v-model:visible="opentAddQuestionModal"
         width="800px"
         title="Select Question"
+        okText="Add To This Contest"
+        :confirm-loading="addQuestionLoading"
         @ok="addQuestion"
       >
         <a-table

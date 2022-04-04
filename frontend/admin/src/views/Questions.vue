@@ -23,7 +23,7 @@ const columns = [
     key: "level",
   },
   {
-    title: "ACTION",
+    title: "Action",
     key: "action",
   },
 ];
@@ -52,9 +52,12 @@ const levelsColor = [undefined, "green", "orange", "red"];
         >{{ commonStore.getQuestionLevelById([record.level]).text }}</a-tag>
       </template>
       <template v-else-if="column.key == 'action'">
-        <a-button type="link" size="small" @click="goQuestionItem(record.questionId)">More&Edit</a-button>
-        <a-divider type="vertical" />
-        <a-button type="link" size="small" style="color: #ff7875;">Del</a-button>
+        <a-button
+          type="link"
+          size="small"
+          @click="goQuestionItem(record.questionId)"
+          style="padding: 0;"
+        >More & Edit</a-button>
       </template>
     </template>
   </a-table>

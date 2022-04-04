@@ -1,3 +1,5 @@
+
+import dayjs from "dayjs";
 import { defineStore } from "pinia";
 import Apis from "../utils/apis";
 
@@ -38,6 +40,9 @@ export const useCommonStore = defineStore("common", {
     },
     getContestTypeById: (state) => {
       return (typeId) => state.contestTypes.find((type) => type.id == typeId)
+    },
+    getContestStatusById: (state) => {
+      return (statusId) => state.contestStatuses.find((status) => status.id == statusId)
     }
   },
 });
@@ -65,6 +70,9 @@ export const useContestStore = defineStore("contests", {
         if (body.status) {
           this.init = true
           this.data = body.data
+          this.data.forEach((contest) => {
+            contest.contest.startTime = dayjs(contest.contest.startTime)
+          })
         }
       })
     },
