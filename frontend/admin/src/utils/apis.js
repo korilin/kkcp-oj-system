@@ -85,6 +85,7 @@ class QuestionModuleApis {
 
 const QUERY_CONTEST_LIST_URI = "/admin/contest/query/all"
 const CREATE_CONTEST_URI = "/admin/contest/new"
+const ADD_QUESION_TO_CONTEST = "/admin/contest/inclusion/add"
 
 class ContestModuleApis {
   async queryAllContest() {
@@ -93,6 +94,14 @@ class ContestModuleApis {
 
   async newContest(form) {
     return HttpService.post(CREATE_CONTEST_URI, form)
+  }
+
+  async addInclusion(contestId, questions) {
+    const data = {
+      contestId: contestId,
+      questions: questions
+    }
+    return HttpService.post(ADD_QUESION_TO_CONTEST, data)
   }
 }
 

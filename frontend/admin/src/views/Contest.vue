@@ -1,8 +1,10 @@
 <script setup>
-import dayjs from 'dayjs';
+import { message } from 'ant-design-vue';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useContestStore, useCommonStore, useQuestionsStore } from '../plugins/pinia';
+import Apis from '../utils/apis';
+import QuesionInclusionList from '../components/QuesionInclusionList.vue';
 
 const route = useRoute()
 const contestStore = useContestStore()
@@ -44,6 +46,7 @@ const colors = [
   'green',
 ];
 
+
 const durationMark = {
   60: '1h',
   120: '2h',
@@ -59,31 +62,16 @@ function getDurationTime() {
   return `${h}h ${min}min`
 }
 
-const opentAddQuestionModal = ref(false)
-const addQuestionLoading = ref(false)
-const selectedQuestions = ref([])
-const onSelectChange = selectedRowKeys => {
-  console.log('selectedRowKeys changed: ', selectedRowKeys);
-  selectedQuestions.value = selectedRowKeys;
-};
-const questionColumns = [
-  {
-    title: "Title",
-    dataIndex: "title",
-    key: "title"
-  },
-  {
-    title: "Type",
-    dataIndex: "type",
-    key: "type"
-  },
-  {
-    title: "Level",
-    key: "level",
-  }]
-
-function addQuestion() {
-  addQuestionLoading.value = true
+function addQuestions(value) {
+  Apis.ContestModule.addInclusion(contestId, value)
+    .then(body => {
+      if (body.status) {
+        message.info(body.message)
+        const contest = contestStore.getContestById(contestId)
+        contest.questions = body.data
+        questions.value = contest.questions
+      }
+    })
 }
 </script>
 <template>
@@ -161,37 +149,12 @@ function addQuestion() {
       />
     </a-descriptions-item>
   </a-descriptions>
-  <a-list v-if="contestStore.init" :data-source="questions" style="margin-top: 25px;">
-    <template #renderItem="{ item }">
-      <a-list-item>{{ item }}</a-list-item>
-    </template>
-    <template #header>
-      <div style="display: flex; justify-content: space-between;">
-        <div style="line-height: 34px; font-weight: bold;">Included Questions</div>
-        <a-button size="small" type="link" @click="opentAddQuestionModal = true">Add Question</a-button>
-      </div>
-
-      <a-modal
-        v-model:visible="opentAddQuestionModal"
-        width="800px"
-        title="Select Question"
-        okText="Add To This Contest"
-        :confirm-loading="addQuestionLoading"
-        @ok="addQuestion"
-      >
-        <a-table
-          :row-selection="{ selectedRowKeys: selectedQuestions, onChange: onSelectChange }"
-          rowKey="questionId"
-          :loading="!questionsStore.init"
-          :columns="questionColumns"
-          :data-source="questionsStore.data"
-        />
-      </a-modal>
-    </template>
-    <template #footer>
-      <div>Number of questions included: {{ questions.length }}</div>
-    </template>
-  </a-list>
+  <QuesionInclusionList
+    v-if="contestStore.init"
+    style="margin-top: 25px;"
+    :questions="questions"
+    :addQuestions="addQuestions"
+  />
 </template>
 
 <style lang="scss">
