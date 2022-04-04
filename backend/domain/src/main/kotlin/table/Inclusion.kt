@@ -13,7 +13,7 @@ interface Inclusion : Entity<Inclusion> {
 }
 
 object Inclusions: Table<Inclusion>("t_inclusion") {
-    val contestId = int("contest_id").references(Contests) { it.contest }
-    val questionId = int("question_id").references(Questions) { it.question }
+    val contestId = int("contest_id").primaryKey().references(Contests) { it.contest }
+    val questionId = int("question_id").primaryKey().references(Questions) { it.question }
     val sort = int("sort").bindTo { it.sort }
 }

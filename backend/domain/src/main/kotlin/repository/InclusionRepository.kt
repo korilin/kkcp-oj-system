@@ -6,6 +6,7 @@ import com.korilin.table.Inclusion
 import com.korilin.table.Inclusions
 import com.korilin.table.Question
 import org.ktorm.database.Database
+import org.ktorm.dsl.delete
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.insert
 import org.ktorm.entity.*

@@ -80,18 +80,22 @@ class ContestService(
     }
 
     @Transactional
-    suspend fun removeInclusion(contestId: Int, questionId: Int): Boolean {
+    suspend fun removeInclusion(contestId: Int, questionId: Int): Pair<Boolean, List<Question>> {
         var del = false
-        inclusionRepository.getAllByContestsId(contestId).forEach {
+        val questions = mutableListOf<Question>()
+        val inclusions = inclusionRepository.getAllByContestsId(contestId)
+        inclusions.forEach {
+            if (it.question.questionId == questionId) {
+                it.delete()
+                del = true
+            } else {
+                questions.add(it.question)
+            }
             if (del) {
                 it.sort = it.sort - 1
                 it.flushChanges()
             }
-            if (it.question.questionId == questionId) {
-                it.delete()
-                del = true
-            }
         }
-        return del
+        return Pair(del, questions)
     }
 }
