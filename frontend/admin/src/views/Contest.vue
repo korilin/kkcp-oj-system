@@ -19,13 +19,9 @@ function getDataFromStore() {
   questions.value = contest.questions
 }
 
-if (!contestStore.init) {
-  contestStore.initData().then(() => {
-    getDataFromStore()
-  })
-} else {
+contestStore.ensureInit().then(() => {
   getDataFromStore()
-}
+})
 
 function doEdit() {
   if (readMode.value) {
@@ -63,9 +59,15 @@ function getDurationTime() {
   <div v-if="!contestStore.init" style="text-align: center;">
     <a-spin />
   </div>
-  <a-descriptions v-else :title="'Contest ID: ' + contestId" class="global-contest-style">
+  <a-descriptions
+    v-if="contestStore.init"
+    :title="'Contest ID: ' + contestId"
+    class="global-contest-style"
+  >
     <template #extra>
-      <a-button type="primary" @click="doEdit">Edit</a-button>
+      <a-button type="primary" @click="doEdit">{{ readMode ? "Edit" : "Save" }}</a-button>
+      <a-button v-if="readMode" danger type="primary" style="margin-left: 20px;">Delete</a-button>
+      <a-button v-else @click="doEdit" style="margin-left: 20px;">Cancel</a-button>
     </template>
     <a-descriptions-item label="Title">
       <a-input v-model:value="contestInfo.title" :bordered="false" :disabled="readMode" />
@@ -120,8 +122,7 @@ function getDurationTime() {
       />
     </a-descriptions-item>
   </a-descriptions>
-  <a-divider></a-divider>
-  <a-list bordered :data-source="data">
+  <a-list v-if="contestStore.init" bordered :data-source="questions" style="margin-top: 25px;">
     <template #renderItem="{ item }">
       <a-list-item>{{ item }}</a-list-item>
     </template>

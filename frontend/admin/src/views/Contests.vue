@@ -6,9 +6,7 @@ import { goContestItem, goNewContest } from "../utils/router-helper";
 
 const contestStore = useContestStore();
 
-if (!contestStore.init) {
-  contestStore.initData()
-}
+contestStore.ensureInit()
 
 const columns = [
   {

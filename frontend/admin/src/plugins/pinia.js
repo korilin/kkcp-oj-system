@@ -48,9 +48,10 @@ export const useContestStore = defineStore("contests", {
     }
   },
   actions: {
-    refreshData() {
+    async refreshData() {
       this.init = false
       this.data = []
+      return this.initData()
     },
     async initData() {
       return Apis.ContestModule.queryAllContest().then(body => {
@@ -59,6 +60,11 @@ export const useContestStore = defineStore("contests", {
           this.data = body.data
         }
       })
+    },
+    async ensureInit() {
+      if (!this.init) {
+        return this.initData();
+      }
     }
   }
 });
@@ -69,9 +75,23 @@ export const useQuestionsStore = defineStore("questions", {
     data: [],
   }),
   actions: {
-    refreshData() {
+    async refreshData() {
       this.init = false
       this.data = []
+      return this.initData()
+    },
+    async initData() {
+      return Apis.QuestionModule.queryQuestions().then((body) => {
+        if (body.status) {
+          this.data = body.data;
+          this.init = true;
+        }
+      })
+    },
+    async ensureInit() {
+      if (!this.init) {
+        return this.initData();
+      }
     }
   }
 });

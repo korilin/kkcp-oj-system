@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from "vue";
 import { useCommonStore, useQuestionsStore } from "../plugins/pinia"
-import Apis from "../utils/apis";
 import { goNewQuestion, goQuestionItem } from "../utils/router-helper";
 
 const questionsStore = useQuestionsStore();
 const commonStore = useCommonStore();
+
+questionsStore.ensureInit();
 
 const columns = [
   {
@@ -30,23 +30,6 @@ const columns = [
 
 const levelsColor = [undefined, "green", "orange", "red"];
 
-const loading = ref(false);
-
-// 这一块应该放在 pinia 中
-function initQuestionsData() {
-  loading.value = true;
-  Apis.QuestionModule.queryQuestions().then((body) => {
-    if (body.status) {
-      questionsStore.data = body.data;
-      loading.value = false;
-      questionsStore.init = true;
-    }
-  })
-}
-
-if (!questionsStore.init) {
-  initQuestionsData();
-}
 </script>
 <template>
   <div class="bar">
@@ -57,7 +40,7 @@ if (!questionsStore.init) {
     :columns="columns"
     :data-source="questionsStore.data"
     rowKey="questionId"
-    :loading="loading"
+    :loading="!questionsStore.init"
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.key == 'type'">
