@@ -16,6 +16,8 @@ const collapsed = ref(false);
  * 请求平台基本数据，包括：
  * - 问题类型列表
  * - 问题难度列表
+ * - 竞赛活动类型
+ * - 竞赛活动状态
  */
 function doCommonDataInit() {
   Apis.CommonModule.questionDefineData().then((result) => {
@@ -29,7 +31,10 @@ function doCommonDataInit() {
 
   Apis.CommonModule.contestDefineData().then(result => {
     if (result.types.status) {
-      commonStore.contestType = result.types.data
+      commonStore.contestTypes = result.types.data
+    }
+    if (result.statuses.status) {
+      commonStore.contestStatuses = result.statuses.data
     }
   })
 }
@@ -132,5 +137,16 @@ body {
 }
 .ant-layout-sider-zero-width-trigger {
   border-radius: 0px 10px 10px 0px !important;
+}
+
+.ant-descriptions-item-label,
+.ant-descriptions-item-content {
+  line-height: 3 !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+}
+
+.ant-input {
+  font-weight: 400 !important;
 }
 </style>

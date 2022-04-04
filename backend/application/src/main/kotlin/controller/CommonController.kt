@@ -1,6 +1,7 @@
 package com.korilin.controller
 
 import com.korilin.IResponseBody
+import com.korilin.bo.ContestStatus
 import com.korilin.bo.ContestType
 import com.korilin.bo.QuestionLevel
 import com.korilin.bo.QuestionType
@@ -20,4 +21,7 @@ class CommonController {
 
     @GetMapping("/contest/types")
     suspend fun contestTypes() = IResponseBody.success(data = ContestType.toArray())
+
+    @GetMapping("/contest/statuses")
+    suspend fun contestStatuses() = IResponseBody.success(data = ContestStatus.toArray())
 }

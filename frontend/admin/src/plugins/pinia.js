@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import HttpService from "../utils/axios-service";
+import Apis from "../utils/apis";
 
 // useStore could be anything like useUser, useCart
 // the first argument is a unique id of the store across your application
@@ -16,20 +16,25 @@ export const useCommonStore = defineStore("common", {
     return {
       questionTypes: [],
       questionLevels: [],
-      contestType: []
+      contestTypes: [],
+      contestStatuses: [],
     };
   },
   getters: {
-    getTypeById: (state) => {
+    getQuestionTypeById: (state) => {
       return (typeId) =>
         state.questionTypes.find((type) => type.id == typeId);
     },
-    getLevelById: (state) => {
+    getQuestionLevelById: (state) => {
       return (levelId) =>
         state.questionLevels.find((level) => level.id == levelId);
     },
+    getContestTypeById: (state) => {
+      return (typeId) => state.contestTypes.find((type) => type.id == typeId)
+    }
   },
 });
+
 export const useContestStore = defineStore("contests", {
   state: () => {
     return {
@@ -37,10 +42,23 @@ export const useContestStore = defineStore("contests", {
       data: [],
     };
   },
+  getters: {
+    getContestById: (state) => {
+      return (contestId) => state.data.find((item) => item.contest.contestId == contestId);
+    }
+  },
   actions: {
     refreshData() {
       this.init = false
       this.data = []
+    },
+    async initData() {
+      return Apis.ContestModule.queryAllContest().then(body => {
+        if (body.status) {
+          this.init = true
+          this.data = body.data
+        }
+      })
     }
   }
 });
