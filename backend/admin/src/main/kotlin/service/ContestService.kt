@@ -8,7 +8,9 @@ import com.korilin.repository.QuestionRepository
 import com.korilin.table.Contest
 import com.korilin.table.Question
 import javaslang.Tuple2
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ContestService(
@@ -50,6 +52,7 @@ class ContestService(
         return Tuple2(result == 1, "更新记录 $result 条")
     }
 
+    @Transactional
     suspend fun addInclusion(contestId: Int, questions: Array<Int>): Triple<Int, String, List<Question>> {
         val messages = StringBuilder()
         val contest = contestsRepository.findContestById(contestId) ?: return run {
@@ -64,13 +67,31 @@ class ContestService(
                 messages.append("The question#$questionId could not be found!\n")
                 continue
             }
-            if (inclusionRepository.addInclusion(contest, question, count++)) {
+            try {
+                inclusionRepository.addInclusion(contest, question, count++)
                 optCount++
-            } else {
-                messages.append("The question#$questionId named ${question.title} could not be added to this contest.\n")
+            } catch (dke: DuplicateKeyException) {
+                messages.append("The question#$questionId named ${question.title} already included in this contest.\n")
             }
         }
+        if (optCount == questions.size) messages.append("All $optCount Questions Add Success!")
         val inclusions = inclusionRepository.getAllByContestsId(contest.contestId)
         return Triple(optCount, messages.toString(), inclusions.map { it.question })
+    }
+
+    @Transactional
+    suspend fun removeInclusion(contestId: Int, questionId: Int): Boolean {
+        var del = false
+        inclusionRepository.getAllByContestsId(contestId).forEach {
+            if (del) {
+                it.sort = it.sort - 1
+                it.flushChanges()
+            }
+            if (it.question.questionId == questionId) {
+                it.delete()
+                del = true
+            }
+        }
+        return del
     }
 }

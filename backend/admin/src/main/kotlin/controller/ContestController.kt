@@ -39,4 +39,9 @@ class ContestController(private val contestService: ContestService) {
         return if (state == -1) IResponseBody.error(messages)
         else IResponseBody(state != 0, messages, questions.toTypedArray())
     }
+
+    @DeleteMapping("/inclusion/remove")
+    suspend fun inclusionRemove(contestId: Int, questionId: Int) =
+        if (contestService.removeInclusion(contestId, questionId)) IResponseBody.success(data = Unit)
+        else IResponseBody.error("Can't Remove?")
 }
