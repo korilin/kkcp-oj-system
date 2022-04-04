@@ -4,13 +4,11 @@ import { useCommonStore, useQuestionsStore } from '../plugins/pinia';
 import InstantUploadBox from '../components/InstantUploadBox.vue';
 import { resolveMarkdownAsHtml } from '../utils/utils';
 import { message } from 'ant-design-vue';
-import HttpService from '../utils/axios-service';
-import { useRouter } from 'vue-router';
 import { goQuestionItem } from '../utils/router-helper';
+import Apis from '../utils/apis';
 
 const commonStore = useCommonStore()
 const questionStore = useQuestionsStore()
-const router = useRouter()
 
 const formRef = ref();
 const collapseKey = ref("0");
@@ -79,13 +77,11 @@ const rules = {
 
 // 解析 Markdown 文件
 const handleDescriptionChange = (file) => {
-  // spinning.value = true;
   descPromise = new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
       formState.description = resolveMarkdownAsHtml(reader.result);
-      // spinning.value = false;
-      resolve();
+      resolve(formState.description);
     };
     reader.readAsText(file);
   });
@@ -96,7 +92,7 @@ const handleCodeTemplateChange = (file) => {
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
       formState.codeTemplate = reader.result;
-      resolve();
+      resolve(formState.codeTemplate);
     }
     reader.readAsText(file);
   });
@@ -107,7 +103,7 @@ const handleTestDataJsonChange = (file) => {
     const reader = new FileReader();
     reader.onload = function fileReadCompleted() {
       formState.testDataJson = reader.result;
-      resolve();
+      resolve(formState.testDataJson);
     }
     reader.readAsText(file);
   });
@@ -124,6 +120,7 @@ const handleFinish = (_) => {
 };
 
 const handleFinishFailed = errors => {
+  console.log(errors);
   message.error("Please provide all field value");
 };
 </script>
