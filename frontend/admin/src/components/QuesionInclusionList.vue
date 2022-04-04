@@ -6,7 +6,8 @@ import { useCommonStore, useQuestionStore } from '../plugins/pinia';
 const props = defineProps({
   questions: Array,
   addQuestions: Function,
-  removeQuestion: Function
+  removeQuestion: Function,
+  updateSort: Function
 })
 
 const commonStore = useCommonStore()
@@ -72,7 +73,7 @@ const questionColumns = [
   <a-list :data-source="questions">
     <template #renderItem="{ item }">
       <a-list-item style="display: flex;justify-content: flex-start; padding: 10px 50px;">
-        <div style="width: 40%;">{{ item.title }}</div>
+        <div style="width: 30%;">{{ item.title }}</div>
         <a-divider type="vertical" />
         <div style="width: 20%; text-align: center;">
           <a-tag>{{ commonStore.getQuestionTypeById(item.type).text }}</a-tag>
@@ -83,7 +84,9 @@ const questionColumns = [
             :color="levelsColor[item.level]"
           >{{ commonStore.getQuestionLevelById(item.level).text }}</a-tag>
         </div>
-        <div style="width: 20%; text-align: center;">
+        <div style="width: 30%; text-align: center;">
+          <a-button type="link" size="small" @click="updateSort(item.questionId, -1)">Up</a-button>
+          <a-button type="link" size="small" @click="updateSort(item.questionId, 1)">Down</a-button>
           <a-button type="link" danger size="small" @click="doDel(item.questionId)">Remove</a-button>
         </div>
       </a-list-item>

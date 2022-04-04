@@ -85,9 +85,10 @@ class QuestionModuleApis {
 
 const QUERY_CONTEST_LIST_URI = "/admin/contest/query/all"
 const CREATE_CONTEST_URI = "/admin/contest/new"
+const UPDATE_CONTEST_URI = "/admin/contest/update"
 const ADD_QUESTION_TO_CONTEST = "/admin/contest/inclusion/add"
 const REMOVE_QUESTION_FROM_CONTEST = "/admin/contest/inclusion/remove"
-const UPDATE_CONTEST_URI = "/admin/contest/update"
+const UPDATE_INCLUSION_SORT = "/admin/contest/inclusion/update"
 
 class ContestModuleApis {
   async queryAllContest() {
@@ -114,6 +115,11 @@ class ContestModuleApis {
   async updateContestInfo(contestId, form) {
     const url = `${UPDATE_CONTEST_URI}?contestId=${contestId}`
     return HttpService.put(url, form)
+  }
+
+  async updateInclusionSort(contestId, questionId, offset) {
+    const url = `${UPDATE_INCLUSION_SORT}?contestId=${contestId}&questionId=${questionId}&offset=${offset}`
+    return HttpService.put(url)
   }
 }
 

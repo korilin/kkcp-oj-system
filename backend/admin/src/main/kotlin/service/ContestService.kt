@@ -6,6 +6,7 @@ import com.korilin.repository.ContestRepository
 import com.korilin.repository.InclusionRepository
 import com.korilin.repository.QuestionRepository
 import com.korilin.table.Contest
+import com.korilin.table.Inclusion
 import com.korilin.table.Question
 import javaslang.Tuple2
 import org.springframework.dao.DuplicateKeyException
@@ -99,5 +100,22 @@ class ContestService(
             }
         }
         return Pair(del, questions)
+    }
+
+    @Transactional
+    suspend fun updateInclusionSort(contestId: Int, questionId: Int, offset: Int): List<Question> {
+        val inclusions = inclusionRepository.getAllByContestsId(contestId)
+        for (index in inclusions.indices) {
+            val now = inclusions[index]
+            if (now.question.questionId == questionId) {
+                inclusions.getOrNull(index + offset)?.let { target ->
+                    target.sort = now.sort.also { now.sort = target.sort }
+                    target.flushChanges()
+                    now.flushChanges()
+                }
+                break
+            }
+        }
+        return inclusionRepository.getAllByContestsId(contestId).map { it.question }
     }
 }

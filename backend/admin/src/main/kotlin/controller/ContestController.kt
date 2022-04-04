@@ -54,4 +54,9 @@ class ContestController(private val contestService: ContestService) {
         else IResponseBody.error("Can't Remove?")
     }
 
+    @PutMapping("/inclusion/update")
+    suspend fun inclusionUpdate(contestId: Int, questionId: Int, offset: Int): IResponseBody<Array<Question>> {
+        val questions = contestService.updateInclusionSort(contestId, questionId, offset)
+        return IResponseBody.success(data = questions.toTypedArray())
+    }
 }

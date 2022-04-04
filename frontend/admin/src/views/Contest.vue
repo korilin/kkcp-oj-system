@@ -1,5 +1,5 @@
 <script setup>
-import { message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useContestStore, useCommonStore, useQuestionStore } from '../plugins/pinia';
@@ -118,6 +118,23 @@ function removeQuestion(questionId) {
     }
   })
 }
+
+function updateSort(questionId, offset) {
+  Apis.ContestModule.updateInclusionSort(contestId, questionId, offset).then(body => {
+    if (body.status) {
+      updateQuestions(body.data)
+    }
+  })
+}
+
+function deleteContest() {
+  Modal.confirm({
+    title: "Do you want to delete this contest?",
+    onOk() {
+      
+    }
+  })
+}
 </script>
 <template>
   <div v-if="!contestStore.init" style="text-align: center;">
@@ -134,7 +151,7 @@ function removeQuestion(questionId) {
         @click="doEdit"
         :loading="editLoading"
       >{{ readMode ? "Edit" : "Save" }}</a-button>
-      <a-button v-if="readMode" danger type="primary" style="margin-left: 20px;">Delete</a-button>
+      <a-button v-if="readMode" danger type="primary" style="margin-left: 20px;" @click="deleteContest">Delete</a-button>
       <a-button v-else @click="doCancel" style="margin-left: 20px;">Cancel</a-button>
     </template>
     <a-descriptions-item label="Status">
@@ -199,6 +216,7 @@ function removeQuestion(questionId) {
     :questions="questions"
     :addQuestions="addQuestions"
     :removeQuestion="removeQuestion"
+    :updateSort="updateSort"
   />
 </template>
 
