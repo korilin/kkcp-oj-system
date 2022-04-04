@@ -6,18 +6,8 @@ import { goContestItem, goNewContest } from "../utils/router-helper";
 
 const contestStore = useContestStore();
 
-const loading = ref(false)
-
 if (!contestStore.init) {
-  loading.value = true
-  Apis.ContestModule.queryAllContest().then(body => {
-    if (body.status) {
-      contestStore.init = true
-      contestStore.data = body.data
-    }
-  }).finally(() => {
-    loading.value = false
-  })
+  contestStore.initData()
 }
 
 const columns = [
@@ -60,7 +50,7 @@ const columns = [
     :columns="columns"
     :data-source="contestStore.data"
     rowKey="contestId"
-    :loading="loading"
+    :loading="!contestStore.init"
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.key == 'questionCount'">{{ record.questions.length }}</template>

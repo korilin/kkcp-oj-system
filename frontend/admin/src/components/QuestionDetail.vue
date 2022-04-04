@@ -174,7 +174,7 @@ async function doCancel() {
   </a-descriptions>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .file-space {
   display: flex;
   flex-wrap: wrap;

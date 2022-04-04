@@ -32,6 +32,7 @@ const levelsColor = [undefined, "green", "orange", "red"];
 
 const loading = ref(false);
 
+// 这一块应该放在 pinia 中
 function initQuestionsData() {
   loading.value = true;
   Apis.QuestionModule.queryQuestions().then((body) => {
@@ -60,12 +61,12 @@ if (!questionsStore.init) {
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.key == 'type'">
-        <a-tag color="blue">{{ commonStore.getTypeById([record.type]).text }}</a-tag>
+        <a-tag color="blue">{{ commonStore.getQuestionTypeById([record.type]).text }}</a-tag>
       </template>
       <template v-else-if="column.key == 'level'">
         <a-tag
           :color="levelsColor[record.level]"
-        >{{ commonStore.getLevelById([record.level]).text }}</a-tag>
+        >{{ commonStore.getQuestionLevelById([record.level]).text }}</a-tag>
       </template>
       <template v-else-if="column.key == 'action'">
         <a-button type="link" size="small" @click="goQuestionItem(record.questionId)">More&Edit</a-button>

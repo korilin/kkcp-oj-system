@@ -62,7 +62,7 @@ function onFinish() {
       :rules="[{ required: true, message: 'Please select contest type!' }]"
     >
       <a-radio-group v-model:value="state.type">
-        <a-radio v-for="cType in commonStore.contestType" :value="cType.id">{{ cType.text }}</a-radio>
+        <a-radio v-for="cType in commonStore.contestTypes" :value="cType.id">{{ cType.text }}</a-radio>
       </a-radio-group>
     </a-form-item>
     <a-form-item
