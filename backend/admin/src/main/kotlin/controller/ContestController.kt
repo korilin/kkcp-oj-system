@@ -18,16 +18,22 @@ class ContestController(private val contestService: ContestService) {
 
     @PostMapping("/new")
     @ExceptionMessageHandler
-    @RegisterExceptionMessage(DuplicateKeyException::class, "该题目名称已经被使用")
+    @RegisterExceptionMessage(DuplicateKeyException::class, "该名称已经被使用")
     suspend fun newContest(@RequestBody contestForm: ContestForm): IResponseBody<Int> {
         return contestService.createContest(contestForm)?.let {
             IResponseBody.success(data = it)
-        } ?: IResponseBody.error("添加失败")
+        } ?: IResponseBody.error("Add Failure")
+    }
+
+    @DeleteMapping("/delete")
+    suspend fun deleteContest(contestId: Int): IResponseBody<Unit> {
+        val result = contestService.deleteContest(contestId)
+        return IResponseBody(result, if (result) "" else "Failure", Unit)
     }
 
     @PutMapping("/update")
     @ExceptionMessageHandler
-    @RegisterExceptionMessage(DuplicateKeyException::class, "该题目名称已经被使用")
+    @RegisterExceptionMessage(DuplicateKeyException::class, "该名称已经被使用")
     suspend fun updateContest(
         @RequestParam contestId: Int, @RequestBody contestForm: ContestForm
     ): IResponseBody<Unit> {

@@ -30,6 +30,19 @@ class ContestService(
         }.toTypedArray()
     }
 
+    @Transactional
+    suspend fun deleteContest(contestId: Int): Boolean {
+        val contest = contestsRepository.findContestById(contestId) ?: return false
+        var optCount = 0
+        val inclusions = inclusionRepository.getAllByContestsId(contestId)
+        inclusions.forEach {
+            optCount += it.delete()
+        }
+        optCount += contest.delete()
+        assert(optCount == inclusions.size + 1)
+        return true
+    }
+
     suspend fun createContest(form: ContestForm): Int? {
         val contest = Contest {
             title = form.title!!
