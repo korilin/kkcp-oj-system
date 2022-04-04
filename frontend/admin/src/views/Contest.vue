@@ -1,4 +1,5 @@
 <script setup>
+import dayjs from 'dayjs';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useContestStore, useCommonStore } from '../plugins/pinia';
@@ -15,6 +16,7 @@ const readMode = ref(true)
 
 function getDataFromStore() {
   const contest = contestStore.getContestById(contestId)
+  contest.contest.startTime = dayjs(contest.contest.startTime)
   contestInfo.value = contest.contest
   questions.value = contest.questions
 }
@@ -53,6 +55,10 @@ function getDurationTime() {
   let h = parseInt(state.duration / 60)
   let min = contestInfo.duration - h * 60
   return `${h}h ${min}min`
+}
+
+function addQuestion() {
+  
 }
 </script>
 <template>
@@ -97,7 +103,15 @@ function getDurationTime() {
         </a-select-option>
       </a-select>
     </a-descriptions-item>
-    <a-descriptions-item label="Start Time" :span="3"></a-descriptions-item>
+    <a-descriptions-item label="Start Time" :span="3">
+      <a-date-picker
+        :disabled="readMode"
+        :allowClear="false"
+        :show-time="{ format: 'HH:mm' }"
+        :format="'YYYY/MM/DD HH:mm'"
+        v-model:value="contestInfo.startTime"
+      />
+    </a-descriptions-item>
     <a-descriptions-item label="Duration" :span="3">
       <a-row type="flex" justify="space-around" align="middle">
         <a-col :span="18">
@@ -129,7 +143,7 @@ function getDurationTime() {
     <template #header>
       <div style="display: flex; justify-content: space-between;">
         <div style="line-height: 34px; font-weight: bold;">Included Questions</div>
-        <a-button size="small" type="primary">Add Question</a-button>
+        <a-button size="small" type="link" @click="addQuestion">Add Question</a-button>
       </div>
     </template>
     <template #footer>
@@ -140,8 +154,13 @@ function getDurationTime() {
 
 <style lang="scss">
 .global-contest-style {
-  .ant-input {
+  .ant-input,
+  .ant-picker {
     border: 0;
+  }
+
+  .ant-picker-disabled {
+    background: none !important;
   }
 
   .ant-input[disabled] {
@@ -153,13 +172,29 @@ function getDurationTime() {
     opacity: 1;
   }
 
+  .ant-picker-input > input[disabled] {
+    color: #8c8c8c !important;
+  }
+
   .ant-badge-status-text {
     color: #8c8c8c !important;
   }
 
+  .ant-slider-disabled {
+    .ant-slider-track {
+      background-color: #91d5ff !important;
+    }
+    .ant-slider-dot {
+      border-color: #f0f0f0 !important;
+    }
+
+    .ant-slider-dot-active {
+      border-color: #8cc8ff !important;
+    }
+  }
+
   .ant-descriptions-item-content {
     width: 100%;
-    display: inline-block;
   }
   .ant-select-disabled.ant-select:not(.ant-select-customize-input)
     .ant-select-selector {
