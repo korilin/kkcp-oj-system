@@ -6,7 +6,7 @@ import { goLogin } from '../utils/router-helper';
 
 const accountStore = useAccountStore();
 const questionStore = useQuestionsStore();
-const contestStore = useContestStore
+const contestStore = useContestStore();
 const account = ref(accountStore.account);
 
 function logout() {

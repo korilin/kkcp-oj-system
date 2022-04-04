@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import { useContestStore, useCommonStore, useQuestionsStore } from '../plugins/pinia';
 import Apis from '../utils/apis';
 import QuesionInclusionList from '../components/QuesionInclusionList.vue';
+import dayjs from 'dayjs';
 
 const route = useRoute()
 const contestStore = useContestStore()
@@ -17,7 +18,7 @@ const contestInfo = ref({})
 const questions = ref([])
 const readMode = ref(true)
 
-let backup = null
+let backup = {}
 
 function getDataFromStore() {
   const contest = contestStore.getContestById(contestId)
@@ -31,18 +32,42 @@ contestStore.ensureInit().then(() => {
 
 questionsStore.ensureInit()
 
+const editLoading = ref(false)
+
 function doEdit() {
   if (readMode.value) {
-    Object.assign(backup, contestInfo.value)
+    backup = JSON.stringify(contestInfo.value ?? {})
     readMode.value = false
   } else {
-    readMode.value = true
-    // TODO 提交修改
+    editLoading.value = true
+    const contests = contestInfo.value
+    const form = {
+      title: contests.title,
+      type: contests.type,
+      description: contests.description,
+      duration: contests.duration,
+      startTime: contests.startTime,
+    }
+    Apis.ContestModule.updateContestInfo(contestId, form).then(body => {
+      if (body.status) {
+        backup = JSON.stringify(contestInfo.value ?? {})
+        const contest = contestStore.getContestById(contestId)
+        contest.contest = contestInfo.value
+        message.success("~ updated ~")
+        readMode.value = true
+      }
+    }).finally(() => {
+      editLoading.value = false
+    })
   }
 }
 
 function doCancel() {
-  contestInfo.value = backup
+  readMode.value = true
+  const temp = JSON.parse(backup)
+  temp.startTime = dayjs(temp.startTime)
+  temp.status = contestInfo.value.status
+  contestInfo.value = temp
 }
 
 const colors = [
@@ -104,10 +129,21 @@ function removeQuestion(questionId) {
     class="global-contest-style"
   >
     <template #extra>
-      <a-button type="primary" @click="doEdit">{{ readMode ? "Edit" : "Save" }}</a-button>
+      <a-button
+        type="primary"
+        @click="doEdit"
+        :loading="editLoading"
+      >{{ readMode ? "Edit" : "Save" }}</a-button>
       <a-button v-if="readMode" danger type="primary" style="margin-left: 20px;">Delete</a-button>
-      <a-button v-else @click="doEdit" style="margin-left: 20px;">Cancel</a-button>
+      <a-button v-else @click="doCancel" style="margin-left: 20px;">Cancel</a-button>
     </template>
+    <a-descriptions-item label="Status">
+      <a-select ref="statusSelect" v-model:value="contestInfo.status" :bordered="false">
+        <a-select-option v-for="status in commonStore.contestStatuses" :value="status.id">
+          <a-badge :color="colors[status.id]" :text="status.text" />
+        </a-select-option>
+      </a-select>
+    </a-descriptions-item>
     <a-descriptions-item label="Title">
       <a-input v-model:value="contestInfo.title" :bordered="false" :disabled="readMode" />
     </a-descriptions-item>
@@ -122,18 +158,6 @@ function removeQuestion(questionId) {
           v-for="cType in commonStore.contestTypes"
           :value="cType.id"
         >{{ cType.text }}</a-select-option>
-      </a-select>
-    </a-descriptions-item>
-    <a-descriptions-item label="Status">
-      <a-select
-        ref="statusSelect"
-        v-model:value="contestInfo.status"
-        :disabled="readMode"
-        :bordered="false"
-      >
-        <a-select-option v-for="status in commonStore.contestStatuses" :value="status.id">
-          <a-badge :color="colors[status.id]" :text="status.text" />
-        </a-select-option>
       </a-select>
     </a-descriptions-item>
     <a-descriptions-item label="Start Time" :span="3">
