@@ -1,5 +1,6 @@
-<script setup>import { ref } from 'vue';
-import { useCommonStore, useQuestionsStore } from '../plugins/pinia';
+<script setup>import { Modal } from 'ant-design-vue';
+import { ref } from 'vue';
+import { useCommonStore, useQuestionStore } from '../plugins/pinia';
 
 
 const props = defineProps({
@@ -9,7 +10,7 @@ const props = defineProps({
 })
 
 const commonStore = useCommonStore()
-const questionsStore = useQuestionsStore()
+const questionStore = useQuestionStore()
 
 const levelsColor = [undefined, "green", "orange", "red"];
 const opentAddQuestionModal = ref(false)
@@ -35,6 +36,16 @@ async function modalOk() {
   addQuestionLoading.value = false
   opentAddQuestionModal.value = false
   selectedQuestions.value = []
+}
+
+async function doDel(questionId) {
+  Modal.confirm({
+    okText: "Delete",
+    title: "Do you want to continue with the delete?",
+    onOk() {
+      props.removeQuestion(questionId)
+    }
+  })
 }
 
 const getCheckboxProps = record => ({
@@ -73,7 +84,7 @@ const questionColumns = [
           >{{ commonStore.getQuestionLevelById(item.level).text }}</a-tag>
         </div>
         <div style="width: 20%; text-align: center;">
-          <a-button type="link" danger size="small" @click="removeQuestion(item.questionId)">Remove</a-button>
+          <a-button type="link" danger size="small" @click="doDel(item.questionId)">Remove</a-button>
         </div>
       </a-list-item>
     </template>
@@ -94,9 +105,9 @@ const questionColumns = [
         <a-table
           :row-selection="{ selectedRowKeys: selectedQuestions, onChange: onSelectChange, getCheckboxProps: getCheckboxProps }"
           rowKey="questionId"
-          :loading="!questionsStore.init"
+          :loading="!questionStore.init"
           :columns="questionColumns"
-          :data-source="questionsStore.data"
+          :data-source="questionStore.data"
         />
       </a-modal>
     </template>
