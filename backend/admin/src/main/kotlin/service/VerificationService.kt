@@ -1,6 +1,7 @@
 package com.korilin.service
 
 import com.korilin.AdminModuleConfig
+import com.korilin.AdminModuleConfig.VERIFICATION_CODE_SIZE
 import com.korilin.ktorm.encodeJson
 import com.korilin.model.AdminLoginModel
 import com.korilin.repository.AdminAccountRepository
@@ -24,25 +25,23 @@ class VerificationService(
     private fun emailVerificationCodeKeyConvert(email: String): String = "EMAIL_VERIFICATION_CODE_KEY_$email"
 
     /**
-     * 生成指定长度的验证码，
+     * 生成 [VERIFICATION_CODE_SIZE] 长度的验证码，
      * 数字和大写、小写字母各生成对应数量的 ASCII 编码，
      * 形成 3 个组合，再聚合起来随机获取形成验证码
-     *
-     * @param codeSize 验证码长度
      */
-    private fun generateCode(codeSize: Int): String {
+    private fun generateCode(): String {
         val array = arrayOf(48, 57, 65, 90, 97, 122)
         var index = 0
         val assemble = LinkedList<Int>().apply {
             repeat(3) {
-                addAll(Array(codeSize) {
+                addAll(Array(VERIFICATION_CODE_SIZE) {
                     Random.nextInt(array[index] until array[index + 1])
                 })
                 index += 2
             }
         }
         return StringBuilder().apply {
-            repeat(codeSize) {
+            repeat(VERIFICATION_CODE_SIZE) {
                 append(assemble.random().toChar())
             }
         }.toString()
@@ -58,7 +57,7 @@ class VerificationService(
      */
     internal suspend fun sendCodeToEmail(email: String): Boolean {
         adminAccountRepository.queryAdminAccount(email) ?: return false
-        val code = generateCode(6)
+        val code = generateCode()
         // TODO 使用协程异步发送到邮箱
         val key = emailVerificationCodeKeyConvert(email)
         // 存入 redis 的验证码 5 分钟有效

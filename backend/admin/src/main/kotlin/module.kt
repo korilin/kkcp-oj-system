@@ -4,6 +4,7 @@ import com.korilin.utils.AESUtil
 
 internal object AdminModuleConfig {
     internal val ADMIN_ACCOUNT_AES_KEY = AESUtil.createKey()
+    internal val VERIFICATION_CODE_SIZE = 6
 
     internal const val ADMIN_URL_PREFIX = "/admin"
 

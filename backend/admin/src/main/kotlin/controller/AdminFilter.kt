@@ -22,8 +22,7 @@ private val parser = PathPatternParser()
  */
 private val patterns = arrayOf(
     parser.parse("${AdminModuleConfig.QUESTION_URL_PREFIX}/**"),
-    parser.parse("${AdminModuleConfig.CONTEST_URL_PREFIX}/**"
-    )
+    parser.parse("${AdminModuleConfig.CONTEST_URL_PREFIX}/**")
 )
 
 @Component

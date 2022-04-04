@@ -22,12 +22,12 @@ class InclusionRepository(database: Database) {
             it.contestId eq contestId
         }.map {
             it.question.apply {
-                codeTemplate = "REMOVE"
-                description = "REMOVE"
+                codeTemplate = "REMOVED"
+                description = "REMOVED"
                 testDataJson = emptyArray()
             }
             it
-        }
+        }.sortedBy { it.sort }
         return resultSet
     }
 
