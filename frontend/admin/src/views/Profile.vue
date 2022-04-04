@@ -1,10 +1,12 @@
 <script setup >
 import { Modal } from 'ant-design-vue';
 import { ref } from 'vue';
-import { useAccountStore } from '../plugins/pinia';
+import { useAccountStore, useContestStore, useQuestionsStore } from '../plugins/pinia';
 import { goLogin } from '../utils/router-helper';
 
 const accountStore = useAccountStore();
+const questionStore = useQuestionsStore();
+const contestStore = useContestStore
 const account = ref(accountStore.account);
 
 function logout() {
@@ -13,6 +15,8 @@ function logout() {
     okType: 'danger',
     onOk() {
       accountStore.clean()
+      questionStore.clean()
+      contestStore.clean()
       window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_TOKEN_KEY);
       window.sessionStorage.removeItem(import.meta.env.VITE_ADMIN_ACCOUNT_KEY);
       goLogin();

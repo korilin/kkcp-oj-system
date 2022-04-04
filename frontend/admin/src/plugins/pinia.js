@@ -60,9 +60,12 @@ export const useContestStore = defineStore("contests", {
     }
   },
   actions: {
-    async refreshData() {
+    async clean() {
       this.init = false
       this.data = []
+    },
+    async refreshData() {
+      this.clean()
       return this.initData()
     },
     async initData() {
@@ -90,9 +93,12 @@ export const useQuestionsStore = defineStore("questions", {
     data: [],
   }),
   actions: {
-    async refreshData() {
+    async clean() {
       this.init = false
       this.data = []
+    },
+    async refreshData() {
+      this.clean()
       return this.initData()
     },
     async initData() {
