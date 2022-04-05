@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import InstantUploadBox from "../components/InstantUploadBox.vue";
 import { useCommonStore } from "../plugins/pinia";
 import * as echarts from 'echarts';
+import { goContestItem } from "../utils/router-helper";
 
 const props = defineProps({
   question: Object,
@@ -81,6 +82,14 @@ async function doCancel() {
   props.cancelAction?.();
   readMode.value = true;
 }
+
+const colors = [
+  'pink',
+  'purple',
+  'blue',
+  'geekblue',
+  'green',
+];
 </script>
 <template>
   <a-descriptions class="global-question-desc-style">
@@ -138,8 +147,11 @@ async function doCancel() {
       <a-divider>引用场次</a-divider>
       <a-list size="small" :data-source="contests" :locale="{ emptyText: '没有引用本题目的竞赛场次' }">
         <template #renderItem="{ item }">
-          <a-list-item>
-            <a-button type="link">{{ item.title }}</a-button>
+          <a-list-item style="justify-content: flex-start;">
+            <a-button type="link" @click="goContestItem(item.contestId)">{{ item.title }}</a-button>
+            <a-tag
+              :color="colors[item.status]"
+            >{{ commonStore.getContestStatusById([item.status]).text }}</a-tag>
           </a-list-item>
         </template>
       </a-list>

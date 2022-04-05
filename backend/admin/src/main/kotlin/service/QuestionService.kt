@@ -6,6 +6,7 @@ import com.korilin.ktorm.globalJsonMapper
 import com.korilin.model.Commits
 import com.korilin.model.QuestionForm
 import com.korilin.model.QuestionDetail
+import com.korilin.repository.InclusionRepository
 import com.korilin.repository.QuestionRepository
 import com.korilin.table.Question
 import javaslang.Tuple2
@@ -14,7 +15,10 @@ import kotlinx.coroutines.coroutineScope
 import org.springframework.stereotype.Service
 
 @Service
-internal class QuestionService(private val questionRepository: QuestionRepository) {
+internal class QuestionService(
+    private val questionRepository: QuestionRepository,
+    private val inclusionRepository: InclusionRepository
+    ) {
 
     internal suspend fun getAllQuestions() = questionRepository.queryAllQuestions()
 
@@ -40,7 +44,7 @@ internal class QuestionService(private val questionRepository: QuestionRepositor
     internal suspend fun getQuestionDetail(questionId: Int): QuestionDetail? {
         return coroutineScope {
             val questionAsync = async { questionRepository.findQuestionById(questionId) }
-            val contestsAsync = async { listOf<Unit>() }
+            val contestsAsync = async { inclusionRepository.getContestsByQuestionId(questionId)  }
             val commitsAsync = async { Commits(100, 45) }
             val question = questionAsync.await() ?: return@coroutineScope null
             val contests = contestsAsync.await()

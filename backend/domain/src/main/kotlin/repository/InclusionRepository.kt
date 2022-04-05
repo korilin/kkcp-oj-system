@@ -32,6 +32,16 @@ class InclusionRepository(database: Database) {
         return resultSet
     }
 
+    fun getContestsByQuestionId(questionId: Int): List<Contest> {
+        val resultSet = inclusions.filter {
+            it.questionId eq questionId
+        }.map {
+            it.contest.description = "REMOVED"
+            it.contest
+        }
+        return resultSet
+    }
+
     fun addInclusion(contest: Contest, question: Question, sort: Int): Boolean {
         return inclusions.add(Inclusion {
                 this.contest= contest
