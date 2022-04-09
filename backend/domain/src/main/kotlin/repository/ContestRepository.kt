@@ -1,5 +1,7 @@
 package com.korilin.repository
 
+import com.korilin.AbnormalStatusException
+import com.korilin.bo.ContestStatus
 import com.korilin.table.Contest
 import com.korilin.table.Contests
 import org.ktorm.database.Database
@@ -9,6 +11,7 @@ import org.ktorm.dsl.select
 import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class ContestRepository(database: Database) {
@@ -25,4 +28,21 @@ class ContestRepository(database: Database) {
 
     fun newContest(contest: Contest) = contests.add(contest) == 1
 
+    @Transactional
+    suspend fun updateStatus(contest: Contest, status: ContestStatus): Int {
+        if (status == ContestStatus.RELEASE || status == ContestStatus.COMPLETE) {
+            synchronized(this) {
+                val f = contests.find { it.status eq status.id }
+                if (f != null) {
+                    throw AbnormalStatusException("There has a ${status.text} contest ${f.contestId}_${f.title}")
+                }
+                contest.status = status.id
+                return contest.flushChanges()
+            }
+        } else {
+            contest.status = status.id
+            return contest.flushChanges()
+        }
+    }
 }
+

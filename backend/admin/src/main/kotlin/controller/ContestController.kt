@@ -1,7 +1,7 @@
 package com.korilin.controller
 
+import com.korilin.*
 import com.korilin.AdminModuleConfig
-import com.korilin.IResponseBody
 import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.annotations.RegisterExceptionMessage
 import com.korilin.model.ContestForm
@@ -64,5 +64,18 @@ class ContestController(private val contestService: ContestService) {
     suspend fun inclusionUpdate(contestId: Int, questionId: Int, offset: Int): IResponseBody<Array<Question>> {
         val questions = contestService.updateInclusionSort(contestId, questionId, offset)
         return IResponseBody.success(data = questions.toTypedArray())
+    }
+
+    @PutMapping("/update/status")
+    @ExceptionMessageHandler
+    @RegisterExceptionMessage(ContestNotFoundException::class, "Could not found the contest!")
+    @RegisterExceptionMessage(ContestStatusNotFoundException::class, "Error Contest Status!")
+    suspend fun updateStatus(contestId: Int, status: Int): IResponseBody<Int> {
+        val newStatus = try {
+            contestService.updateStatus(contestId, status)
+        } catch (e: AbnormalStatusException) {
+            return IResponseBody.error(e.message!!, data = status)
+        }
+        return IResponseBody(newStatus == status, "", data = newStatus)
     }
 }

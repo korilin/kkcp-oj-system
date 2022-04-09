@@ -1,5 +1,7 @@
 package com.korilin.bo
 
+import java.lang.IndexOutOfBoundsException
+
 enum class ContestType(val id: Int, val text: String) {
     TEST(0, "Test"), PRACTICE(1, "Practice"), ACTIVITY(2, "Activity");
 
@@ -13,6 +15,13 @@ enum class ContestType(val id: Int, val text: String) {
     }
 }
 
+/**
+ * - [PLAN] 在准备状态，用户不会看到
+ * - [RELEASE] 发布状态，将作为当前活动显示在主页，同一时间只能有一个 Contest 处于发布状态
+ * - [UNDERWAY] 进行中状态，由系统定时器在 [RELEASE] 的 Contest 到达 Start Time 时自动更新，或由管理员手动更
+ * - [COMPLETE] 当 [UNDERWAY] 状态的 Contest duration 耗尽时进入 [COMPLETE] 状态，用户无法再进入 Contest 进行答题
+ * - [PUBLISH] 由管理员完成数据审核后手动切换到该状态，公布该 Contest 的参与数据和排名信息
+ */
 enum class ContestStatus(val id: Int, val text: String) {
     PLAN(0, "Planning"), RELEASE(1, "Release"), UNDERWAY(2, "Under Way"),
     COMPLETE(3, "Complete"), PUBLISH(4, "Publish");
@@ -24,5 +33,14 @@ enum class ContestStatus(val id: Int, val text: String) {
         }
 
         fun toArray() = arrayOf(PLAN, RELEASE, UNDERWAY, COMPLETE, PUBLISH)
+
+        operator fun get(id: Int) = when (id) {
+            0 -> PLAN
+            1 -> RELEASE
+            2 -> UNDERWAY
+            3 -> COMPLETE
+            4 -> PUBLISH
+            else -> null
+        }
     }
 }

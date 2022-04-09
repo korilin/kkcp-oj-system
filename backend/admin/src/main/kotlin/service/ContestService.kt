@@ -1,19 +1,24 @@
 package com.korilin.service
 
+import com.korilin.ContestNotFoundException
+import com.korilin.ContestStatusNotFoundException
+import com.korilin.bo.ContestStatus
 import com.korilin.model.ContestForm
 import com.korilin.model.ContestInfo
 import com.korilin.repository.ContestRepository
 import com.korilin.repository.InclusionRepository
 import com.korilin.repository.QuestionRepository
 import com.korilin.table.Contest
-import com.korilin.table.Inclusion
 import com.korilin.table.Question
+import com.korilin.toSecond
 import javaslang.Tuple2
+import kotlinx.coroutines.*
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
+import java.time.LocalDateTime
 
 @Service
 class ContestService(
@@ -130,5 +135,62 @@ class ContestService(
             }
         }
         return inclusionRepository.getAllByContestsId(contestId).map { it.question }
+    }
+
+    suspend fun updateStatus(contestId: Int, statusId: Int): Int {
+        val contest = contestsRepository.findContestById(contestId) ?: throw ContestNotFoundException()
+        val old = contest.status
+        val status = ContestStatus[statusId] ?: throw ContestStatusNotFoundException(statusId)
+        val result = withContext(Dispatchers.IO) {
+            contestsRepository.updateStatus(contest, status)
+        }
+        if (result == 0) return old
+        val oldStatus = ContestStatus[old]
+        if (oldStatus == ContestStatus.RELEASE || oldStatus == ContestStatus.UNDERWAY) {
+            cancelTask()
+        }
+        if (status == ContestStatus.RELEASE) {
+            nextRelease(contestId, contest.startTime.toSecond())
+        } else if (status == ContestStatus.UNDERWAY) {
+            nextUnderway(contestId, contest.duration)
+        }
+        return contest.status
+    }
+
+    private var taskScope: CoroutineScope? = null
+
+    private fun cancelTask() {
+        taskScope?.cancel()
+        taskScope = null
+    }
+
+    private suspend fun setTask(interval: Long, block: suspend () -> Unit) {
+        cancelTask()
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            delay(interval)
+            block()
+            cancelTask()
+        }
+    }
+
+    /**
+     * - 更新 [Contest] 状态为 [ContestStatus.UNDERWAY]
+     * - 开启通知邮件推送 TODO
+     */
+    private suspend fun nextRelease(contestId: Int, startTimeSecond: Long) {
+        val interval = startTimeSecond - LocalDateTime.now().toSecond()
+        setTask(interval * 1000) {
+            updateStatus(contestId, ContestStatus.UNDERWAY.id)
+        }
+    }
+
+    /**
+     * - 更新 [Contest] 状态为 [ContestStatus.COMPLETE]
+     */
+    private suspend fun nextUnderway(contestId: Int, duration: Int) {
+        setTask(duration * 1000L) {
+            updateStatus(contestId, ContestStatus.COMPLETE.id)
+        }
     }
 }
