@@ -11,10 +11,18 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 
 @Service
-class AuthService {
+class AuthService(
+    private val redisTemplate: StringRedisTemplate
+) {
+
+    companion object {
+        private const val USER_TOKEN_KEY_PREFIX = "USER_TOKEN_KEY_PREFIX_"
+    }
 
     private val client: HttpClient = HttpClient(CIO) {
         install(JsonFeature) {
@@ -38,4 +46,13 @@ class AuthService {
         return response.receive();
     }
 
+    internal suspend fun saveUserToken(uid: String, token: String) {
+        val key = "$USER_TOKEN_KEY_PREFIX$uid"
+        redisTemplate.opsForValue().set(key, token, 5, TimeUnit.MINUTES)
+    }
+
+    internal suspend fun getUserToken(uid: String): String? {
+        val key = "$USER_TOKEN_KEY_PREFIX$uid"
+        return redisTemplate.opsForValue().get(key)
+    }
 }
