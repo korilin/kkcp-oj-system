@@ -1,3 +1,4 @@
+import axios from "axios";
 import { defineStore } from "pinia";
 import HttpService from "../utils/axios-service";
 
@@ -40,6 +41,7 @@ export const useCommonStore = defineStore("common", {
       questionLevels: [],
       contestTypes: [],
       contestStatuses: [],
+      init: false
     };
   },
   getters: {
@@ -60,22 +62,22 @@ export const useCommonStore = defineStore("common", {
   },
   actions: {
     async initData() {
-      questionDefineData().then((result) => {
-        if (result.levels.status) {
-          this.questionLevels = result.levels.data;
-        }
-        if (result.types.status) {
-          this.questionTypes = result.types.data;
-        }
-      })
-      contestDefineData().then(result => {
-        if (result.types.status) {
-          this.contestTypes = result.types.data
-        }
-        if (result.statuses.status) {
-          this.contestStatuses = result.statuses.data
-        }
-      })
+      axios.all([questionDefineData(), contestDefineData()])
+        .then(axios.spread((r1, r2) => {
+          if (r1.levels.status) {
+            this.questionLevels = r1.levels.data;
+          }
+          if (r1.types.status) {
+            this.questionTypes = r1.types.data;
+          }
+          if (r2.types.status) {
+            this.contestTypes = r2.types.data
+          }
+          if (r2.statuses.status) {
+            this.contestStatuses = r2.statuses.data
+          }
+          this.init = true
+        }))
     }
   }
 });

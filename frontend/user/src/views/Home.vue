@@ -73,8 +73,8 @@ contestStore.ensureInit().then(() => {
           <div>
             <h5>{{ releaseContest.title }}</h5>
             <div>
-              <a-tag>StartTime: {{ releaseContest.startTime }}</a-tag>
-              <a-tag color="blue">Duration: {{ getDurationTime(releaseContest.duration) }}</a-tag>
+              <a-tag>开始时间：{{ releaseContest.startTime }}</a-tag>
+              <a-tag color="blue">时长：{{ getDurationTime(releaseContest.duration) }}</a-tag>
               <a-tag color="purple">{{ commonStore.getContestTypeById(releaseContest.type).text }}</a-tag>
             </div>
             <div style="margin-top: 20px;">{{ releaseContest.description }}</div>

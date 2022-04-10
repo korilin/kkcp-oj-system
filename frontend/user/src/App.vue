@@ -5,6 +5,7 @@ import { useCommonStore } from "./plugins/pinia";
 const commonStore = useCommonStore()
 commonStore.initData()
 
+commonStore.initData()
 </script>
 
 <template>
@@ -13,10 +14,12 @@ commonStore.initData()
       <Header />
     </a-layout-header>
     <a-layout-content>
-      <router-view />
+      <router-view v-if="commonStore.init" />
+      <div v-else style="text-align: center; margin-top: 50px;">
+        <a-spin />
+      </div>
     </a-layout-content>
-    <a-layout-footer>
-    </a-layout-footer>
+    <a-layout-footer></a-layout-footer>
   </a-layout>
 </template>
 
