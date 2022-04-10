@@ -2,6 +2,10 @@
 import KotlinSVG from "../components/KotlinSVG.vue"
 import TrophySVG from "../components/TrophySVG.vue"
 import { ref } from 'vue';
+import { useContestStore } from "../plugins/pinia";
+import { useCommonStore } from "../../../admin/src/plugins/pinia";
+import { getDurationTime } from "../utils/utils";
+import { LoginOutlined } from "@ant-design/icons-vue"
 
 // 定义页面文本 & 默认状态属性
 const heroTitle = "Kotlin Knowledge Contest";
@@ -9,7 +13,8 @@ const heroSubtitle = "Kotlin 编程知识竞赛";
 const noActiveSeminar = "当前没有进行中的活动";
 const loading = "loading...";
 
-const releaseContest = ref(null)
+const contestStore = useContestStore()
+const commonStore = useCommonStore()
 
 const columns = [
   { title: "以往竞赛", dataIndex: "title", key: "title" },
@@ -36,9 +41,12 @@ const toolLinks = [
   }
 ];
 
-function getReleaseContest() {
+const releaseContest = ref(null)
 
-}
+contestStore.ensureInit().then(() => {
+  releaseContest.value = contestStore.releaseContest
+})
+
 </script>
 
 <template>
@@ -58,8 +66,25 @@ function getReleaseContest() {
     <div class="current-seminar">
       <a-card :bordered="false" class="widget-1">
         <a-empty v-if="releaseContest == null" :description="noActiveSeminar" />
-        <div v-else>
-          HI
+        <div
+          v-else
+          style="padding: 10px; display: flex; align-items: center; justify-content: space-between;"
+        >
+          <div>
+            <h5>{{ releaseContest.title }}</h5>
+            <div>
+              <a-tag>StartTime: {{ releaseContest.startTime }}</a-tag>
+              <a-tag color="blue">Duration: {{ getDurationTime(releaseContest.duration) }}</a-tag>
+              <a-tag color="purple">{{ commonStore.getContestTypeById(releaseContest.type).text }}</a-tag>
+            </div>
+            <div style="margin-top: 20px;">{{ releaseContest.description }}</div>
+          </div>
+          <div style="text-align: center; cursor: pointer; padding: 10px; font-weight: bold;">
+            <div>
+              <LoginOutlined :style="{ fontSize: '35px', color: '#1890FF' }" />
+            </div>
+            <div style="margin-top: 10px; color: #1890FF; font-size: 14px;">活动报名</div>
+          </div>
         </div>
       </a-card>
     </div>

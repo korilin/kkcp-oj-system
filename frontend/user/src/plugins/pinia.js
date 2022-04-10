@@ -80,3 +80,37 @@ export const useCommonStore = defineStore("common", {
   }
 });
 
+export const useContestStore = defineStore("contest", {
+  state: () => ({
+    releaseContest: null,
+    contestRecord: [],
+    init: false
+  }),
+  getters: {
+
+  },
+  actions: {
+    async clean() {
+      this.init = false
+      this.releaseContest = null
+      this.contestRecord = []
+    },
+    async refreshData() {
+      this.clean()
+      return this.initData()
+    },
+    async initData() {
+      return HttpService.get("/visitor/query/contest/release").then(body => {
+        if (body.status) {
+          this.init = true
+          this.releaseContest = body.data
+        }
+      })
+    },
+    async ensureInit() {
+      if (!this.init) {
+        return this.initData();
+      }
+    }
+  }
+})
