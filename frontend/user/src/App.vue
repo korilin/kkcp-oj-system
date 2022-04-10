@@ -1,5 +1,10 @@
 <script setup>
 import Header from "./components/Header.vue"
+import { useCommonStore } from "./plugins/pinia";
+
+const commonStore = useCommonStore()
+commonStore.initData()
+
 </script>
 
 <template>

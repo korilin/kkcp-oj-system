@@ -7,7 +7,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  config.headers["Admin-Token"] = getToken();
+  config.headers["User-Github-Token"] = getToken();
   return config;
 });
 
