@@ -177,7 +177,7 @@ const colors = [
           class="upload-box"
           style="width: 80%;"
           :text="'题目描述: 上传 Markdown 文件进行解析'"
-          :hint="'最后更新时间: ' + question.codeTemplateLastUpdateTime"
+          :hint="'最后更新时间: ' + question.descriptionLastUpdateTime"
           :handleChange="handleDescriptionChange"
           kkcp-icon="icon-markdown"
         />

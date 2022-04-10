@@ -22,14 +22,17 @@ enum class ContestType(val id: Int, val text: String) {
  * - [COMPLETE] 当 [UNDERWAY] 状态的 Contest duration 耗尽时进入 [COMPLETE] 状态，用户无法再进入 Contest 进行答题
  * - [PUBLISH] 由管理员完成数据审核后手动切换到该状态，公布该 Contest 的参与数据和排名信息
  */
-enum class ContestStatus(val id: Int, val text: String) {
-    PLAN(0, "Planning"), RELEASE(1, "Release"), UNDERWAY(2, "Under Way"),
-    COMPLETE(3, "Complete"), PUBLISH(4, "Publish");
+enum class ContestStatus(val id: Int, val text: String, val desc: String ="") {
+    PLAN(0, "Planning", "User will not see the contest."),
+    RELEASE(1, "Release", "The contest will be display on the site. Only one contest can be in the release status!"),
+    UNDERWAY(2, "Under Way", "The contest will open the question entry."),
+    COMPLETE(3, "Complete", "The contest will close the question entry."),
+    PUBLISH(4, "Publish", "The contest will show in publish record.");
 
     companion object {
         private fun arrayOf(vararg statuses: ContestStatus) = Array(statuses.size) { index ->
             val status = statuses[index]
-            mapOf("id" to status.id, "text" to status.text)
+            mapOf("id" to status.id, "text" to status.text, "updateDesc" to status.desc)
         }
 
         fun toArray() = arrayOf(PLAN, RELEASE, UNDERWAY, COMPLETE, PUBLISH)

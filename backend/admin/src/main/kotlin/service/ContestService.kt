@@ -170,7 +170,6 @@ class ContestService(
         scope.launch {
             delay(interval)
             block()
-            cancelTask()
         }
     }
 

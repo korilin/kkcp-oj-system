@@ -26,6 +26,7 @@ function getDataFromStore() {
   const contest = contestStore.getContestById(contestId)
   contestInfo.value = contest.contest
   questions.value = contest.questions
+  backup = JSON.stringify(contestInfo.value ?? {})
 }
 
 contestStore.ensureInit().then(() => {
@@ -136,6 +137,22 @@ function deleteContest() {
     }
   })
 }
+
+function onStatusChange(value) {
+  const status = commonStore.getContestStatusById(value)
+  Modal.info({
+    title: `Status will be update to ${status.text}`,
+    content: status.updateDesc,
+    onOk() {
+      Apis.ContestModule.updateStatus(contestId, value).then(body => {
+        if(body.status) {
+          contestInfo.value.status = body.data
+          message.success("Update Success!")
+        }
+      })
+    },
+  })
+}
 </script>
 <template>
   <div v-if="!contestStore.init" style="text-align: center;">
@@ -162,7 +179,12 @@ function deleteContest() {
       <a-button v-else @click="doCancel" style="margin-left: 20px;">Cancel</a-button>
     </template>
     <a-descriptions-item label="Status">
-      <a-select ref="statusSelect" v-model:value="contestInfo.status" :bordered="false">
+      <a-select
+        ref="statusSelect"
+        v-model:value="contestInfo.status"
+        :bordered="false"
+        @change="onStatusChange"
+      >
         <a-select-option v-for="status in commonStore.contestStatuses" :value="status.id">
           <a-badge :color="colors[status.id]" :text="status.text" />
         </a-select-option>
