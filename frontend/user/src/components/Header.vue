@@ -3,14 +3,21 @@ import { ref } from 'vue';
 import AuthCard from './AuthCard.vue';
 import { CloseOutlined } from '@ant-design/icons-vue';
 import { goHome } from "../utils/router-helper";
+import { useUserStore } from '../plugins/pinia';
 
 const isAuthCardShow = ref(false)
+const userStore = useUserStore()
 
 </script>
 
 <template>
     <div class="header-wrap">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 24" class="kotlin-logo" @click="goHome">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 100 24"
+            class="kotlin-logo"
+            @click="goHome"
+        >
             <radialGradient
                 id="kotlin-logo-large_svg__a"
                 cx="22.432"
@@ -37,7 +44,8 @@ const isAuthCardShow = ref(false)
             </g>
         </svg>
         <span class="account">
-            <a-button @click="isAuthCardShow = true">登录/注册</a-button>
+            <a-button @click="isAuthCardShow = true" v-if="userStore.profile == null">登录/注册</a-button>
+            <a-avatar v-else :src="userStore.profile.avatar_url" />
         </span>
     </div>
     <div class="auth-card-shade" :class="{ 'auth-card-shade-show': isAuthCardShow }">

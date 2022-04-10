@@ -116,3 +116,21 @@ export const useContestStore = defineStore("contest", {
     }
   }
 })
+
+export const useUserStore = defineStore("user", {
+  state: () => ({
+    token: null,
+    profile: null,
+  }),
+  actions: {
+    async initProfile() {
+      const config = {
+        headers: {
+          Authorization: `token ${this.token}`
+        }
+      }
+      const response = await axios.get("https://api.github.com/user", config)
+      this.profile = response.data
+    }
+  }
+})

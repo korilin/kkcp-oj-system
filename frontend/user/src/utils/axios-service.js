@@ -7,7 +7,6 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  config.headers["User-Github-Token"] = getToken();
   return config;
 });
 
@@ -30,15 +29,6 @@ instance.interceptors.response.use(
   }
 );
 
-function getToken() {
-  var token = window.sessionStorage.getItem(
-    import.meta.env.VITE_ADMIN_TOKEN_KEY
-  );
-  if (token == null || token == undefined) {
-    token = "No Login";
-  }
-  return token;
-}
 
 const HttpService = instance;
 

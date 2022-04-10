@@ -5,11 +5,9 @@ const url = "https://github.com/login/oauth/authorize";
 const clientId = "ec5b9941d159dac959aa";
 const redirectUri = "http://localhost:2021/api/auth/callback"
 
-const state = ""
-
-const scope = "read:user user:email"
-
 function githubAuth() {
+    const state = window.localStorage.getItem(import.meta.env.VITE_UID_KEY);
+    const scope = "read:user user:email"
     window.open(url + "?client_id=" + clientId + "&redirect_uri=" + redirectUri + "&scope=" + scope + "&state=" + state, "_self");
 }
 
