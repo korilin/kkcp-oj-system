@@ -2,6 +2,7 @@ package com.korilin.service
 
 import com.korilin.ContestNotFoundException
 import com.korilin.ContestStatusNotFoundException
+import com.korilin.IntervalLessThanZeroException
 import com.korilin.bo.ContestStatus
 import com.korilin.model.ContestForm
 import com.korilin.model.ContestInfo
@@ -150,9 +151,9 @@ class ContestService(
             cancelTask()
         }
         if (status == ContestStatus.RELEASE) {
-            nextRelease(contestId, contest.startTime.toSecond())
+            nextRelease(contestId, contest.startTime)
         } else if (status == ContestStatus.UNDERWAY) {
-            nextUnderway(contestId, contest.duration)
+            nextUnderway(contestId, contest.startTime, contest.duration)
         }
         return contest.status
     }
@@ -177,8 +178,9 @@ class ContestService(
      * - 更新 [Contest] 状态为 [ContestStatus.UNDERWAY]
      * - 开启通知邮件推送 TODO
      */
-    private suspend fun nextRelease(contestId: Int, startTimeSecond: Long) {
-        val interval = startTimeSecond - LocalDateTime.now().toSecond()
+    private suspend fun nextRelease(contestId: Int, startTime: LocalDateTime) {
+        var interval = startTime.toSecond() - LocalDateTime.now().toSecond()
+        if (interval < 0) interval = 0
         setTask(interval * 1000) {
             updateStatus(contestId, ContestStatus.UNDERWAY.id)
         }
@@ -187,8 +189,10 @@ class ContestService(
     /**
      * - 更新 [Contest] 状态为 [ContestStatus.COMPLETE]
      */
-    private suspend fun nextUnderway(contestId: Int, duration: Int) {
-        setTask(duration * 1000L) {
+    private suspend fun nextUnderway(contestId: Int, startTime: LocalDateTime, duration: Int) {
+        var interval = startTime.toSecond() + duration - LocalDateTime.now().toSecond()
+        if(interval < 0) interval = 0
+        setTask(interval * 1000) {
             updateStatus(contestId, ContestStatus.COMPLETE.id)
         }
     }
