@@ -22,7 +22,7 @@ class VerificationController(
     @ExceptionMessageHandler
     suspend fun sendVerificationCode(@RequestParam("email") email: String): IResponseBody<Unit> {
         val result = verificationService.sendCodeToEmail(email)
-        return if (result) IResponseBody.success("~ verification code send success ~")
+        return if (result) IResponseBody.success(message = "~ verification code send success ~")
         else IResponseBody.error("The admin account doesn't exit !")
     }
 
@@ -35,7 +35,7 @@ class VerificationController(
         val result = verificationService.verifyLoginCode(body.email, body.code)
         if (!result) return IResponseBody.error("验证码错误或已过期")
         verificationService.doAdminLogin(body.email)?.let {
-            return IResponseBody.success("登录成功", it)
+            return IResponseBody.success(message = "登录成功", data = it)
         }
         return IResponseBody.error("登录失败，获取不到对应用户")
     }

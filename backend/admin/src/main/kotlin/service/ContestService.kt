@@ -2,7 +2,6 @@ package com.korilin.service
 
 import com.korilin.ContestNotFoundException
 import com.korilin.ContestStatusNotFoundException
-import com.korilin.IntervalLessThanZeroException
 import com.korilin.bo.ContestStatus
 import com.korilin.model.ContestForm
 import com.korilin.model.ContestInfo

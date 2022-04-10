@@ -30,7 +30,7 @@ class ContestRepository(database: Database) {
     fun newContest(contest: Contest) = contests.add(contest) == 1
 
     fun findReleaseContest() = contests.find {
-        it.status eq ContestStatus.RELEASE.id
+        (it.status eq ContestStatus.RELEASE.id) or (it.status eq ContestStatus.UNDERWAY.id)
     }
 
     @Transactional
