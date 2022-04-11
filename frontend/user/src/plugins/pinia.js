@@ -117,6 +117,10 @@ export const useContestStore = defineStore("contest", {
   }
 })
 
+async function updateProfile(profile) {
+  await HttpService.put("/user/update", profile)
+}
+
 export const useUserStore = defineStore("user", {
   state: () => ({
     token: null,
@@ -130,7 +134,16 @@ export const useUserStore = defineStore("user", {
         }
       }
       const response = await axios.get("https://api.github.com/user", config)
-      this.profile = response.data
+      this.profile = {
+        id: response.data.id,
+        login: response.data.login,
+        name: response.data.name,
+        email: response.data.email,
+        avatarUrl: response.data.avatar_url,
+        bio: response.data.bio,
+        htmlUrl: response.data.html_url
+      }
+      updateProfile(this.profile)
     }
   }
 })

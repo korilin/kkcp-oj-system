@@ -45,7 +45,7 @@ const userStore = useUserStore()
         </svg>
         <span class="account">
             <a-button @click="isAuthCardShow = true" v-if="userStore.profile == null">登录/注册</a-button>
-            <a-avatar v-else :src="userStore.profile.avatar_url" />
+            <a-avatar v-else :src="userStore.profile.avatarUrl" />
         </span>
     </div>
     <div class="auth-card-shade" :class="{ 'auth-card-shade-show': isAuthCardShow }">
