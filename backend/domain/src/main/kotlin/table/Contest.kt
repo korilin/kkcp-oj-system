@@ -14,7 +14,7 @@ interface Contest: Entity<Contest> {
     var title: String
     var type: Int
     var description: String // html
-    var duration: Int // second
+    var duration: Int // min 分钟
     var startTime: LocalDateTime
     var status: Int // extendability status type
 }

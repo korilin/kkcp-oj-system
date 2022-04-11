@@ -49,7 +49,7 @@ function doEdit() {
       type: contests.type,
       description: contests.description,
       duration: contests.duration,
-      startTime: contests.startTime,
+      startTime: contests.startTime.format('YYYY-MM-DD HH:mm:ss'),
     }
     Apis.ContestModule.updateContestInfo(contestId, form).then(body => {
       if (body.status) {
@@ -145,9 +145,11 @@ function onStatusChange(value) {
     content: status.updateDesc,
     onOk() {
       Apis.ContestModule.updateStatus(contestId, value).then(body => {
-        if(body.status) {
+        if (body.status) {
           contestInfo.value.status = body.data
           message.success("Update Success!")
+        } else if (body.status == false) {
+          contestInfo.value.status = body.data
         }
       })
     },

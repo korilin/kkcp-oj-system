@@ -40,7 +40,7 @@ class ContestRepository(database: Database) {
                 val f = contests.find {
                     (it.status eq ContestStatus.RELEASE.id) or (it.status eq ContestStatus.UNDERWAY.id)
                 }
-                if (f != null) {
+                if (f != null && f.contestId != contest.contestId) {
                     throw AbnormalStatusException("There has a ${status.text} contest ${f.contestId}_${f.title}")
                 }
             }

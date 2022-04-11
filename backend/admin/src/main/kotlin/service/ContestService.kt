@@ -164,11 +164,14 @@ class ContestService(
         taskScope = null
     }
 
+    /**
+     * @param interval 单位：秒
+     */
     private suspend fun setTask(interval: Long, block: suspend () -> Unit) {
         cancelTask()
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            delay(interval)
+            delay(interval * 1000L)
             block()
         }
     }
@@ -178,9 +181,10 @@ class ContestService(
      * - 开启通知邮件推送 TODO
      */
     private suspend fun nextRelease(contestId: Int, startTime: LocalDateTime) {
-        var interval = startTime.toSecond() - LocalDateTime.now().toSecond()
+        val now = LocalDateTime.now()
+        var interval = startTime.toSecond() - now.toSecond()
         if (interval < 0) interval = 0
-        setTask(interval * 1000) {
+        setTask(interval) {
             updateStatus(contestId, ContestStatus.UNDERWAY.id)
         }
     }
@@ -189,9 +193,9 @@ class ContestService(
      * - 更新 [Contest] 状态为 [ContestStatus.COMPLETE]
      */
     private suspend fun nextUnderway(contestId: Int, startTime: LocalDateTime, duration: Int) {
-        var interval = startTime.toSecond() + duration - LocalDateTime.now().toSecond()
+        var interval = startTime.toSecond() + duration * 60 - LocalDateTime.now().toSecond()
         if(interval < 0) interval = 0
-        setTask(interval * 1000) {
+        setTask(interval) {
             updateStatus(contestId, ContestStatus.COMPLETE.id)
         }
     }

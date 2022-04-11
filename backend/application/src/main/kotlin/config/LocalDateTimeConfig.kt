@@ -14,11 +14,12 @@ import java.time.format.DateTimeFormatter
 class LocalDateTimeConfig {
 
     @Bean
-    fun formatter() : Module{
+    fun formatter(): Module {
         return JavaTimeModule().apply {
             val jClass = LocalDateTime::class.java
             val formatter = DateTimeFormatter.ofPattern(LOCAL_DATE_TIME_PATTERN)
-            // addDeserializer(jClass, LocalDateTimeDeserializer(formatter))
+            // yyyy-MM-dd HH:mm:ss
+            addDeserializer(jClass, LocalDateTimeDeserializer(formatter))
             addSerializer(jClass, LocalDateTimeSerializer(formatter))
         }
     }
