@@ -4,11 +4,9 @@ import com.korilin.urls.FrontendUrl
 import com.korilin.IResponseBody
 import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.service.AuthService
+import com.korilin.table.UserProfile
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.result.view.Rendering
 import java.util.*
 
@@ -52,5 +50,13 @@ class AuthController(
     suspend fun getAuthToken(uid: String): IResponseBody<String> {
         val token = authService.getUserToken(uid)
         return IResponseBody.success(token)
+    }
+
+    @PutMapping("/user/update")
+    @ResponseBody
+    @ExceptionMessageHandler
+    suspend fun updateUserProfile(@RequestBody profile: UserProfile): IResponseBody<Boolean> {
+
+        return IResponseBody.success(authService.updateProfile(profile))
     }
 }
