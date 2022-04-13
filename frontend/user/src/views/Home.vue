@@ -6,6 +6,7 @@ import { useContestStore } from "../plugins/pinia";
 import { useCommonStore } from "../../../admin/src/plugins/pinia";
 import { getDurationTime } from "../utils/utils";
 import { LoginOutlined } from "@ant-design/icons-vue"
+import { message } from "ant-design-vue";
 
 // 定义页面文本 & 默认状态属性
 const heroTitle = "Kotlin Knowledge Contest";
@@ -25,20 +26,9 @@ const columns = [
 const records = [];
 
 const toolLinks = [
-
-  {
-    text: "帮助文档",
-    link: "",
-  },
-
-  {
-    text: "问题反馈",
-    link: "",
-  },
-  {
-    text: "社区合作",
-    link: "",
-  }
+  { text: "帮助文档", link: "", },
+  { text: "问题反馈", link: "", },
+  { text: "社区合作", link: "", }
 ];
 
 const releaseContest = ref(null)
@@ -46,6 +36,35 @@ const releaseContest = ref(null)
 contestStore.ensureInit().then(() => {
   releaseContest.value = contestStore.releaseContest
 })
+
+const releaseColor = '#1890FF'
+const underWayColor = '#8C8C8C'
+
+function getReleaseColor() {
+  if (releaseContest.value.status == 1) {
+    return releaseColor
+  } else {
+    return underWayColor
+  }
+}
+
+function getReleaseNavButtonText() {
+  if (releaseContest.value.status == 1) {
+    return "报名比赛"
+  } else if (releaseContest.value.status == 2) {
+    return "进入比赛"
+  } else {
+    return "已结束"
+  }
+}
+
+function applyContest() {
+  if (releaseContest.value.status == 1) {
+
+  } else {
+    message.info("活动进行中，已截止报名")
+  }
+}
 
 </script>
 
@@ -71,7 +90,10 @@ contestStore.ensureInit().then(() => {
           style="padding: 10px; display: flex; align-items: center; justify-content: space-between;"
         >
           <div>
-            <h5>{{ releaseContest.title }}</h5>
+            <h5>
+              {{ releaseContest.title }}
+              <a-tag v-if="releaseContest.status == 2" color="green">进行中</a-tag>
+            </h5>
             <div>
               <a-tag>开始时间：{{ releaseContest.startTime }}</a-tag>
               <a-tag color="blue">时长：{{ getDurationTime(releaseContest.duration) }}</a-tag>
@@ -79,11 +101,16 @@ contestStore.ensureInit().then(() => {
             </div>
             <div style="margin-top: 20px;">{{ releaseContest.description }}</div>
           </div>
-          <div style="text-align: center; cursor: pointer; padding: 10px; font-weight: bold;">
+          <div
+            style="text-align: center; cursor: pointer; padding: 10px; font-weight: bold;"
+            @click="applyContest"
+          >
             <div>
-              <LoginOutlined :style="{ fontSize: '35px', color: '#1890FF' }" />
+              <LoginOutlined :style="{ fontSize: '35px', color: releaseColor }" />
             </div>
-            <div style="margin-top: 10px; color: #1890FF; font-size: 14px;">活动报名</div>
+            <div
+              :style="{ marginTop: '10px', color: releaseColor, fontSize: '14px' }"
+            >{{ getReleaseNavButtonText() }}</div>
           </div>
         </div>
       </a-card>
