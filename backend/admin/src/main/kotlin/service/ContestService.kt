@@ -171,8 +171,10 @@ class ContestService(
         cancelTask()
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
+            println("Do Task Delay: $interval second")
             delay(interval * 1000L)
             block()
+            println("Task Complete")
         }
     }
 
