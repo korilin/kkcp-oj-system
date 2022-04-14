@@ -12,5 +12,6 @@ internal val Database.contests get() = this.sequenceOf(Contests)
 internal val Database.contestsSource get() = from(Contests)
 internal val Database.inclusions get() = this.sequenceOf(Inclusions)
 internal val Database.inclusionsSource get() = from(Inclusions)
+internal val Database.registrations get() = this.sequenceOf(Registrations)
 
 val Database.userProfiles get() = this.sequenceOf(UserProfiles)
