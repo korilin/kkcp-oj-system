@@ -2,6 +2,7 @@ package com.korilin.controller
 
 import com.korilin.IResponseBody
 import com.korilin.UserModuleApiPrefix
+import com.korilin.model.ContestRecord
 import com.korilin.service.VisitorService
 import com.korilin.table.Contest
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,5 +19,10 @@ class VisitorController(
     suspend fun getReleaseContest(): IResponseBody<Contest> {
         val contest = visitorService.getReleaseContest()
         return IResponseBody.success(data = contest)
+    }
+
+    @GetMapping("/query/contest/record")
+    suspend fun getContestRecords(): IResponseBody<Array<ContestRecord>> {
+        TODO()
     }
 }
