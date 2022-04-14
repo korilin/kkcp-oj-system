@@ -33,7 +33,6 @@ function initApp() {
     userStore.token = token
     userStore.initProfile()
   }
-
 }
 
 

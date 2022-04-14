@@ -2,11 +2,13 @@
 import KotlinSVG from "../components/KotlinSVG.vue"
 import TrophySVG from "../components/TrophySVG.vue"
 import { ref } from 'vue';
-import { useContestStore } from "../plugins/pinia";
+import { useContestStore, useUserStore } from "../plugins/pinia";
 import { useCommonStore } from "../../../admin/src/plugins/pinia";
 import { getDurationTime } from "../utils/utils";
 import { LoginOutlined } from "@ant-design/icons-vue"
 import { message } from "ant-design-vue";
+import HttpService from "../utils/axios-service";
+import { goContest } from "../utils/router-helper";
 
 // 定义页面文本 & 默认状态属性
 const heroTitle = "Kotlin Knowledge Contest";
@@ -16,6 +18,7 @@ const loading = "loading...";
 
 const contestStore = useContestStore()
 const commonStore = useCommonStore()
+const userStore = useUserStore()
 
 const columns = [
   { title: "以往竞赛", dataIndex: "title", key: "title" },
@@ -41,10 +44,10 @@ const releaseColor = '#1890FF'
 const underWayColor = '#8C8C8C'
 
 function getReleaseColor() {
-  if (releaseContest.value.status == 1) {
-    return releaseColor
-  } else {
+  if (releaseContest.value.status == 3) {
     return underWayColor
+  } else {
+    return releaseColor
   }
 }
 
@@ -60,9 +63,25 @@ function getReleaseNavButtonText() {
 
 function applyContest() {
   if (releaseContest.value.status == 1) {
-
-  } else {
-    message.info("活动进行中，已截止报名")
+    if (userStore.profile == null) {
+      message.info("请先登录")
+    } else {
+      const data = {
+        contestId: releaseContest.value.contestId,
+        userId: userStore.profile.id
+      }
+      HttpService.post("/business/register", data).then(body => {
+        if (body.status) {
+          if (body.data) {
+            message.success("报名成功")
+          } else {
+            message.info(body.message)
+          }
+        }
+      })
+    }
+  } else if (releaseContest.value.status == 2) {
+    goContest()
   }
 }
 
@@ -85,10 +104,7 @@ function applyContest() {
     <div class="current-seminar">
       <a-card :bordered="false" class="widget-1">
         <a-empty v-if="releaseContest == null" :description="noActiveSeminar" />
-        <div
-          v-else
-          style="padding: 10px; display: flex; align-items: center; justify-content: space-between;"
-        >
+        <div v-else style="padding: 10px; display: flex; align-items: center; justify-content: space-between;">
           <div>
             <h5>
               {{ releaseContest.title }}
@@ -101,16 +117,14 @@ function applyContest() {
             </div>
             <div style="margin-top: 20px;">{{ releaseContest.description }}</div>
           </div>
-          <div
-            style="text-align: center; cursor: pointer; padding: 10px; font-weight: bold;"
-            @click="applyContest"
-          >
+          <div style="text-align: center; cursor: pointer; padding: 10px; font-weight: bold;" @click="applyContest">
             <div>
-              <LoginOutlined :style="{ fontSize: '35px', color: releaseColor }" />
+              <LoginOutlined :style="{ fontSize: '35px', color: getReleaseColor() }" />
             </div>
-            <div
-              :style="{ marginTop: '10px', color: releaseColor, fontSize: '14px' }"
-            >{{ getReleaseNavButtonText() }}</div>
+            <div :style="{ marginTop: '10px', color: getReleaseColor(), fontSize: '14px' }">{{
+              getReleaseNavButtonText()
+            }}
+            </div>
           </div>
         </div>
       </a-card>
@@ -134,8 +148,7 @@ function applyContest() {
           </template>
         </a-list>
       </div>
-    </div>
-  </div>
+    </div>  </div>
 </template>
 
 <style scoped lang="scss">
@@ -148,6 +161,7 @@ function applyContest() {
   align-items: center;
   position: relative;
   flex-direction: column;
+
   .svg {
     position: relative;
     top: -50px;
@@ -172,6 +186,7 @@ function applyContest() {
     text-align: center;
     position: relative;
     top: -30px;
+
     p {
       font-size: 16px;
       font-weight: 200;
@@ -201,11 +216,14 @@ function applyContest() {
       border-radius: 12px;
       background-color: white;
     }
+
     .seminar-redords {
       width: 70%;
+
       .header {
         padding: 30px 20px;
       }
+
       .records {
         padding-bottom: 30px;
       }
