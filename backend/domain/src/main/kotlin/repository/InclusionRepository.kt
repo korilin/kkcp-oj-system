@@ -32,6 +32,17 @@ class InclusionRepository(database: Database) {
         return resultSet
     }
 
+    fun getQuestionsDetailByContestId(contestId: Int): List<Question> {
+        val resultSet = inclusions.filter {
+            it.contestId eq contestId
+        }.sortedBy {
+            it.sort
+        }.map {
+            it.question
+        }
+        return resultSet
+    }
+
     fun getContestsByQuestionId(questionId: Int): List<Contest> {
         val resultSet = inclusions.filter {
             it.questionId eq questionId
@@ -44,9 +55,9 @@ class InclusionRepository(database: Database) {
 
     fun addInclusion(contest: Contest, question: Question, sort: Int): Boolean {
         return inclusions.add(Inclusion {
-                this.contest= contest
-                this.question = question
-                this.sort = sort
-            }) == 1
+            this.contest = contest
+            this.question = question
+            this.sort = sort
+        }) == 1
     }
 }

@@ -10,6 +10,6 @@ class VisitorService(
 ) {
 
     fun getReleaseContest(): Contest? {
-        return contestRepository.findReleaseContest()
+        return contestRepository.findMainTargetContest()
     }
 }
