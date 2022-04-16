@@ -1,10 +1,8 @@
 package com.korilin.service
 
 import com.korilin.bo.ContestStatus
-import com.korilin.model.bo.QuestionAndAnswer
+import com.korilin.model.QuestionAndAnswer
 import com.korilin.repository.*
-import com.korilin.table.Contest
-import com.korilin.table.Question
 import com.korilin.table.Registration
 import com.korilin.table.UserAnswer
 import org.ktorm.database.Database
@@ -56,16 +54,16 @@ class MainService(
     suspend fun getQuestionsWithAnswer(registration: Registration): Array<QuestionAndAnswer> {
         val questions = inclusionRepository.getQuestionsDetailByContestId(registration.contest.contestId)
         val answers = questions.map { question ->
+            // 过滤问题代码模版和测试数据
+            question.codeTemplate = getUserCodeTemplate(question.codeTemplate)
+            question.testDataJson = question.testDataJson.slice(0..2).toTypedArray()
             var userAnswer = userAnswers.find { it.questionId eq question.questionId }
             if (userAnswer == null) {
                 userAnswer = UserAnswer {
                     this.question = question
-                    this.answer = ""
+                    this.answer = question.codeTemplate
                     this.attachId = registration.attachId
                 }
-                // 过滤问题代码模版和测试数据
-                question.codeTemplate = getUserCodeTemplate(question.codeTemplate)
-                question.testDataJson = question.testDataJson.slice(0..2).toTypedArray()
                 userAnswers.add(userAnswer)
             }
             QuestionAndAnswer(question, userAnswer)

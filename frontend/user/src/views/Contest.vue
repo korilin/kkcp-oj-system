@@ -4,6 +4,7 @@ import { useCommonStore, useUserStore } from "../plugins/pinia";
 import HttpService from "../utils/axios-service";
 import { goHome } from "../utils/router-helper";
 import KotlinEditor from "../components/KotlinEditor.vue";
+import QuestionCard from "../components/QuestionCard.vue";
 
 const commonStore = useCommonStore();
 const userStore = useUserStore();
@@ -17,6 +18,8 @@ const userStore = useUserStore();
 const setup = ref(0);
 const errMes = ref("Error");
 const data = ref(reactive({}));
+
+const current = ref(0);
 
 commonStore.showHeader = true;
 
@@ -48,7 +51,9 @@ function initData(uid) {
 </script>
 <template>
   <a-layout class="layout-contest" id="layout-contest">
-    <a-layout-header v-if="setup == 2"> </a-layout-header>
+    <a-layout-header v-if="setup == 2">
+      <a-pagination v-model:current="current" simple :total="data.questions.lenght" />
+    </a-layout-header>
 
     <a-layout-content style="background-color: none">
       <div v-if="setup == 0" style="text-align: center; margin-top: 50px">
@@ -65,7 +70,7 @@ function initData(uid) {
         </a-result>
       </div>
       <div v-if="setup == 2" class="contest-space">
-        <div class="q-content"></div>
+        <QuestionCard class="question" :question="data.questions[current].question" />
         <KotlinEditor class="editor" />
       </div>
     </a-layout-content>
@@ -78,15 +83,16 @@ function initData(uid) {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  padding: 20px 0;
 
-  .q-content {
+  .question {
     width: 45%;
     height: 100%;
   }
 
   .editor {
-    height: calc(100% - 20px);
-    width: 45%;
+    height: 100%;
+    width: 50%;
   }
 }
 </style>

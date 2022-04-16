@@ -1,10 +1,11 @@
 package com.korilin.model
 
-import com.korilin.model.bo.QuestionAndAnswer
 import com.korilin.table.Contest
 import com.korilin.table.Question
+import com.korilin.table.UserAnswer
 import com.korilin.table.UserProfile
 
+data class QuestionAndAnswer(val question: Question, val answer: UserAnswer?)
 /**
  * 活动比赛数据，Question 包含的是详细数据
  */

@@ -11,8 +11,6 @@ import "highlight.js/styles/github.css";
 import router from "./plugins/router";
 import { createPinia } from "pinia";
 
-import "./style/markdown-html.scss";
-
 const app = createApp(App);
 const pinia = createPinia();
 
