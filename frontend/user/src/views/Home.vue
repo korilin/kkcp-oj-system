@@ -20,6 +20,8 @@ const contestStore = useContestStore()
 const commonStore = useCommonStore()
 const userStore = useUserStore()
 
+commonStore.showHeader = true
+
 const columns = [
   { title: "以往竞赛", dataIndex: "title", key: "title" },
   { title: "时长", dataIndex: "duration", key: "duration" },

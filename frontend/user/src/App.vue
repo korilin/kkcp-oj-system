@@ -35,14 +35,13 @@ function initApp() {
   }
 }
 
-
 commonStore.initData()
 initApp()
 </script>
 
 <template>
   <a-layout class="layout-default" id="layout-default">
-    <a-layout-header>
+    <a-layout-header v-if="commonStore.showHeader">
       <Header />
     </a-layout-header>
     <a-layout-content>
@@ -51,7 +50,6 @@ initApp()
         <a-spin />
       </div>
     </a-layout-content>
-    <a-layout-footer></a-layout-footer>
   </a-layout>
 </template>
 

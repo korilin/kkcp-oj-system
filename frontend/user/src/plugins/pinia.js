@@ -37,6 +37,7 @@ async function contestDefineData() {
 export const useCommonStore = defineStore("common", {
   state: () => {
     return {
+      showHeader: false,
       questionTypes: [],
       questionLevels: [],
       contestTypes: [],
