@@ -52,7 +52,7 @@ console.log(props.question);
       </div>
     </template>
     <div
-      style="height: 100%; user-select: text;"
+      style="height: 100%; user-select: text"
       class="markdown-html"
       v-html="question.description"
       v-highlight
@@ -74,12 +74,14 @@ console.log(props.question);
   width: 8px;
   background-color: #f5f5f5;
 }
+
 /*定义滚动条轨道
  内阴影+圆角*/
 ::-webkit-scrollbar-track {
   border-radius: 10px;
   background-color: #f5f5f5;
 }
+
 /*定义滑块
  内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
