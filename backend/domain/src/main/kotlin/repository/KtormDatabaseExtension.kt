@@ -15,3 +15,4 @@ internal val Database.inclusionsSource get() = from(Inclusions)
 internal val Database.registrations get() = this.sequenceOf(Registrations)
 
 val Database.userProfiles get() = this.sequenceOf(UserProfiles)
+val Database.userAnswers get() = this.sequenceOf(UserAnswers)
