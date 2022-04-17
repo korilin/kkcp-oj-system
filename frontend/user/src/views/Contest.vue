@@ -100,8 +100,10 @@ function saveAnswer() {
 }
 
 function resetAnswer() {
-  const code = data.value.questions[current.value].question.codeTemplate;
-  data.value.questions[current.value].answer = code;
+  const code = data.value.questions[getIndex()].question.codeTemplate;
+  console.log(code);
+  answer.value = code;
+  editor.value?.updateValue(code);
 }
 </script>
 <template>

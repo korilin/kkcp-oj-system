@@ -13,9 +13,7 @@ import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
-const val CODE_REGEX = """(?<=// user start
-)([\s\S]*)(?=
-// user end)"""
+const val CODE_REGEX = """(?<=// user start)([\s\S]*)(?=// user end)"""
 
 @Service
 class MainService(
@@ -76,6 +74,8 @@ class MainService(
     private suspend fun getUserCodeTemplate(codeTemplate: String): String {
         val regex = Regex(CODE_REGEX)
         val result = regex.find(codeTemplate)
+        println(codeTemplate)
+        println(result?.value)
         return result?.value ?: ""
     }
 

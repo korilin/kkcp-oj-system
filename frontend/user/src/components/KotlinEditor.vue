@@ -16,7 +16,6 @@ let editor = null;
 
 function updateValue(newValue) {
   editor?.setValue(newValue ?? "");
-  console.log(props.modelValue);
   const model = editor?.getModel();
   const lineNumber = model?.getLineCount();
   const colume = model?.getLineLastNonWhitespaceColumn(lineNumber);
