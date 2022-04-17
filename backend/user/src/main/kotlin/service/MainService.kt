@@ -6,14 +6,16 @@ import com.korilin.model.QuestionAnswer
 import com.korilin.repository.*
 import com.korilin.table.Registration
 import com.korilin.table.UserAnswer
+import com.korilin.table.UserAnswers
+import com.korilin.utils.CodeUtil
+import com.korilin.utils.QuestionClassLoader
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
 import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-
-const val CODE_REGEX = """(?<=// user start)([\s\S]*)(?=// user end)"""
+import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class MainService(
@@ -53,7 +55,7 @@ class MainService(
         val questions = inclusionRepository.getQuestionsDetailByContestId(registration.contest.contestId)
         val answers = questions.map { question ->
             // 过滤问题代码模版和测试数据
-            question.codeTemplate = getUserCodeTemplate(question.codeTemplate)
+            question.codeTemplate = CodeUtil.getUserCodeTemplate(question.codeTemplate)
             question.testDataJson = question.testDataJson.slice(0..2).toTypedArray()
             val qId = question.questionId
             val attachId = registration.attachId
@@ -71,24 +73,18 @@ class MainService(
         return answers.toTypedArray()
     }
 
-    private suspend fun getUserCodeTemplate(codeTemplate: String): String {
-        val regex = Regex(CODE_REGEX)
-        val result = regex.find(codeTemplate)
-        println(codeTemplate)
-        println(result?.value)
-        return result?.value ?: ""
-    }
-
     suspend fun updateAnswer(userId: Int, answers: Array<QuestionAnswer>): Boolean {
         val contest = contestRepository.findMainTargetContest() ?: return false
         val registration = registrationRepository.getRegistration(contest.contestId, userId) ?: return false
         val attachId = registration.attachId
+        val hashMap = HashMap<Int, UserAnswer>()
         userAnswers.filter { it.attachId eq attachId }.forEach {
-            for (answer in answers) {
-                if (answer.questionId == it.question.questionId) {
-                    it.answer = answer.answer
-                    it.flushChanges()
-                }
+            hashMap[it.question.questionId] = it
+        }
+        for (answer in answers) {
+            hashMap[answer.questionId]?.let {
+                it.answer = answer.answer
+                it.flushChanges()
             }
         }
         registration.answerLastUpdateTime = LocalDateTime.now()

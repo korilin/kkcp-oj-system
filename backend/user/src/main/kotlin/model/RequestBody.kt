@@ -9,14 +9,14 @@ data class QuestionAnswer(
     val questionId: Int, val answer: String
 )
 
-data class AnswerUpdateBody(
+data class AnswersUpdateBody(
     val userId: Int, val answers: Array<QuestionAnswer>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as AnswerUpdateBody
+        other as AnswersUpdateBody
 
         if (userId != other.userId) return false
         if (!answers.contentEquals(other.answers)) return false
