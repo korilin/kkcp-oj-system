@@ -2,20 +2,20 @@ package com.korilin.service
 
 import com.korilin.bo.ContestStatus
 import com.korilin.model.QuestionAndAnswer
+import com.korilin.model.QuestionAnswer
 import com.korilin.repository.*
 import com.korilin.table.Registration
 import com.korilin.table.UserAnswer
 import org.ktorm.database.Database
+import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
-import org.ktorm.entity.add
-import org.ktorm.entity.find
+import org.ktorm.entity.*
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
-const val CODE_REGEX = """
-// user start
-(.*)
-// user end
-"""
+const val CODE_REGEX = """(?<=// user start
+)([\s\S]*)(?=
+// user end)"""
 
 @Service
 class MainService(
@@ -57,7 +57,9 @@ class MainService(
             // 过滤问题代码模版和测试数据
             question.codeTemplate = getUserCodeTemplate(question.codeTemplate)
             question.testDataJson = question.testDataJson.slice(0..2).toTypedArray()
-            var userAnswer = userAnswers.find { it.questionId eq question.questionId }
+            val qId = question.questionId
+            val attachId = registration.attachId
+            var userAnswer = userAnswers.find { (it.questionId eq qId) and (it.attachId eq attachId) }
             if (userAnswer == null) {
                 userAnswer = UserAnswer {
                     this.question = question
@@ -66,12 +68,12 @@ class MainService(
                 }
                 userAnswers.add(userAnswer)
             }
-            QuestionAndAnswer(question, userAnswer)
+            QuestionAndAnswer(question, userAnswer.answer)
         }
         return answers.toTypedArray()
     }
 
-    suspend fun getUserCodeTemplate(codeTemplate: String): String {
+    private suspend fun getUserCodeTemplate(codeTemplate: String): String {
         val regex = Regex(CODE_REGEX)
         val result = regex.find(codeTemplate)
         return result?.value ?: ""

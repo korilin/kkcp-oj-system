@@ -5,7 +5,7 @@ import com.korilin.table.Question
 import com.korilin.table.UserAnswer
 import com.korilin.table.UserProfile
 
-data class QuestionAndAnswer(val question: Question, val answer: UserAnswer?)
+data class QuestionAndAnswer(val question: Question, val answer: String)
 /**
  * 活动比赛数据，Question 包含的是详细数据
  */
