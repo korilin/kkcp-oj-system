@@ -31,6 +31,12 @@ function getIndex() {
 }
 
 watch(current, (newV, oldV) => {
+  if (newV == data.value.questions.length + 1) {
+    setup.value = 3;
+    return newV;
+  } else if (setup.value > 2) {
+    setup.value = 2;
+  }
   const v = data.value.questions[newV - 1];
   question.value = v.question;
   answer.value = v.answer;
@@ -108,11 +114,12 @@ function resetAnswer() {
 </script>
 <template>
   <a-layout class="layout-contest" id="layout-contest">
-    <a-layout-header v-if="setup == 2" class="contest-header">
+    <a-layout-header v-if="setup >= 2" class="contest-header">
+      <h5>{{ data.contest?.title }}</h5>
       <a-pagination
         v-model:current="current"
         simple
-        :total="data.questions.length"
+        :total="data.questions.length + 1"
         :pageSize="1"
       />
     </a-layout-header>
@@ -142,6 +149,15 @@ function resetAnswer() {
             <a-button type="primary" size="smaill">测试</a-button>
             <a-button type="primary" size="smaill">提交</a-button>
           </div>
+        </div>
+      </div>
+      <div v-if="setup == 3" class="contest-space">
+        <div class="over">
+          <a-result status="success" title="你已通过所有题目，可以完成提交了">
+            <template #extra>
+              <a-button key="console" type="primary">提交</a-button>
+            </template>
+          </a-result>
         </div>
       </div>
     </a-layout-content>
@@ -182,7 +198,11 @@ function resetAnswer() {
 
 .contest-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+
+  h5 {
+    margin: 0;
+  }
 }
 </style>

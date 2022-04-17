@@ -20,7 +20,7 @@ const tabList = [
   },
   {
     key: "3",
-    tab: "个人测试数据",
+    tab: "自测数据",
   },
 ];
 
@@ -30,6 +30,20 @@ function onTabChange(key, tag) {
   activeTabKey.value = key;
 }
 
+const testDataColumns = [
+  {
+    title: "输入",
+    dataIndex: "input",
+    key: "input",
+  },
+  {
+    title: "输出",
+    dataIndex: "output",
+    key: "output",
+  },
+];
+
+// TODO
 console.log(props.question);
 </script>
 <template>
@@ -58,7 +72,10 @@ console.log(props.question);
       v-highlight
       v-show="activeTabKey == '1'"
     />
-    <div></div>
+    <div v-show="activeTabKey == '2'">commits</div>
+    <div v-show="activeTabKey == '3'">
+      <a-table :dataSource="question.testDataJson" :columns="testDataColumns" />
+    </div>
   </a-card>
 </template>
 
