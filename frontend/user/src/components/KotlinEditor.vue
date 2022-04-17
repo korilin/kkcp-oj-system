@@ -1,12 +1,10 @@
 <script setup>
 import * as monaco from "monaco-editor";
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-import { onMounted } from "vue";
+import { onMounted, } from "vue";
 
-const props = defineProps({
-  code: String,
-  onChange: Function,
-});
+const props = defineProps(["modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -16,10 +14,26 @@ self.MonacoEnvironment = {
 
 let editor = null;
 
+function updateValue(newValue) {
+  editor?.setValue(newValue ?? "");
+  console.log(props.modelValue);
+  const model = editor?.getModel();
+  const lineNumber = model?.getLineCount();
+  const colume = model?.getLineLastNonWhitespaceColumn(lineNumber);
+  editor?.setPosition({
+    lineNumber: lineNumber,
+    column: colume,
+  });
+}
+
+defineExpose({
+  updateValue
+})
+
 onMounted(() => {
   const el = document.getElementById("editor");
   editor = monaco.editor.create(el, {
-    value: props.code ?? "",
+    value: props.modelValue ?? "",
     language: "kotlin",
     scrollbar: {
       arrowSize: 5,
@@ -35,16 +49,15 @@ onMounted(() => {
     renderValidationDecorations: "on",
     scrollBeyondLastLine: false,
     autoIndent: true, // 自动布局
-    roundedSelection: true,
   });
   editor.onDidChangeModelContent(() => {
-    props.onChange(editor.getValue());
+    emit("update:modelValue", editor.getValue());
   });
 });
 </script>
 <template>
   <div style="background-color: white; padding: 20px 5px">
-    <div id="editor" ref="editor" style="height: 100%;"></div>
+    <div id="editor" ref="editor" style="height: 100%"></div>
   </div>
 </template>
 

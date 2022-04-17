@@ -1,10 +1,11 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import { useCommonStore, useUserStore } from "../plugins/pinia";
 import HttpService from "../utils/axios-service";
 import { goHome } from "../utils/router-helper";
 import KotlinEditor from "../components/KotlinEditor.vue";
 import QuestionCard from "../components/QuestionCard.vue";
+import { message } from "ant-design-vue";
 
 const commonStore = useCommonStore();
 const userStore = useUserStore();
@@ -17,9 +18,30 @@ const userStore = useUserStore();
  */
 const setup = ref(0);
 const errMes = ref("Error");
-const data = ref(reactive({}));
+const data = ref({});
 
 const current = ref(0);
+const question = ref({});
+const answer = ref("");
+
+const editor = ref(null);
+
+function getIndex() {
+  return current.value - 1;
+}
+
+watch(current, (newV, oldV) => {
+  const v = data.value.questions[newV - 1];
+  question.value = v.question;
+  answer.value = v.answer;
+  editor.value?.updateValue(v.answer);
+  return newV;
+});
+
+watch(answer, (newV, oldV) => {
+  data.value.questions[getIndex()].answer = newV;
+  return newV;
+});
 
 commonStore.showHeader = true;
 
@@ -39,20 +61,58 @@ if (userStore.token == null) {
 function initData(uid) {
   HttpService.get("/business/query/contest?userId=" + uid).then((body) => {
     if (body.status) {
-      setup.value = 2;
       commonStore.showHeader = false;
-      data.value = reactive(body.data);
+      data.value = body.data;
+      current.value = 1;
+      setup.value = 2;
     } else {
       setup.value = -1;
       errMes.value = body.message;
     }
   });
 }
+
+function saveAnswerRequest() {
+  const url = "/business/answer/update";
+  const answers = [];
+  data.value.questions.forEach((element) => {
+    const item = {
+      questionId: element.question.questionId,
+      answer: element.answer,
+    };
+    answers.push(item);
+  });
+  const params = {
+    userId: userStore.profile.id,
+    answers: answers,
+  };
+  return HttpService.put(url, params);
+}
+
+function saveAnswer() {
+  saveAnswerRequest().then((body) => {
+    if (body.status) {
+      message.success("保存成功");
+    } else {
+      message.error("保存失败，请重试");
+    }
+  });
+}
+
+function resetAnswer() {
+  const code = data.value.questions[current.value].question.codeTemplate;
+  data.value.questions[current.value].answer = code;
+}
 </script>
 <template>
   <a-layout class="layout-contest" id="layout-contest">
-    <a-layout-header v-if="setup == 2">
-      <a-pagination v-model:current="current" simple :total="data.questions.lenght" />
+    <a-layout-header v-if="setup == 2" class="contest-header">
+      <a-pagination
+        v-model:current="current"
+        simple
+        :total="data.questions.length"
+        :pageSize="1"
+      />
     </a-layout-header>
 
     <a-layout-content style="background-color: none">
@@ -70,8 +130,17 @@ function initData(uid) {
         </a-result>
       </div>
       <div v-if="setup == 2" class="contest-space">
-        <QuestionCard class="question" :question="data.questions[current].question" />
-        <KotlinEditor class="editor" />
+        <QuestionCard class="question" :question="question" />
+        <div class="editor-wrap">
+          <KotlinEditor class="editor" ref="editor" v-model="answer" />
+          <div class="opt-btn">
+            213
+            <a-button size="smaill" @click="saveAnswer">保存</a-button>
+            <a-button size="smaill" @click="resetAnswer">重置</a-button>
+            <a-button type="primary" size="smaill">测试</a-button>
+            <a-button type="primary" size="smaill">提交</a-button>
+          </div>
+        </div>
       </div>
     </a-layout-content>
   </a-layout>
@@ -90,9 +159,28 @@ function initData(uid) {
     height: 100%;
   }
 
-  .editor {
+  .editor-wrap {
     height: 100%;
     width: 50%;
   }
+
+  .editor {
+    height: calc(100% - 60px);
+  }
+
+  .opt-btn {
+    text-align: right;
+    margin-top: 20px;
+
+    button {
+      margin: 0 5px;
+    }
+  }
+}
+
+.contest-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
