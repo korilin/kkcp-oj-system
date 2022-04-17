@@ -3,12 +3,14 @@ package com.korilin.controller
 import com.korilin.IResponseBody
 import com.korilin.UserModuleApiPrefix
 import com.korilin.annotations.ExceptionMessageHandler
+import com.korilin.model.AnswerUpdateBody
 import com.korilin.model.UnderWayContestUserData
 import com.korilin.model.RegisterBody
 import com.korilin.service.MainService
 import kotlinx.coroutines.*
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -81,5 +83,18 @@ class MainController(
                 questionAndAnswer
             )
         )
+    }
+
+    @GetMapping("/query/commits")
+    @ExceptionMessageHandler
+    suspend fun getCommits(questionId: Int, userId: Int): IResponseBody<Unit> {
+        TODO()
+    }
+
+    @PutMapping("/answer/update")
+    @ExceptionMessageHandler
+    suspend fun updateAnswer(@RequestBody body: AnswerUpdateBody) : IResponseBody<Unit> {
+        val result = service.updateAnswer(body.userId, body.answers)
+        return IResponseBody(result, "", Unit)
     }
 }

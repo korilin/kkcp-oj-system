@@ -76,4 +76,20 @@ class MainService(
         val result = regex.find(codeTemplate)
         return result?.value ?: ""
     }
+
+    suspend fun updateAnswer(userId: Int, answers: Array<QuestionAnswer>): Boolean {
+        val contest = contestRepository.findMainTargetContest() ?: return false
+        val registration = registrationRepository.getRegistration(contest.contestId, userId) ?: return false
+        val attachId = registration.attachId
+        userAnswers.filter { it.attachId eq attachId }.forEach {
+            for (answer in answers) {
+                if (answer.questionId == it.question.questionId) {
+                    it.answer = answer.answer
+                    it.flushChanges()
+                }
+            }
+        }
+        registration.answerLastUpdateTime = LocalDateTime.now()
+        return true
+    }
 }
