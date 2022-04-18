@@ -6,16 +6,14 @@ import com.korilin.model.QuestionAnswer
 import com.korilin.repository.*
 import com.korilin.table.Registration
 import com.korilin.table.UserAnswer
-import com.korilin.table.UserAnswers
 import com.korilin.utils.CodeUtil
-import com.korilin.utils.QuestionClassLoader
+import com.korilin.utils.QuestionCodeHelper
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
 import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class MainService(
@@ -89,5 +87,18 @@ class MainService(
         }
         registration.answerLastUpdateTime = LocalDateTime.now()
         return true
+    }
+
+    /**
+     * 答案拼接
+     */
+    suspend fun testAnswer(userId: Int, questionId: Int, answer: String)  {
+        val contest = contestRepository.findMainTargetContest() ?: return
+        registrationRepository.getRegistration(contest.contestId, userId) ?: return
+        val questions = inclusionRepository.getQuestionsDetailByContestId(contest.contestId)
+        val question = questions.find { it.questionId == questionId } ?: return
+        val code = CodeUtil.compositeAnswerCode(question.codeTemplate, answer)
+        val answerClass = QuestionCodeHelper.createClass(questionId, userId, code)
+
     }
 }
