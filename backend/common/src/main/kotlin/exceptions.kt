@@ -14,3 +14,5 @@ class ContestNotFoundException(message: String = CONTEST_NOT_FOUND) : RuntimeExc
 class ContestStatusNotFoundException(message: String = CONTEST_STATUS_NOT_FOUND) : RuntimeException(message) {
     constructor(id: Int) : this("$CONTEST_STATUS_NOT_FOUND by id=$id")
 }
+
+class CompileFailureException(override val message: String): RuntimeException()
