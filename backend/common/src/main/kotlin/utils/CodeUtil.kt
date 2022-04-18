@@ -13,10 +13,6 @@ object CodeUtil {
     }
 
     fun compositeAnswerCode(codeTemplate: String, answer: String): String {
-        return """
-            $answer
-            // answer end
-            ${REPLACE_REGEX.replace(codeTemplate, "")}
-        """.trimIndent().trimStart().trimEnd()
+        return "${answer}\n// answer end\n${REPLACE_REGEX.replace(codeTemplate, "")}"
     }
 }

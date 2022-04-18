@@ -111,6 +111,18 @@ function resetAnswer() {
   answer.value = code;
   editor.value?.updateValue(code);
 }
+
+function testAnswer() {
+  const params = {
+    userId: userStore.profile.id,
+    answers: [{ questionId: question.value.questionId, answer: answer.value }],
+  };
+  HttpService.post("/business/answer/test", params).then((body) => {
+    if (body.status) {
+      console.log(body);
+    }
+  });
+}
 </script>
 <template>
   <a-layout class="layout-contest" id="layout-contest">
@@ -146,7 +158,7 @@ function resetAnswer() {
             213
             <a-button size="smaill" @click="saveAnswer">保存</a-button>
             <a-button size="smaill" @click="resetAnswer">重置</a-button>
-            <a-button type="primary" size="smaill">测试</a-button>
+            <a-button type="primary" size="smaill" @click="testAnswer">测试</a-button>
             <a-button type="primary" size="smaill">提交</a-button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 package com.korilin.controller
 
+import com.korilin.CompileFailureException
 import com.korilin.IResponseBody
 import com.korilin.UserModuleApiPrefix
 import com.korilin.annotations.ExceptionMessageHandler
@@ -103,7 +104,8 @@ class MainController(
     @PostMapping("/answer/test")
     @ExceptionMessageHandler
     @RegisterExceptionMessage(ClassNotFoundException::class, "找不到对应类，可能存在编译失败")
-    @RegisterExceptionMessage(ClassNotFoundException::class, USER_EXCEPTION_MESSAGE)
+    @RegisterExceptionMessage(CompileFailureException::class, USER_EXCEPTION_MESSAGE)
+    @RegisterExceptionMessage(NoSuchMethodException::class, "找不到验证方法")
     suspend fun testAnswer(@RequestBody body: AnswersUpdateBody): IResponseBody<Boolean> = serialOpt(body.userId) {
         // 只取第一个问题进行测试
         val answer = body.answers.getOrNull(0) ?: return@serialOpt IResponseBody.error("获取不到答案")
