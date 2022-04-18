@@ -3,7 +3,7 @@ package com.korilin.controller
 import com.korilin.IResponseBody
 import com.korilin.UserModuleApiPrefix
 import com.korilin.annotations.ExceptionMessageHandler
-import com.korilin.model.AnswerUpdateBody
+import com.korilin.model.AnswersUpdateBody
 import com.korilin.model.UnderWayContestUserData
 import com.korilin.model.RegisterBody
 import com.korilin.service.MainService
@@ -93,7 +93,7 @@ class MainController(
 
     @PutMapping("/answer/update")
     @ExceptionMessageHandler
-    suspend fun updateAnswer(@RequestBody body: AnswerUpdateBody) : IResponseBody<Unit> {
+    suspend fun updateAnswer(@RequestBody body: AnswersUpdateBody): IResponseBody<Unit> {
         val result = service.updateAnswer(body.userId, body.answers)
         return IResponseBody(result, "", Unit)
     }
