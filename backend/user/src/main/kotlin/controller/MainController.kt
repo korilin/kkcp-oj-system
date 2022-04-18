@@ -3,6 +3,8 @@ package com.korilin.controller
 import com.korilin.IResponseBody
 import com.korilin.UserModuleApiPrefix
 import com.korilin.annotations.ExceptionMessageHandler
+import com.korilin.annotations.RegisterExceptionMessage
+import com.korilin.annotations.USER_EXCEPTION_MESSAGE
 import com.korilin.model.AnswersUpdateBody
 import com.korilin.model.UnderWayContestUserData
 import com.korilin.model.RegisterBody
@@ -96,5 +98,17 @@ class MainController(
     suspend fun updateAnswer(@RequestBody body: AnswersUpdateBody): IResponseBody<Unit> {
         val result = service.updateAnswer(body.userId, body.answers)
         return IResponseBody(result, "", Unit)
+    }
+
+    @PostMapping("/answer/test")
+    @ExceptionMessageHandler
+    @RegisterExceptionMessage(ClassNotFoundException::class, "找不到对应类，可能存在编译失败")
+    @RegisterExceptionMessage(ClassNotFoundException::class, USER_EXCEPTION_MESSAGE)
+    suspend fun testAnswer(@RequestBody body: AnswersUpdateBody): IResponseBody<Boolean> = serialOpt(body.userId) {
+        // 只取第一个问题进行测试
+        val answer = body.answers.getOrNull(0) ?: return@serialOpt IResponseBody.error("获取不到答案")
+        service.updateAnswer(body.userId, body.answers)
+        val (result, message) = service.testAnswer(body.userId, answer.questionId, answer.answer)
+        IResponseBody(true, message, result)
     }
 }

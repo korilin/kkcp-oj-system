@@ -8,7 +8,7 @@ private const val PATH = "/Users/linjiebin/Documents/ktfiles"
 private const val CLASS_DIR_NAME = "classes"
 private const val KOTLINC_CMD = "kotlinc"
 
-object QuestionCodeHelper {
+object AnswerClassHelper {
     private const val DIR_PREFIX = "Question"
     private const val FILE_PREFIX = "Answer"
     private const val CLASS_FILE_TYPE = "Kt.class"
@@ -115,6 +115,4 @@ object QuestionCodeHelper {
         }
         return output
     }
-
-    
 }

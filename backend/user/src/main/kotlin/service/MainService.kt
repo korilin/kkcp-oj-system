@@ -7,13 +7,16 @@ import com.korilin.repository.*
 import com.korilin.table.Registration
 import com.korilin.table.UserAnswer
 import com.korilin.utils.CodeUtil
-import com.korilin.utils.QuestionCodeHelper
+import com.korilin.utils.AnswerClassHelper
+import com.korilin.utils.AnswerVerifyHelper
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
 import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import kotlin.reflect.full.functions
+import kotlin.reflect.full.primaryConstructor
 
 @Service
 class MainService(
@@ -92,13 +95,17 @@ class MainService(
     /**
      * 答案拼接
      */
-    suspend fun testAnswer(userId: Int, questionId: Int, answer: String)  {
-        val contest = contestRepository.findMainTargetContest() ?: return
-        registrationRepository.getRegistration(contest.contestId, userId) ?: return
+    suspend fun testAnswer(userId: Int, questionId: Int, answer: String): Pair<Boolean, String>  {
+        val contest = contestRepository.findMainTargetContest()
+        if (contest == null || contest.status != ContestStatus.UNDERWAY.id) return Pair(false, "找不到进行中的竞赛")
+        registrationRepository.getRegistration(contest.contestId, userId) ?: return Pair(false, "没有报名，无法提交答案")
         val questions = inclusionRepository.getQuestionsDetailByContestId(contest.contestId)
-        val question = questions.find { it.questionId == questionId } ?: return
+        val question = questions.find { it.questionId == questionId } ?: return Pair(false, "该竞赛没有对应题目")
         val code = CodeUtil.compositeAnswerCode(question.codeTemplate, answer)
-        val answerClass = QuestionCodeHelper.createClass(questionId, userId, code)
-
+        val clazz = AnswerClassHelper.createClass(questionId, userId, code)
+        val testData = question.testDataJson.map {
+            it.toMap()
+        }.toTypedArray()
+        return AnswerVerifyHelper.verifyAnswer(clazz, testData)
     }
 }

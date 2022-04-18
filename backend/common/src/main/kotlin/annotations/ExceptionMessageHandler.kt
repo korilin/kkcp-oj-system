@@ -44,6 +44,7 @@ private val castExceptionMessage =
 private fun unregisteredExceptionMessage(e: Exception) =
     "There have an unregistered exception: ${e::class.java} -> ${e.message}"
 
+const val USER_EXCEPTION_MESSAGE = "USER_EXCEPTION_MESSAGE"
 
 /**
  * 异常响应信息处理切面
@@ -72,6 +73,9 @@ class ExceptionMessageHandlerAspect {
                 val exceptionKClass = annotation.exceptionKClass
                 if (exceptionKClass.isSuperclassOf(e::class)) {
                     message = annotation.message
+                    if (message == USER_EXCEPTION_MESSAGE) {
+                        message = e.message
+                    }
                     break
                 }
             }
