@@ -25,6 +25,7 @@ const question = ref({});
 const answer = ref("");
 
 const editor = ref(null);
+const card = ref(null);
 
 function getIndex() {
   return current.value - 1;
@@ -117,11 +118,16 @@ function testAnswer() {
     userId: userStore.profile.id,
     answers: [{ questionId: question.value.questionId, answer: answer.value }],
   };
+  card.value?.updateResult(0, "运行中");
   HttpService.post("/business/answer/test", params).then((body) => {
-    if (body.status) {
-      console.log(body);
+    if (body.status && body.data) {
+        card.value?.updateResult(1, "测试通过");
+    }else {
+        card.value?.updateResult(2, body.message);
     }
-  });
+  }).catch(_ => {
+        card.value?.updateResult(2, "Service Error Happen!");
+  })
 }
 </script>
 <template>
@@ -151,7 +157,7 @@ function testAnswer() {
         </a-result>
       </div>
       <div v-if="setup == 2" class="contest-space">
-        <QuestionCard class="question" :question="question" />
+        <QuestionCard class="question" ref="card" :question="question" />
         <div class="editor-wrap">
           <KotlinEditor class="editor" ref="editor" v-model="answer" />
           <div class="opt-btn">

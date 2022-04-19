@@ -1,6 +1,6 @@
 <script setup>
 import { useCommonStore } from "../plugins/pinia";
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 
 const props = defineProps({
   question: Object,
@@ -26,6 +26,11 @@ const tabList = [
 
 const activeTabKey = ref("1");
 
+const result = reactive({
+  status: -1,
+  message: "",
+});
+
 function onTabChange(key, tag) {
   activeTabKey.value = key;
 }
@@ -43,8 +48,23 @@ const testDataColumns = [
   },
 ];
 
+/**
+ *
+ * @param {Number} status -1 隐藏 0 加载中 1 失败 2 成功
+ * @param {String} message 内容
+ */
+function updateResult(status, message) {
+  activeTabKey.value = "2";
+  result.status = status;
+  result.message = message;
+}
+
 // TODO
 console.log(props.question);
+
+defineExpose({
+  updateResult,
+});
 </script>
 <template>
   <a-card
@@ -72,7 +92,17 @@ console.log(props.question);
       v-highlight
       v-show="activeTabKey == '1'"
     />
-    <div v-show="activeTabKey == '2'">commits</div>
+    <div v-show="activeTabKey == '2'">
+      <a-card class="result-card" title="运行结果" v-if="result.status != -1">
+        <a-spin :spinning="result.status == 0">
+          <a-alert
+            :message="result.message"
+            :type="result.status == 1 ? 'success' : result.status == 2 ? 'error' : 'info'"
+          />
+        </a-spin>
+      </a-card>
+      <div style="margin-top: 20px">commits</div>
+    </div>
     <div v-show="activeTabKey == '3'">
       <a-table :dataSource="question.testDataJson" :columns="testDataColumns" />
     </div>
@@ -104,5 +134,11 @@ console.log(props.question);
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #bcd8f2;
+}
+
+.result-card {
+  width: 100%;
+  border-radius: 15px;
+  padding: 0 10px;
 }
 </style>
