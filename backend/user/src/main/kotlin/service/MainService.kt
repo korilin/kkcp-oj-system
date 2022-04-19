@@ -15,6 +15,7 @@ import org.ktorm.dsl.eq
 import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import kotlin.random.Random
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.primaryConstructor
 
