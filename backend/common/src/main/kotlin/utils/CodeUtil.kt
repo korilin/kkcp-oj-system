@@ -7,8 +7,6 @@ object CodeUtil {
 
     fun getUserCodeTemplate(codeTemplate: String): String {
         val result = GET_REGEX.find(codeTemplate)
-        println(codeTemplate)
-        println(result?.value)
         return result?.value ?: ""
     }
 

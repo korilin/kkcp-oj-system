@@ -91,7 +91,10 @@ object AnswerClassHelper {
     private fun compileKtToClass(filePath: String, targetPath: String) {
         val process = Runtime.getRuntime().exec("$KOTLINC_CMD $filePath -d $targetPath")
         val info = process.errorStream.text
-        if (info.isNotBlank() || info.isNotEmpty()) throw CompileFailureException(info)
+        if (info.isNotBlank() || info.isNotEmpty()) {
+            val message =  Regex(filePath).replace(info, "")
+            throw CompileFailureException(message)
+        }
     }
 
     private val counter = AtomicInteger()

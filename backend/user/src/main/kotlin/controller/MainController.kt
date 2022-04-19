@@ -50,6 +50,7 @@ class MainController(
                     beforeTask?.await()
                 } catch (_: Exception) {
                     // continue
+                    handlingUser.remove(userId, beforeTask)
                 }
             } while (beforeTask != null)
             task.start()
@@ -102,15 +103,21 @@ class MainController(
     }
 
     @PostMapping("/answer/test")
-    @ExceptionMessageHandler
-    @RegisterExceptionMessage(ClassNotFoundException::class, "找不到对应类，可能存在编译失败")
-    @RegisterExceptionMessage(CompileFailureException::class, USER_EXCEPTION_MESSAGE)
-    @RegisterExceptionMessage(NoSuchMethodException::class, "找不到验证方法")
     suspend fun testAnswer(@RequestBody body: AnswersUpdateBody): IResponseBody<Boolean> = serialOpt(body.userId) {
-        // 只取第一个问题进行测试
-        val answer = body.answers.getOrNull(0) ?: return@serialOpt IResponseBody.error("获取不到答案")
-        service.updateAnswer(body.userId, body.answers)
-        val (result, message) = service.testAnswer(body.userId, answer.questionId, answer.answer)
-        IResponseBody(true, message, result)
+        return@serialOpt try {
+            // 只取第一个问题进行测试
+            val answer = body.answers.getOrNull(0) ?: return@serialOpt IResponseBody.error("获取不到答案")
+            service.updateAnswer(body.userId, body.answers)
+            val (result, message) = service.testAnswer(body.userId, answer.questionId, answer.answer)
+            IResponseBody.success(message = message, data = result)
+        } catch (e: ClassNotFoundException) {
+            IResponseBody.success(message = e.message ?: "找不到对应类，可能存在编译失败", data = false)
+        } catch (e: CompileFailureException) {
+            IResponseBody.success(message = e.message, data = false)
+        } catch (e: NoSuchMethodException) {
+            IResponseBody.success(message = e.message ?: "找不到验证方法", data = false)
+        } catch (e: Exception) {
+            IResponseBody.success(message = e.message ?: e.stackTrace.contentToString(), data = false)
+        }
     }
 }
