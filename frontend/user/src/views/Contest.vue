@@ -121,7 +121,7 @@ function testAnswer() {
   card.value?.updateResult(0, "运行中");
   HttpService.post("/business/answer/test", params).then((body) => {
     if (body.status && body.data) {
-        card.value?.updateResult(1, "测试通过");
+        card.value?.updateResult(1, body.message);
     }else {
         card.value?.updateResult(2, body.message);
     }
