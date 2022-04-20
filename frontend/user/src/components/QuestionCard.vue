@@ -99,10 +99,6 @@ function showDetail(item) {
   showModal.value = true;
 }
 
-function closeDetail() {
-  showModal.value = true;
-}
-
 defineExpose({
   updateResult,
 });
@@ -161,7 +157,6 @@ defineExpose({
       </div>
       <a-modal v-model:visible="showModal" title="提交记录" :width="800">
         <template #footer>
-          <a-button key="back" @click="closeDetail">关闭</a-button>
         </template>
         <a-descriptions>
           <a-descriptions-item label="提交时间">
@@ -180,7 +175,12 @@ defineExpose({
           </a-descriptions-item>
         </a-descriptions>
         <a-divider>Answer</a-divider>
+        <a-alert
+          :message="submitDetail.message"
+          :type="submitDetail.pass == 100 ? 'success' : 'error'"
+        />
         <div
+          style="margin-top: 20px"
           v-html="toCodeMdHtml(submitDetail.answer, 'Kotlin')"
           v-highlight
           class="markdown-html"

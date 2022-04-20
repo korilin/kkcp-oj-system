@@ -16,6 +16,7 @@ interface SubmitRecord : Entity<SubmitRecord> {
     var pass: Int
     var submitTime: LocalDateTime
     var elapsedTime: Int // 执行时长
+    var message: String
 }
 
 object SubmitRecords : Table<SubmitRecord>("t_submit_record") {
@@ -28,4 +29,5 @@ object SubmitRecords : Table<SubmitRecord>("t_submit_record") {
     val pass = int("pass").bindTo { it.pass }
     val submitTime = datetime("submit_time").bindTo { it.submitTime }
     val elapsedTime = int("elapsed_time").bindTo { it.elapsedTime }
+    val message = text("message").bindTo { it.message }
 }

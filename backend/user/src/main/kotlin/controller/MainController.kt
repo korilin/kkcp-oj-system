@@ -117,8 +117,6 @@ class MainController(
         IResponseBody.success(message = e.message ?: "获取不到答案", data = false)
     } catch (e: ClassNotFoundException) {
         IResponseBody.success(message = e.message ?: "找不到对应类，可能存在编译失败", data = false)
-    } catch (e: CompileFailureException) {
-        IResponseBody.success(message = e.message, data = false)
     } catch (e: NoSuchMethodException) {
         IResponseBody.success(message = e.message ?: "找不到验证方法", data = false)
     } catch (e: Exception) {

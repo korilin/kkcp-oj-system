@@ -1,5 +1,7 @@
 package com.korilin.service
 
+import com.korilin.CompileFailureException
+import com.korilin.IResponseBody
 import com.korilin.bo.ContestStatus
 import com.korilin.domain.repository.ContestRepository
 import com.korilin.domain.repository.InclusionRepository
@@ -101,7 +103,7 @@ class MainService(
         userId: Int,
         questionId: Int,
         answer: String,
-        block: suspend (Class<*>, UserProfile, Contest, Question) -> Pair<Boolean, String>
+        block: suspend (Class<*>?, UserProfile, Contest, Question, CompileFailureException?) -> Pair<Boolean, String>
     ): Pair<Boolean, String> {
         val contest = contestRepository.findMainTargetContest()
         if (contest == null || contest.status != ContestStatus.UNDERWAY.id) return Pair(false, "找不到进行中的竞赛")
@@ -110,15 +112,20 @@ class MainService(
         val questions = inclusionRepository.getQuestionsDetailByContestId(contest.contestId)
         val question = questions.find { it.questionId == questionId } ?: return Pair(false, "该竞赛没有对应题目")
         val code = CodeUtil.compositeAnswerCode(question.codeTemplate, answer)
-        val clazz = AnswerClassHelper.createClass(questionId, userId, code)
-        return block(clazz, registration.user, contest, question)
+        return try {
+            val clazz = AnswerClassHelper.createClass(questionId, userId, code)
+            block(clazz, registration.user, contest, question, null)
+        } catch (e: CompileFailureException) {
+            block(null, registration.user, contest, question, e)
+        }
     }
 
     suspend fun testAnswer(userId: Int, questionId: Int, answer: String): Pair<Boolean, String> {
-        return pretreatment(userId, questionId, answer) { clazz, _, _, question ->
+        return pretreatment(userId, questionId, answer) { clazz, _, _, question, e ->
             val testData = question.testDataJson.slice(0..2).map {
                 it.toMap()
             }.toTypedArray()
+            clazz ?: return@pretreatment Pair(false, "编译错误 ${e?.message}")
             AnswerVerifyHelper.verifyAnswer(clazz, testData, true).let {
                 Pair(it.status, it.message)
             }
@@ -126,10 +133,24 @@ class MainService(
     }
 
     suspend fun submitAnswer(userId: Int, questionId: Int, answer: String): Pair<Boolean, String> {
-        return pretreatment(userId, questionId, answer) { clazz, user, contest, question ->
+        return pretreatment(userId, questionId, answer) { clazz, user, contest, question, e ->
             val testData = question.testDataJson.map {
                 it.toMap()
             }.toTypedArray()
+            if (clazz == null) {
+                val mes ="编译错误 ${e?.message}"
+                submitRecords.add(SubmitRecord {
+                    this.question = question
+                    this.user = user
+                    this.contest = contest
+                    this.answer = answer
+                    this.pass = 0
+                    this.submitTime = LocalDateTime.now()
+                    this.elapsedTime = 0
+                    this.message = mes
+                })
+                return@pretreatment Pair(false, mes)
+            }
             AnswerVerifyHelper.verifyAnswer(clazz, testData, false).let {
                 val pass = ((it.count / testData.size.toFloat()) * 100).toInt()
                 // Save Submit Record
@@ -141,6 +162,7 @@ class MainService(
                     this.pass = pass
                     this.submitTime = LocalDateTime.now()
                     this.elapsedTime = it.elapsed
+                    this.message = it.message
                 })
                 if (it.status) {
                     Pair(true, it.message)
@@ -151,11 +173,10 @@ class MainService(
         }
     }
 
-    suspend fun getSubmits(userId: Int, questionId: Int) =
-        submitRecords.filter {
-            (it.userId eq userId) or (it.questionId eq questionId)
-        }.sortedBy {
-            it.submitTime
-        }.toList().reversed()
+    suspend fun getSubmits(userId: Int, questionId: Int) = submitRecords.filter {
+        (it.userId eq userId) or (it.questionId eq questionId)
+    }.sortedBy {
+        it.submitTime
+    }.toList().reversed()
 
 }
