@@ -1,6 +1,7 @@
 package com.korilin.service
 
 import com.korilin.bo.ContestStatus
+import com.korilin.bo.TestDataItem
 import com.korilin.model.QuestionAndAnswer
 import com.korilin.model.QuestionAnswer
 import com.korilin.repository.*
@@ -93,10 +94,12 @@ class MainService(
         return true
     }
 
-    /**
-     * 答案拼接
-     */
-    suspend fun testAnswer(userId: Int, questionId: Int, answer: String): Pair<Boolean, String>  {
+    suspend fun pretreatment(
+        userId: Int,
+        questionId: Int,
+        answer: String,
+        block: suspend (Class<*>, Array<TestDataItem>) -> Pair<Boolean, String>
+    ): Pair<Boolean, String> {
         val contest = contestRepository.findMainTargetContest()
         if (contest == null || contest.status != ContestStatus.UNDERWAY.id) return Pair(false, "找不到进行中的竞赛")
         registrationRepository.getRegistration(contest.contestId, userId) ?: return Pair(false, "没有报名，无法提交答案")
@@ -104,9 +107,27 @@ class MainService(
         val question = questions.find { it.questionId == questionId } ?: return Pair(false, "该竞赛没有对应题目")
         val code = CodeUtil.compositeAnswerCode(question.codeTemplate, answer)
         val clazz = AnswerClassHelper.createClass(questionId, userId, code)
-        val testData = question.testDataJson.map {
-            it.toMap()
-        }.toTypedArray()
-        return AnswerVerifyHelper.verifyAnswer(clazz, testData)
+        return block(clazz, question.testDataJson)
+    }
+
+    suspend fun testAnswer(userId: Int, questionId: Int, answer: String): Pair<Boolean, String> {
+        return pretreatment(userId, questionId, answer) { clazz, data ->
+            val testData = data.map {
+                it.toMap()
+            }.slice(0..2).toTypedArray()
+            AnswerVerifyHelper.verifyAnswer(clazz, testData)
+        }
+    }
+
+    suspend fun submitAnswer(userId: Int, questionId: Int, answer: String): Pair<Boolean, String> {
+        return pretreatment(userId, questionId, answer) { clazz, data ->
+            val testData = data.map {
+                it.toMap()
+            }.toTypedArray()
+            AnswerVerifyHelper.verifyAnswer(clazz, testData).also {
+                // Save Submit Record
+                println(it)
+            }
+        }
     }
 }

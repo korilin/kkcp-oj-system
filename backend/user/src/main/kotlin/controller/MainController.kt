@@ -7,6 +7,7 @@ import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.annotations.RegisterExceptionMessage
 import com.korilin.annotations.USER_EXCEPTION_MESSAGE
 import com.korilin.model.AnswersUpdateBody
+import com.korilin.model.QuestionAnswer
 import com.korilin.model.UnderWayContestUserData
 import com.korilin.model.RegisterBody
 import com.korilin.service.MainService
@@ -102,22 +103,39 @@ class MainController(
         return IResponseBody(result, "", Unit)
     }
 
+    private suspend fun answerCatch(
+        body: AnswersUpdateBody,
+        block: suspend (QuestionAnswer) -> IResponseBody<Boolean>
+    ) = try {
+        // 只取第一个问题进行测试
+        val answer = body.answers.getOrNull(0) ?: throw IndexOutOfBoundsException("获取不到答案")
+        service.updateAnswer(body.userId, body.answers)
+        block(answer)
+    } catch (e: IndexOutOfBoundsException) {
+        IResponseBody.success(message = e.message ?: "获取不到答案", data = false)
+    } catch (e: ClassNotFoundException) {
+        IResponseBody.success(message = e.message ?: "找不到对应类，可能存在编译失败", data = false)
+    } catch (e: CompileFailureException) {
+        IResponseBody.success(message = e.message, data = false)
+    } catch (e: NoSuchMethodException) {
+        IResponseBody.success(message = e.message ?: "找不到验证方法", data = false)
+    } catch (e: Exception) {
+        IResponseBody.success(message = e.message ?: e.stackTrace.contentToString(), data = false)
+    }
+
     @PostMapping("/answer/test")
     suspend fun testAnswer(@RequestBody body: AnswersUpdateBody): IResponseBody<Boolean> = serialOpt(body.userId) {
-        return@serialOpt try {
-            // 只取第一个问题进行测试
-            val answer = body.answers.getOrNull(0) ?: return@serialOpt IResponseBody.error("获取不到答案")
-            service.updateAnswer(body.userId, body.answers)
+        answerCatch(body) { answer ->
             val (result, message) = service.testAnswer(body.userId, answer.questionId, answer.answer)
             IResponseBody.success(message = message, data = result)
-        } catch (e: ClassNotFoundException) {
-            IResponseBody.success(message = e.message ?: "找不到对应类，可能存在编译失败", data = false)
-        } catch (e: CompileFailureException) {
-            IResponseBody.success(message = e.message, data = false)
-        } catch (e: NoSuchMethodException) {
-            IResponseBody.success(message = e.message ?: "找不到验证方法", data = false)
-        } catch (e: Exception) {
-            IResponseBody.success(message = e.message ?: e.stackTrace.contentToString(), data = false)
+        }
+    }
+
+    @PostMapping("/answer/submit")
+    suspend fun submitAnswer(@RequestBody body: AnswersUpdateBody): IResponseBody<Boolean> = serialOpt(body.userId) {
+        answerCatch(body) { answer ->
+            val (result, message) = service.submitAnswer(body.userId, answer.questionId, answer.answer)
+            IResponseBody.success(message = message, data = result)
         }
     }
 }
