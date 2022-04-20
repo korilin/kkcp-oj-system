@@ -17,6 +17,7 @@ import com.korilin.utils.AnswerVerifyHelper
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
+import org.ktorm.dsl.or
 import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -149,4 +150,12 @@ class MainService(
             }
         }
     }
+
+    suspend fun getSubmits(userId: Int, questionId: Int) =
+        submitRecords.filter {
+            (it.userId eq userId) or (it.questionId eq questionId)
+        }.sortedBy {
+            it.submitTime
+        }.toList().reversed()
+
 }

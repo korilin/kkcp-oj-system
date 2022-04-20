@@ -6,6 +6,7 @@ import com.korilin.UserModuleApiPrefix
 import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.annotations.RegisterExceptionMessage
 import com.korilin.annotations.USER_EXCEPTION_MESSAGE
+import com.korilin.domain.table.SubmitRecord
 import com.korilin.model.AnswersUpdateBody
 import com.korilin.model.QuestionAnswer
 import com.korilin.model.UnderWayContestUserData
@@ -90,10 +91,11 @@ class MainController(
         )
     }
 
-    @GetMapping("/query/commits")
+    @GetMapping("/query/submits")
     @ExceptionMessageHandler
-    suspend fun getCommits(questionId: Int, userId: Int): IResponseBody<Unit> {
-        TODO()
+    suspend fun getSubmits(questionId: Int, userId: Int): IResponseBody<List<SubmitRecord>> {
+        val list = service.getSubmits(userId, questionId)
+        return IResponseBody.success(data = list)
     }
 
     @PutMapping("/answer/update")
@@ -138,4 +140,5 @@ class MainController(
             IResponseBody.success(message = message, data = result)
         }
     }
+
 }

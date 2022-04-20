@@ -25,7 +25,7 @@ object SubmitRecords : Table<SubmitRecord>("t_submit_record") {
     val userId = int("user_id").references(UserProfiles) { it.user }
     val contestId = int("contest_id").references(Contests) { it.contest }
     val answer = text("answer").bindTo { it.answer }
-    val isPass = int("pass").bindTo { it.pass }
+    val pass = int("pass").bindTo { it.pass }
     val submitTime = datetime("submit_time").bindTo { it.submitTime }
     val elapsedTime = int("elapsed_time").bindTo { it.elapsedTime }
 }
