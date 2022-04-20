@@ -174,7 +174,7 @@ class MainService(
     }
 
     suspend fun getSubmits(userId: Int, questionId: Int) = submitRecords.filter {
-        (it.userId eq userId) or (it.questionId eq questionId)
+        (it.userId eq userId) and (it.questionId eq questionId)
     }.sortedBy {
         it.submitTime
     }.toList().reversed()
