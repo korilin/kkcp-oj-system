@@ -32,6 +32,7 @@ class MainService(
 
     private val userProfiles = database.userProfiles
     private val userAnswers = database.userAnswers
+    private val submitRecords = database.submitRecords
 
     suspend fun register(contestId: Int, userId: Int): Pair<Boolean, String> {
         if (registrationRepository.getRegistration(contestId, userId) != null) {
@@ -99,35 +100,47 @@ class MainService(
         userId: Int,
         questionId: Int,
         answer: String,
-        block: suspend (Class<*>, Array<TestDataItem>) -> Pair<Boolean, String>
+        block: suspend (Class<*>, UserProfile, Contest, Question) -> Pair<Boolean, String>
     ): Pair<Boolean, String> {
         val contest = contestRepository.findMainTargetContest()
         if (contest == null || contest.status != ContestStatus.UNDERWAY.id) return Pair(false, "找不到进行中的竞赛")
-        registrationRepository.getRegistration(contest.contestId, userId) ?: return Pair(false, "没有报名，无法提交答案")
+        val registration =
+            registrationRepository.getRegistration(contest.contestId, userId) ?: return Pair(false, "没有报名，无法提交答案")
         val questions = inclusionRepository.getQuestionsDetailByContestId(contest.contestId)
         val question = questions.find { it.questionId == questionId } ?: return Pair(false, "该竞赛没有对应题目")
         val code = CodeUtil.compositeAnswerCode(question.codeTemplate, answer)
         val clazz = AnswerClassHelper.createClass(questionId, userId, code)
-        return block(clazz, question.testDataJson)
+        return block(clazz, registration.user, contest, question)
     }
 
     suspend fun testAnswer(userId: Int, questionId: Int, answer: String): Pair<Boolean, String> {
-        return pretreatment(userId, questionId, answer) { clazz, data ->
-            val testData = data.map {
+        return pretreatment(userId, questionId, answer) { clazz, _, _, question ->
+            val testData = question.testDataJson.slice(0..2).map {
                 it.toMap()
-            }.slice(0..2).toTypedArray()
-            AnswerVerifyHelper.verifyAnswer(clazz, testData)
+            }.toTypedArray()
+            AnswerVerifyHelper.verifyAnswer(clazz, testData).let {
+                Pair(it.first, it.second)
+            }
         }
     }
 
     suspend fun submitAnswer(userId: Int, questionId: Int, answer: String): Pair<Boolean, String> {
-        return pretreatment(userId, questionId, answer) { clazz, data ->
-            val testData = data.map {
+        return pretreatment(userId, questionId, answer) { clazz, user, contest, question ->
+            val testData = question.testDataJson.map {
                 it.toMap()
             }.toTypedArray()
-            AnswerVerifyHelper.verifyAnswer(clazz, testData).also {
+            AnswerVerifyHelper.verifyAnswer(clazz, testData).let {
                 // Save Submit Record
-                println(it)
+                submitRecords.add(SubmitRecord {
+                    this.question = question
+                    this.user = user
+                    this.contest = contest
+                    this.answer = answer
+                    this.isPass = it.first
+                    this.submitTime = LocalDateTime.now()
+                    this.elapsedTime = it.third
+                })
+                Pair(it.first, it.second)
             }
         }
     }

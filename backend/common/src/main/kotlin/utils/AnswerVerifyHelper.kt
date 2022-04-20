@@ -5,7 +5,7 @@ import kotlin.coroutines.coroutineContext
 
 
 object AnswerVerifyHelper {
-    suspend fun verifyAnswer(clazz: Class<*>, data: Array<Map<String, Any>>) = withContext(coroutineContext) {
+    suspend fun verifyAnswer(clazz: Class<*>, data: Array<Map<String, Any>>):Triple<Boolean, String, Int> = withContext(coroutineContext) {
         val invokeMethod = clazz.methods.find { it.name == "invoke" }!!
         val start = System.currentTimeMillis()
         for (item in data) {
@@ -21,15 +21,16 @@ object AnswerVerifyHelper {
                     job.await()
                 }
                 if (!result) {
-                    return@withContext Pair(false, "$item 用例没有通过")
+                    return@withContext Triple(false, "$item 用例没有通过", -1)
                 }
             } catch (timeout: TimeoutCancellationException) {
-                return@withContext Pair(false, "执行超时，请检查代码的时间复杂度")
+                return@withContext Triple(false, "执行超时，请检查代码的时间复杂度", -1)
             } catch (e: Exception) {
-                return@withContext Pair(false, e.message ?: "代码执行发生无消息异常")
+                return@withContext Triple(false, e.message ?: "代码执行发生无消息异常", -1)
             }
         }
         val end = System.currentTimeMillis()
-        return@withContext Pair(true, "测试通过，代码耗时：${end - start}毫秒")
+        val time = (end - start).toInt()
+        return@withContext Triple(true, "测试通过，代码耗时：${time}毫秒", time)
     }
 }
