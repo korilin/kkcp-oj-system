@@ -23,6 +23,7 @@ const data = ref({});
 const current = ref(0);
 const question = ref({});
 const answer = ref("");
+const submits = ref([]);
 
 const editor = ref(null);
 const card = ref(null);
@@ -42,6 +43,8 @@ watch(current, (newV, oldV) => {
   question.value = v.question;
   answer.value = v.answer;
   editor.value?.updateValue(v.answer);
+  submits.value = [];
+  getSubmits();
   return newV;
 });
 
@@ -113,29 +116,47 @@ function resetAnswer() {
   editor.value?.updateValue(code);
 }
 
-function postAnswer(url) {
+async function postAnswer(url) {
   const params = {
     userId: userStore.profile.id,
     answers: [{ questionId: question.value.questionId, answer: answer.value }],
   };
   card.value?.updateResult(0, "运行中");
-  HttpService.post(url, params).then((body) => {
+  return HttpService.post(url, params).catch((_) => {
+    card.value?.updateResult(2, "Service Error Happen!");
+  });
+}
+
+async function testAnswer() {
+  postAnswer("/business/answer/test").then((body) => {
     if (body.status && body.data) {
-        card.value?.updateResult(1, body.message);
-    }else {
-        card.value?.updateResult(2, body.message);
+      card.value?.updateResult(1, body.message);
+    } else {
+      card.value?.updateResult(2, body.message);
     }
-  }).catch(_ => {
-        card.value?.updateResult(2, "Service Error Happen!");
-  })
+  });
 }
 
-function testAnswer() {
-  postAnswer("/business/answer/test")
+async function submitAnswer() {
+  const job1 = postAnswer("/business/answer/submit")
+  const body = await job1
+  await getSubmits()
+  if (body.status && body.data) {
+    card.value?.updateResult(1, body.message);
+  } else {
+    card.value?.updateResult(2, body.message);
+  }
 }
 
-function submitAnswer() {
-  postAnswer("/business/answer/submit")
+async function getSubmits() {
+  const qid = question.value.questionId
+  const uid = userStore.profile.id
+  const url = `/business/query/submits?questionId=${qid}&userId=${uid}`
+  return HttpService.get(url).then((body) => {
+    if (body.status) {
+      submits.value = body.data;
+    }
+  });
 }
 </script>
 <template>
@@ -165,7 +186,12 @@ function submitAnswer() {
         </a-result>
       </div>
       <div v-if="setup == 2" class="contest-space">
-        <QuestionCard class="question" ref="card" :question="question" />
+        <QuestionCard
+          class="question"
+          ref="card"
+          :question="question"
+          :submits="submits"
+        />
         <div class="editor-wrap">
           <KotlinEditor class="editor" ref="editor" v-model="answer" />
           <div class="opt-btn">
