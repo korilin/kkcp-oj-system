@@ -113,13 +113,13 @@ function resetAnswer() {
   editor.value?.updateValue(code);
 }
 
-function testAnswer() {
+function postAnswer(url) {
   const params = {
     userId: userStore.profile.id,
     answers: [{ questionId: question.value.questionId, answer: answer.value }],
   };
   card.value?.updateResult(0, "运行中");
-  HttpService.post("/business/answer/test", params).then((body) => {
+  HttpService.post(url, params).then((body) => {
     if (body.status && body.data) {
         card.value?.updateResult(1, body.message);
     }else {
@@ -128,6 +128,14 @@ function testAnswer() {
   }).catch(_ => {
         card.value?.updateResult(2, "Service Error Happen!");
   })
+}
+
+function testAnswer() {
+  postAnswer("/business/answer/test")
+}
+
+function submitAnswer() {
+  postAnswer("/business/answer/submit")
 }
 </script>
 <template>
@@ -165,7 +173,7 @@ function testAnswer() {
             <a-button size="smaill" @click="saveAnswer">保存</a-button>
             <a-button size="smaill" @click="resetAnswer">重置</a-button>
             <a-button type="primary" size="smaill" @click="testAnswer">测试</a-button>
-            <a-button type="primary" size="smaill">提交</a-button>
+            <a-button type="primary" size="smaill" @click="submitAnswer">提交</a-button>
           </div>
         </div>
       </div>

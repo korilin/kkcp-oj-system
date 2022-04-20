@@ -51,8 +51,8 @@ class MainService(
     suspend fun getUserRegisterUnderWayContest(userId: Int): Pair<String, Registration?> {
         val contest = contestRepository.findMainTargetContest()
         if (contest?.status != ContestStatus.UNDERWAY.id) return Pair("没有进行中的活动", null)
-        val registration = registrationRepository.getRegistration(contest.contestId, userId)
-            ?: return Pair("你没有报名该比赛，无法参加答题", null)
+        val registration =
+            registrationRepository.getRegistration(contest.contestId, userId) ?: return Pair("你没有报名该比赛，无法参加答题", null)
         return Pair("", registration)
     }
 
@@ -118,8 +118,8 @@ class MainService(
             val testData = question.testDataJson.slice(0..2).map {
                 it.toMap()
             }.toTypedArray()
-            AnswerVerifyHelper.verifyAnswer(clazz, testData).let {
-                Pair(it.first, it.second)
+            AnswerVerifyHelper.verifyAnswer(clazz, testData, true).let {
+                Pair(it.status, it.message)
             }
         }
     }
@@ -129,18 +129,23 @@ class MainService(
             val testData = question.testDataJson.map {
                 it.toMap()
             }.toTypedArray()
-            AnswerVerifyHelper.verifyAnswer(clazz, testData).let {
+            AnswerVerifyHelper.verifyAnswer(clazz, testData, false).let {
+                val pass = ((it.count / testData.size.toFloat()) * 100).toInt()
                 // Save Submit Record
                 submitRecords.add(SubmitRecord {
                     this.question = question
                     this.user = user
                     this.contest = contest
                     this.answer = answer
-                    this.isPass = it.first
+                    this.pass = pass
                     this.submitTime = LocalDateTime.now()
-                    this.elapsedTime = it.third
+                    this.elapsedTime = it.elapsed
                 })
-                Pair(it.first, it.second)
+                if (it.status) {
+                    Pair(true, it.message)
+                } else {
+                    Pair(false, "${it.message}, 通过的用例为${pass}%")
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ interface SubmitRecord : Entity<SubmitRecord> {
     var user: UserProfile
     var contest: Contest?
     var answer: String
-    var isPass: Boolean
+    var pass: Int
     var submitTime: LocalDateTime
     var elapsedTime: Int // 执行时长
 }
@@ -24,8 +24,8 @@ object SubmitRecords : Table<SubmitRecord>("t_submit_record") {
     val questionId = int("question_id").references(Questions) { it.question }
     val userId = int("user_id").references(UserProfiles) { it.user }
     val contestId = int("contest_id").references(Contests) { it.contest }
-    val answer = varchar("answer").bindTo { it.answer }
-    val isPass = boolean("is_pass").bindTo { it.isPass }
+    val answer = text("answer").bindTo { it.answer }
+    val isPass = int("pass").bindTo { it.pass }
     val submitTime = datetime("submit_time").bindTo { it.submitTime }
     val elapsedTime = int("elapsed_time").bindTo { it.elapsedTime }
 }
