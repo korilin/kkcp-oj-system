@@ -14,7 +14,7 @@ interface UserAnswer : Entity<UserAnswer> {
     var answer: String
 }
 
-object UserAnswers : Table<UserAnswer>("user_answer") {
+object UserAnswers : Table<UserAnswer>("rt_user_answer") {
     val questionId = int("question_id").primaryKey().references(Questions) { it.question }
     val attachId = int("attach_id").primaryKey().bindTo { it.attachId }
     val answer = text("answer").bindTo { it.answer }

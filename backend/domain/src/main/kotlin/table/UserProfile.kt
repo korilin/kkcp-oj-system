@@ -19,7 +19,7 @@ interface UserProfile: Entity<UserProfile> {
     var htmlUrl: String
 }
 
-object UserProfiles: Table<UserProfile>("user_profile") {
+object UserProfiles: Table<UserProfile>("t_user_profile") {
     val id = int("id").primaryKey().bindTo { it.id }
     val login = varchar("login").bindTo { it.login }
     val name = varchar("name").bindTo { it.name }

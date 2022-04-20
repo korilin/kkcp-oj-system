@@ -15,7 +15,7 @@ interface Registration : Entity<Registration> {
     var answerLastUpdateTime: LocalDateTime?
 }
 
-object Registrations : Table<Registration>("contest_registration") {
+object Registrations : Table<Registration>("r_registration") {
     val contestId = int("contest_id").primaryKey().references(Contests) { it.contest }
     val userId = int("user_id").primaryKey().references(UserProfiles) { it.user }
     val attachId = int("attach_id").bindTo { it.attachId }

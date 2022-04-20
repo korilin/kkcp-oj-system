@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 /**
  * 管理员账户表
  */
-object AdminAccounts : Table<AdminAccount>("admin_account") {
+object AdminAccounts : Table<AdminAccount>("t_admin_account") {
     val email = varchar("email").primaryKey().bindTo { it.email }
     val name = varchar("name").bindTo { it.name }
     val level = int("level").bindTo { it.level }
