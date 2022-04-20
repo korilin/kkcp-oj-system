@@ -43,6 +43,7 @@ watch(current, (newV, oldV) => {
   question.value = v.question;
   answer.value = v.answer;
   editor.value?.updateValue(v.answer);
+  card.value?.resetIndex();
   submits.value = [];
   getSubmits();
   return newV;
@@ -138,9 +139,9 @@ async function testAnswer() {
 }
 
 async function submitAnswer() {
-  const job1 = postAnswer("/business/answer/submit")
-  const body = await job1
-  await getSubmits()
+  const job1 = postAnswer("/business/answer/submit");
+  const body = await job1;
+  await getSubmits();
   if (body.status && body.data) {
     card.value?.updateResult(1, body.message);
   } else {
@@ -149,9 +150,9 @@ async function submitAnswer() {
 }
 
 async function getSubmits() {
-  const qid = question.value.questionId
-  const uid = userStore.profile.id
-  const url = `/business/query/submits?questionId=${qid}&userId=${uid}`
+  const qid = question.value.questionId;
+  const uid = userStore.profile.id;
+  const url = `/business/query/submits?questionId=${qid}&userId=${uid}`;
   return HttpService.get(url).then((body) => {
     if (body.status) {
       submits.value = body.data;

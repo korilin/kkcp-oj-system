@@ -85,6 +85,10 @@ function updateResult(status, message) {
   result.message = message;
 }
 
+function resetIndex() {
+  activeTabKey.value = "1";
+}
+
 function toCodeMdHtml(code, lang) {
   const prefix = "```" + lang;
   const suffix = "```";
@@ -101,6 +105,7 @@ function showDetail(item) {
 
 defineExpose({
   updateResult,
+  resetIndex,
 });
 </script>
 <template>
