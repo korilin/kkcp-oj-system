@@ -1,8 +1,9 @@
-package com.korilin.repository
+package com.korilin.domain.repository
 
-import com.korilin.table.Contest
-import com.korilin.table.Registration
-import com.korilin.table.UserProfile
+import com.korilin.domain.registrations
+import com.korilin.domain.table.Contest
+import com.korilin.domain.table.Registration
+import com.korilin.domain.table.UserProfile
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.or

@@ -1,9 +1,8 @@
 package com.korilin.model
 
-import com.korilin.table.Contest
-import com.korilin.table.Question
-import com.korilin.table.UserAnswer
-import com.korilin.table.UserProfile
+import com.korilin.domain.table.Contest
+import com.korilin.domain.table.Question
+import com.korilin.domain.table.UserProfile
 
 data class QuestionAndAnswer(val question: Question, val answer: String)
 /**

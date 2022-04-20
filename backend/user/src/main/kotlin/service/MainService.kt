@@ -1,12 +1,16 @@
 package com.korilin.service
 
 import com.korilin.bo.ContestStatus
-import com.korilin.bo.TestDataItem
+import com.korilin.domain.repository.ContestRepository
+import com.korilin.domain.repository.InclusionRepository
+import com.korilin.domain.repository.QuestionRepository
+import com.korilin.domain.repository.RegistrationRepository
+import com.korilin.domain.submitRecords
+import com.korilin.domain.table.*
+import com.korilin.domain.userAnswers
+import com.korilin.domain.userProfiles
 import com.korilin.model.QuestionAndAnswer
 import com.korilin.model.QuestionAnswer
-import com.korilin.repository.*
-import com.korilin.table.Registration
-import com.korilin.table.UserAnswer
 import com.korilin.utils.CodeUtil
 import com.korilin.utils.AnswerClassHelper
 import com.korilin.utils.AnswerVerifyHelper
@@ -16,9 +20,6 @@ import org.ktorm.dsl.eq
 import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
-import kotlin.random.Random
-import kotlin.reflect.full.functions
-import kotlin.reflect.full.primaryConstructor
 
 @Service
 class MainService(

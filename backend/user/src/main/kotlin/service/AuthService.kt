@@ -2,8 +2,8 @@ package com.korilin.service
 
 import com.korilin.github.GitHubAuth
 import com.korilin.github.serializable.AccessTokenResponse
-import com.korilin.repository.userProfiles
-import com.korilin.table.UserProfile
+import com.korilin.domain.table.UserProfile
+import com.korilin.domain.userProfiles
 import com.korilin.urls.GitHubApis
 import io.ktor.client.*
 import io.ktor.client.call.*

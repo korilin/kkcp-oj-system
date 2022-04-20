@@ -1,17 +1,17 @@
-package com.korilin.repository
+package com.korilin.domain.repository
 
 import com.korilin.bo.TestDataItem
-import com.korilin.table.Question
-import com.korilin.table.Questions
+import com.korilin.domain.questions
+import com.korilin.domain.questionsSource
+import com.korilin.domain.table.Question
+import com.korilin.domain.table.Questions
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.map
 import org.ktorm.dsl.select
 import org.ktorm.entity.add
 import org.ktorm.entity.find
-import org.ktorm.entity.update
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Repository

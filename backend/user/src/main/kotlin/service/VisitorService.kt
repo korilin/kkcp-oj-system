@@ -1,7 +1,7 @@
 package com.korilin.service
 
-import com.korilin.repository.ContestRepository
-import com.korilin.table.Contest
+import com.korilin.domain.repository.ContestRepository
+import com.korilin.domain.table.Contest
 import org.springframework.stereotype.Service
 
 @Service

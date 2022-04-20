@@ -1,8 +1,8 @@
 package com.korilin.model
 
-import com.korilin.table.AdminAccount
-import com.korilin.table.Contest
-import com.korilin.table.Question
+import com.korilin.domain.table.AdminAccount
+import com.korilin.domain.table.Contest
+import com.korilin.domain.table.Question
 
 /**
  * 登录响应数据模型

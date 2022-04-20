@@ -6,9 +6,9 @@ import com.korilin.ktorm.globalJsonMapper
 import com.korilin.model.Commits
 import com.korilin.model.QuestionForm
 import com.korilin.model.QuestionDetail
-import com.korilin.repository.InclusionRepository
-import com.korilin.repository.QuestionRepository
-import com.korilin.table.Question
+import com.korilin.domain.repository.InclusionRepository
+import com.korilin.domain.repository.QuestionRepository
+import com.korilin.domain.table.Question
 import javaslang.Tuple2
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

@@ -8,7 +8,7 @@ import com.korilin.model.ContestForm
 import com.korilin.model.ContestInfo
 import com.korilin.model.InclusionRequest
 import com.korilin.service.ContestService
-import com.korilin.table.Question
+import com.korilin.domain.table.Question
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.web.bind.annotation.*
 

@@ -1,13 +1,12 @@
-package com.korilin.table
+package com.korilin.domain.table
 
-import com.korilin.table.Registrations.references
 import org.ktorm.entity.Entity
 import org.ktorm.schema.*
 import java.time.LocalDateTime
 
 interface SubmitRecord : Entity<SubmitRecord> {
 
-    companion object : Entity.Factory<Registration>()
+    companion object : Entity.Factory<SubmitRecord>()
 
     val submitId: Int
     var question: Question
@@ -16,7 +15,7 @@ interface SubmitRecord : Entity<SubmitRecord> {
     var answer: String
     var isPass: Boolean
     var submitTime: LocalDateTime
-    val elapsedTime: Int // 执行时长
+    var elapsedTime: Int // 执行时长
 }
 
 object SubmitRecords : Table<SubmitRecord>("t_submit_record") {

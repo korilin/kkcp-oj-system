@@ -1,9 +1,11 @@
-package com.korilin.repository
+package com.korilin.domain.repository
 
 import com.korilin.AbnormalStatusException
 import com.korilin.bo.ContestStatus
-import com.korilin.table.Contest
-import com.korilin.table.Contests
+import com.korilin.domain.contests
+import com.korilin.domain.contestsSource
+import com.korilin.domain.table.Contest
+import com.korilin.domain.table.Contests
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.map

@@ -4,7 +4,7 @@ import com.korilin.IResponseBody
 import com.korilin.UserModuleApiPrefix
 import com.korilin.model.ContestRecord
 import com.korilin.service.VisitorService
-import com.korilin.table.Contest
+import com.korilin.domain.table.Contest
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController

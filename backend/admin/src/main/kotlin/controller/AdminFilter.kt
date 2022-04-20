@@ -2,7 +2,7 @@ package com.korilin.controller
 
 import com.korilin.AdminModuleConfig
 import com.korilin.ktorm.decodeJson
-import com.korilin.table.AdminAccount
+import com.korilin.domain.table.AdminAccount
 import com.korilin.utils.AESUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

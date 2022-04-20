@@ -5,11 +5,11 @@ import com.korilin.ContestStatusNotFoundException
 import com.korilin.bo.ContestStatus
 import com.korilin.model.ContestForm
 import com.korilin.model.ContestInfo
-import com.korilin.repository.ContestRepository
-import com.korilin.repository.InclusionRepository
-import com.korilin.repository.QuestionRepository
-import com.korilin.table.Contest
-import com.korilin.table.Question
+import com.korilin.domain.repository.ContestRepository
+import com.korilin.domain.repository.InclusionRepository
+import com.korilin.domain.repository.QuestionRepository
+import com.korilin.domain.table.Contest
+import com.korilin.domain.table.Question
 import com.korilin.toSecond
 import javaslang.Tuple2
 import kotlinx.coroutines.*

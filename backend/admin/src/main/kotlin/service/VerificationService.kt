@@ -4,7 +4,7 @@ import com.korilin.AdminModuleConfig
 import com.korilin.AdminModuleConfig.VERIFICATION_CODE_SIZE
 import com.korilin.ktorm.encodeJson
 import com.korilin.model.AdminLoginModel
-import com.korilin.repository.AdminAccountRepository
+import com.korilin.domain.repository.AdminAccountRepository
 import com.korilin.utils.AESUtil
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service

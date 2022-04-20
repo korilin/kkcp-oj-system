@@ -7,7 +7,7 @@ import com.korilin.annotations.RegisterExceptionMessage
 import com.korilin.model.QuestionForm
 import com.korilin.model.QuestionDetail
 import com.korilin.service.QuestionService
-import com.korilin.table.Question
+import com.korilin.domain.table.Question
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.web.bind.annotation.*
 
