@@ -1,11 +1,11 @@
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, h } from "vue";
 import { useCommonStore, useUserStore } from "../plugins/pinia";
 import HttpService from "../utils/axios-service";
 import { goHome } from "../utils/router-helper";
 import KotlinEditor from "../components/KotlinEditor.vue";
 import QuestionCard from "../components/QuestionCard.vue";
-import { message } from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 
 const commonStore = useCommonStore();
 const userStore = useUserStore();
@@ -20,6 +20,8 @@ const setup = ref(0);
 const errMes = ref("Error");
 const data = ref({});
 
+const endTime = ref(Date.now());
+
 const current = ref(0);
 const question = ref({});
 const answer = ref("");
@@ -30,6 +32,25 @@ const card = ref(null);
 
 function getIndex() {
   return current.value - 1;
+}
+
+function startTimeCountDown() {
+  const start = new Date(data.value.contest.startTime).getTime();
+  const end = start + data.value.contest.duration * 60 * 1000;
+  endTime.value = new Date(end);
+}
+
+function endTimeCountDown() {
+  Modal.info({
+    title: "时间到啦～",
+    content: h("div", {}, [
+      h("p", "比赛已结束，答题终止，感谢你的参与，"),
+      h("p", "比赛结果将会在审核后展示在主页，点击按钮返回主页"),
+    ]),
+    onOk() {
+      goHome();
+    },
+  });
 }
 
 watch(current, (newV, oldV) => {
@@ -74,6 +95,7 @@ function initData(uid) {
     if (body.status) {
       commonStore.showHeader = false;
       data.value = body.data;
+      startTimeCountDown();
       current.value = 1;
       setup.value = 2;
     } else {
@@ -164,6 +186,11 @@ async function getSubmits() {
   <a-layout class="layout-contest" id="layout-contest">
     <a-layout-header v-if="setup >= 2" class="contest-header">
       <h5>{{ data.contest?.title }}</h5>
+      <a-statistic-countdown
+        :value="endTime"
+        style="margin-right: 50px"
+        @finish="endTimeCountDown"
+      />
       <a-pagination
         v-model:current="current"
         simple
