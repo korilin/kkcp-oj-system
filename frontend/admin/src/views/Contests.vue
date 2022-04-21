@@ -66,7 +66,7 @@ const colors = [
         >{{ commonStore.getContestStatusById([record.contest.status]).text }}</a-tag>
       </template>
       <template v-if="column.key == 'duration'">
-        <a-tag>{{ getDurationTime(record.duration) }}</a-tag>
+        <a-tag>{{ getDurationTime(record.contest.duration) }}</a-tag>
       </template>
       <template v-if="column.key == 'action'">
         <a-button
