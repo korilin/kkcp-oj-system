@@ -8,7 +8,9 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.or
 import org.ktorm.entity.add
+import org.ktorm.entity.filter
 import org.ktorm.entity.find
+import org.ktorm.entity.toList
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -28,5 +30,11 @@ class RegistrationRepository(database: Database) {
         return registrations.find {
             (it.contestId eq contestId) or (it.userId eq userId)
         }
+    }
+
+    suspend fun getRegistrations(contestId: Int): List<Registration> {
+        return registrations.filter {
+            it.contestId eq contestId
+        }.toList()
     }
 }

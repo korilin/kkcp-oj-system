@@ -1,8 +1,6 @@
 package com.korilin.model
 
-import com.korilin.domain.table.Contest
-import com.korilin.domain.table.Question
-import com.korilin.domain.table.UserProfile
+import com.korilin.domain.table.*
 
 data class QuestionAndAnswer(val question: Question, val answer: String)
 /**
@@ -37,7 +35,7 @@ data class UnderWayContestUserData(
 data class ContestRecord(
     val contest: Contest,
     val questions: Array<Question>,
-    val rank: Array<UserProfile>
+    val rank: Array<RankInfo>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -56,6 +54,29 @@ data class ContestRecord(
         var result = contest.hashCode()
         result = 31 * result + questions.contentHashCode()
         result = 31 * result + rank.contentHashCode()
+        return result
+    }
+}
+
+data class RankInfo(
+    val user: UserProfile,
+    val answer: Array<SubmitRecord?>,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RankInfo
+
+        if (user != other.user) return false
+        if (!answer.contentEquals(other.answer)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = user.hashCode()
+        result = 31 * result + answer.contentHashCode()
         return result
     }
 }

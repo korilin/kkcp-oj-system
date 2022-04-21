@@ -12,7 +12,9 @@ import org.ktorm.dsl.map
 import org.ktorm.dsl.or
 import org.ktorm.dsl.select
 import org.ktorm.entity.add
+import org.ktorm.entity.filter
 import org.ktorm.entity.find
+import org.ktorm.entity.sortedBy
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -27,6 +29,12 @@ class ContestRepository(database: Database) {
 
     fun queryContests() = contestsSource.select(Contests.columns).map {
         Contests.createEntity(it)
+    }
+
+    fun queryPublicContests() = contests.filter {
+        it.status eq ContestStatus.PUBLISH.id
+    }.sortedBy {
+        it.startTime
     }
 
     fun newContest(contest: Contest) = contests.add(contest) == 1
