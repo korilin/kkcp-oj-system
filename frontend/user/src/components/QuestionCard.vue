@@ -1,7 +1,7 @@
 <script setup>
 import { useCommonStore } from "../plugins/pinia";
 import { ref, reactive } from "vue";
-import { resolveMarkdownAsHtml } from "../utils/utils";
+import SubmitDetailModal from "./SubmitDetailModal.vue";
 
 const props = defineProps({
   question: Object,
@@ -89,15 +89,6 @@ function resetIndex() {
   activeTabKey.value = "1";
 }
 
-function toCodeMdHtml(code, lang) {
-  const prefix = "```" + lang;
-  const suffix = "```";
-  const md = `${prefix}
-${code}
-${suffix}`;
-  return resolveMarkdownAsHtml(md);
-}
-
 function showDetail(item) {
   submitDetail.value = item;
   showModal.value = true;
@@ -163,33 +154,7 @@ defineExpose({
       <a-modal v-model:visible="showModal" title="提交记录" :width="800">
         <template #footer>
         </template>
-        <a-descriptions>
-          <a-descriptions-item label="提交时间">
-            {{ submitDetail.submitTime }}
-          </a-descriptions-item>
-          <a-descriptions-item label="结果">
-            <a-tag :color="submitDetail.pass == 100 ? 'green' : 'orange'">
-              {{ submitDetail.pass == 100 ? "通过" : "未通过" }}
-            </a-tag>
-          </a-descriptions-item>
-          <a-descriptions-item label="用例通过比例">
-            {{ submitDetail.pass }}%
-          </a-descriptions-item>
-          <a-descriptions-item label="耗时">
-            {{ submitDetail.elapsedTime }}ms
-          </a-descriptions-item>
-        </a-descriptions>
-        <a-divider>Answer</a-divider>
-        <a-alert
-          :message="submitDetail.message"
-          :type="submitDetail.pass == 100 ? 'success' : 'error'"
-        />
-        <div
-          style="margin-top: 20px"
-          v-html="toCodeMdHtml(submitDetail.answer, 'Kotlin')"
-          v-highlight
-          class="markdown-html"
-        ></div>
+        <SubmitDetailModal :submitDetail="submitDetail" />
       </a-modal>
     </div>
     <div v-show="activeTabKey == '3'">

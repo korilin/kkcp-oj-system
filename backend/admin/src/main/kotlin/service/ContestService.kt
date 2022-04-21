@@ -11,6 +11,7 @@ import com.korilin.domain.repository.QuestionRepository
 import com.korilin.domain.table.Contest
 import com.korilin.domain.table.Question
 import com.korilin.toSecond
+import com.korilin.utils.AnswerClassHelper
 import javaslang.Tuple2
 import kotlinx.coroutines.*
 import org.springframework.dao.DuplicateKeyException
@@ -153,6 +154,9 @@ class ContestService(
             nextRelease(contestId, contest.startTime)
         } else if (status == ContestStatus.UNDERWAY) {
             nextUnderway(contestId, contest.startTime, contest.duration)
+            inclusionRepository.getAllByContestsId(contestId).forEach {
+                AnswerClassHelper.removeClassLoader(it.question.questionId)
+            }
         }
         return contest.status
     }
@@ -196,7 +200,7 @@ class ContestService(
      */
     private suspend fun nextUnderway(contestId: Int, startTime: LocalDateTime, duration: Int) {
         var interval = startTime.toSecond() + duration * 60 - LocalDateTime.now().toSecond()
-        if(interval < 0) interval = 0
+        if (interval < 0) interval = 0
         setTask(interval) {
             updateStatus(contestId, ContestStatus.COMPLETE.id)
         }
