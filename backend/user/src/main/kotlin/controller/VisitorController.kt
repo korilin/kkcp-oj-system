@@ -3,9 +3,10 @@ package com.korilin.controller
 import com.korilin.IResponseBody
 import com.korilin.UserModuleApiPrefix
 import com.korilin.annotations.ExceptionMessageHandler
-import com.korilin.model.ContestRecord
+import com.korilin.model.ContestRecordDetail
 import com.korilin.service.VisitorService
 import com.korilin.domain.table.Contest
+import com.korilin.model.ContestRecordInfo
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -23,11 +24,18 @@ class VisitorController(
         return IResponseBody.success(data = contest)
     }
 
-    @GetMapping("/query/contest/record")
+    @GetMapping("/query/contest/records")
     @ExceptionMessageHandler
-    suspend fun getContestRecords(): IResponseBody<Array<ContestRecord>> {
+    suspend fun getContestRecords(): IResponseBody<Array<ContestRecordInfo>> {
         // 笑死
-       val data = visitorService.getPublishContests()
+        val data = visitorService.getPublishContests()
         return IResponseBody.success(data = data)
+    }
+
+    @GetMapping("/query/contest/record/detail")
+    @ExceptionMessageHandler
+    suspend fun getRecordDetail(contestId: Int): IResponseBody<ContestRecordDetail> {
+        val detail = visitorService.getRecordDetail(contestId)
+        return IResponseBody.success(detail)
     }
 }

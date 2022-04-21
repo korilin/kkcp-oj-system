@@ -29,10 +29,15 @@ data class UnderWayContestUserData(
     }
 }
 
+data class ContestRecordInfo(
+    val contest: Contest,
+    val count: Int
+)
+
 /**
  * 活动记录数据，Question 包含的是基本数据
  */
-data class ContestRecord(
+data class ContestRecordDetail(
     val contest: Contest,
     val questions: Array<Question>,
     val rank: Array<RankInfo>
@@ -41,7 +46,7 @@ data class ContestRecord(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ContestRecord
+        other as ContestRecordDetail
 
         if (contest != other.contest) return false
         if (!questions.contentEquals(other.questions)) return false
