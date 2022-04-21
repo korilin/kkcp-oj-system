@@ -103,7 +103,7 @@ export const useContestStore = defineStore("contest", {
       return this.initData()
     },
     async initData() {
-      const job1 = HttpService.get("/visitor/query/contest/record").then(body => {
+      const job1 = HttpService.get("/visitor/query/contest/records").then(body => {
         if (body.status) {
           this.contestRecord = body.data
           console.log(body.data);

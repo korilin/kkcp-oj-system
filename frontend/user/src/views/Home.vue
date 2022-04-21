@@ -8,7 +8,7 @@ import { getDurationTime } from "../utils/utils";
 import { LoginOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import HttpService from "../utils/axios-service";
-import { goContest } from "../utils/router-helper";
+import { goContest, goRecord } from "../utils/router-helper";
 
 // 定义页面文本 & 默认状态属性
 const heroTitle = "Kotlin Knowledge Contest";
@@ -25,7 +25,7 @@ commonStore.showHeader = true;
 const columns = [
   { title: "以往竞赛", key: "title" },
   { title: "时长", key: "duration" },
-  { title: "参加人数", key: "participants" },
+  { title: "参加人数", dataIndex:"count", key: "count" },
   { title: "Action", key: "action" },
 ];
 
@@ -153,10 +153,7 @@ function applyContest() {
         <div class="records">
           <a-table :columns="columns" :data-source="contestStore.contestRecord">
             <template #bodyCell="{ column, record }">
-              <template v-if="column.key === 'participants'">
-                {{ record.rank.length }}
-              </template>
-              <template v-else-if="column.key === 'title'">
+              <template v-if="column.key === 'title'">
                 {{ record.contest.title }}
               </template>
               <template v-else-if="column.key === 'duration'">
@@ -165,7 +162,7 @@ function applyContest() {
                 </a-tag>
               </template>
               <template v-else-if="column.key === 'action'">
-                <a-button type="link">详情</a-button>
+                <a-button type="link" @click="goRecord(record.contest.contestId)">详情</a-button>
               </template>
             </template>
           </a-table>
