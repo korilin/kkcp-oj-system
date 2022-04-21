@@ -36,6 +36,6 @@ class VisitorController(
     @ExceptionMessageHandler
     suspend fun getRecordDetail(contestId: Int): IResponseBody<ContestRecordDetail> {
         val detail = visitorService.getRecordDetail(contestId)
-        return IResponseBody(status = detail == null, message = "找不到对应的公开的竞赛", data = detail)
+        return IResponseBody(status = detail != null, message = "找不到对应的公开的竞赛", data = detail)
     }
 }

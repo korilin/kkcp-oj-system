@@ -34,7 +34,11 @@ class VisitorService(
     suspend fun getRecordDetail(contestId: Int): ContestRecordDetail? {
         val contest = contestRepository.findContestById(contestId)
         if (contest?.status != ContestStatus.PUBLISH.id) return null
-        val questions = inclusionRepository.getAllByContestsId(contest.contestId).map { it.question }.toTypedArray()
+        val questions = inclusionRepository.getQuestionsDetailByContestId(contest.contestId).map {
+            it.apply {
+                this.testDataJson = emptyArray()
+            }
+        }.toTypedArray()
         // 内层获取报名的用户
         val rank = registrationRepository.getRegistrations(contest.contestId).map { registration ->
             // 每个用户的活动数据
