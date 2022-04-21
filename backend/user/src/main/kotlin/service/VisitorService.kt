@@ -40,7 +40,7 @@ class VisitorService(
             }
         }.toTypedArray()
         // 内层获取报名的用户
-        val rank = registrationRepository.getRegistrations(contest.contestId).map { registration ->
+        val rankList = registrationRepository.getRegistrations(contest.contestId).map { registration ->
             // 每个用户的活动数据
             // 成绩
             var count = 0
@@ -77,7 +77,8 @@ class VisitorService(
             } else {
                 o2.element2.compareTo(o1.element2)
             }
-        }.map {
+        }
+        val rank = rankList.slice(0..minOf(9, rankList.size - 1)).map {
             RankInfo(it.element1, it.element4.toTypedArray())
         }.toTypedArray()
         return ContestRecordDetail(contest, questions, rank)

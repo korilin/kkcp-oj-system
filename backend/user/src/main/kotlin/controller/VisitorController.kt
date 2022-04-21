@@ -27,7 +27,6 @@ class VisitorController(
     @GetMapping("/query/contest/records")
     @ExceptionMessageHandler
     suspend fun getContestRecords(): IResponseBody<Array<ContestRecordInfo>> {
-        // 笑死
         val data = visitorService.getPublishContests()
         return IResponseBody.success(data = data)
     }
