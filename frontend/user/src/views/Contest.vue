@@ -202,7 +202,7 @@ async function getSubmits() {
     <a-layout-content style="background-color: none">
       <div
         v-if="setup == 0"
-        style="text-align: center; margin-top: 50px; height: calc(100vh-104px)"
+        style="display: flex; align-items: center; justify-content: center; height: 500px"
       >
         <a-spin />
       </div>
