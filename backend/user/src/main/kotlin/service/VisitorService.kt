@@ -24,9 +24,7 @@ class VisitorService(
     private val registrationRepository: RegistrationRepository,
     database: Database
 ) {
-
-    private val userProfiles = database.userProfiles
-    private val userAnswers = database.userAnswers
+    
     private val submitRecords = database.submitRecords
 
     fun getReleaseContest(): Contest? {
@@ -79,6 +77,6 @@ class VisitorService(
                 RankInfo(it.element1, it.element4.toTypedArray())
             }.toTypedArray()
             ContestRecord(contest, questions, rank)
-        }.toTypedArray()
+        }.reversed().toTypedArray()
     }
 }

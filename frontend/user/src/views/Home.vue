@@ -1,11 +1,11 @@
 <script setup>
-import KotlinSVG from "../components/KotlinSVG.vue"
-import TrophySVG from "../components/TrophySVG.vue"
-import { ref } from 'vue';
+import KotlinSVG from "../components/KotlinSVG.vue";
+import TrophySVG from "../components/TrophySVG.vue";
+import { ref } from "vue";
 import { useContestStore, useUserStore } from "../plugins/pinia";
 import { useCommonStore } from "../../../admin/src/plugins/pinia";
 import { getDurationTime } from "../utils/utils";
-import { LoginOutlined } from "@ant-design/icons-vue"
+import { LoginOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import HttpService from "../utils/axios-service";
 import { goContest } from "../utils/router-helper";
@@ -16,77 +16,75 @@ const heroSubtitle = "Kotlin 编程知识竞赛";
 const noActiveSeminar = "当前没有进行中的活动";
 const loading = "loading...";
 
-const contestStore = useContestStore()
-const commonStore = useCommonStore()
-const userStore = useUserStore()
+const contestStore = useContestStore();
+const commonStore = useCommonStore();
+const userStore = useUserStore();
 
-commonStore.showHeader = true
+commonStore.showHeader = true;
 
 const columns = [
-  { title: "以往竞赛", dataIndex: "title", key: "title" },
-  { title: "时长", dataIndex: "duration", key: "duration" },
-  { title: "参加人数", dataIndex: "participants", key: "participants" },
+  { title: "以往竞赛", key: "title" },
+  { title: "时长", key: "duration" },
+  { title: "参加人数", key: "participants" },
+  { title: "Action", key: "action" },
 ];
-
-const records = [];
 
 const toolLinks = [
-  { text: "帮助文档", link: "", },
-  { text: "问题反馈", link: "", },
-  { text: "社区合作", link: "", }
+  { text: "帮助文档", link: "" },
+  { text: "问题反馈", link: "" },
+  { text: "社区合作", link: "" },
 ];
 
-const releaseContest = ref(null)
+const releaseContest = ref(null);
 
 contestStore.ensureInit().then(() => {
-  releaseContest.value = contestStore.releaseContest
-})
+  releaseContest.value = contestStore.releaseContest;
+});
 
-const releaseColor = '#1890FF'
-const underWayColor = '#8C8C8C'
+const releaseColor = "#1890FF";
+const underWayColor = "#8C8C8C";
 
 function getReleaseColor() {
   if (releaseContest.value.status == 3) {
-    return underWayColor
+    return underWayColor;
   } else {
-    return releaseColor
+    return releaseColor;
   }
 }
 
 function getReleaseNavButtonText() {
   if (releaseContest.value.status == 1) {
-    return "报名比赛"
+    return "报名比赛";
   } else if (releaseContest.value.status == 2) {
-    return "进入比赛"
+    return "进入比赛";
   } else {
-    return "已结束"
+    return "已结束";
   }
 }
 
 function applyContest() {
   if (releaseContest.value.status == 1) {
     if (userStore.profile == null) {
-      message.info("请先登录")
+      message.info("请先登录");
     } else {
       const data = {
         contestId: releaseContest.value.contestId,
-        userId: userStore.profile.id
-      }
-      HttpService.post("/business/register", data).then(body => {
+        userId: userStore.profile.id,
+      };
+      HttpService.post("/business/register", data).then((body) => {
         if (body.status) {
           if (body.data) {
-            message.success("报名成功")
+            message.success("报名成功");
           } else {
-            message.info(body.message)
+            message.info(body.message);
           }
         }
-      })
+      });
     }
   } else if (releaseContest.value.status == 2) {
-    goContest()
+    goContest();
   }
 }
-
 </script>
 
 <template>
@@ -106,7 +104,15 @@ function applyContest() {
     <div class="current-seminar">
       <a-card :bordered="false" class="widget-1">
         <a-empty v-if="releaseContest == null" :description="noActiveSeminar" />
-        <div v-else style="padding: 10px; display: flex; align-items: center; justify-content: space-between;">
+        <div
+          v-else
+          style="
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
           <div>
             <h5>
               {{ releaseContest.title }}
@@ -114,18 +120,26 @@ function applyContest() {
             </h5>
             <div>
               <a-tag>开始时间：{{ releaseContest.startTime }}</a-tag>
-              <a-tag color="blue">时长：{{ getDurationTime(releaseContest.duration) }}</a-tag>
-              <a-tag color="purple">{{ commonStore.getContestTypeById(releaseContest.type).text }}</a-tag>
+              <a-tag color="blue"
+                >时长：{{ getDurationTime(releaseContest.duration) }}</a-tag
+              >
+              <a-tag color="purple">{{
+                commonStore.getContestTypeById(releaseContest.type).text
+              }}</a-tag>
             </div>
-            <div style="margin-top: 20px;">{{ releaseContest.description }}</div>
+            <div style="margin-top: 20px">{{ releaseContest.description }}</div>
           </div>
-          <div style="text-align: center; cursor: pointer; padding: 10px; font-weight: bold;" @click="applyContest">
+          <div
+            style="text-align: center; cursor: pointer; padding: 10px; font-weight: bold"
+            @click="applyContest"
+          >
             <div>
               <LoginOutlined :style="{ fontSize: '35px', color: getReleaseColor() }" />
             </div>
-            <div :style="{ marginTop: '10px', color: getReleaseColor(), fontSize: '14px' }">{{
-              getReleaseNavButtonText()
-            }}
+            <div
+              :style="{ marginTop: '10px', color: getReleaseColor(), fontSize: '14px' }"
+            >
+              {{ getReleaseNavButtonText() }}
             </div>
           </div>
         </div>
@@ -137,7 +151,24 @@ function applyContest() {
           <h4 class="text-gray-9">往期竞赛记录</h4>
         </div>
         <div class="records">
-          <a-table :columns="columns" :data-source="records"></a-table>
+          <a-table :columns="columns" :data-source="contestStore.contestRecord">
+            <template #bodyCell="{ column, record }">
+              <template v-if="column.key === 'participants'">
+                {{ record.rank.length }}
+              </template>
+              <template v-else-if="column.key === 'title'">
+                {{ record.contest.title }}
+              </template>
+              <template v-else-if="column.key === 'duration'">
+                <a-tag>
+                  {{ getDurationTime(record.contest.duration) }}
+                </a-tag>
+              </template>
+              <template v-else-if="column.key === 'action'">
+                <a-button type="link">详情</a-button>
+              </template>
+            </template>
+          </a-table>
         </div>
       </div>
       <div class="tools-box card">
@@ -145,12 +176,13 @@ function applyContest() {
         <a-list item-layout="horizontal" :data-source="toolLinks">
           <template #renderItem="{ item }">
             <a-list-item>
-              <a style="width: 100%;">{{ item.text }}</a>
+              <a style="width: 100%">{{ item.text }}</a>
             </a-list-item>
           </template>
         </a-list>
       </div>
-    </div>  </div>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -197,7 +229,8 @@ function applyContest() {
 }
 
 .main-wrap {
-  max-width: 800px;
+  max-width: 1000px;
+  padding-bottom: 50px;
   margin: auto;
 
   .current-seminar {
@@ -221,13 +254,10 @@ function applyContest() {
 
     .seminar-redords {
       width: 70%;
+      padding: 20px;
 
       .header {
-        padding: 30px 20px;
-      }
-
-      .records {
-        padding-bottom: 30px;
+        padding: 20px 20px 10px;
       }
     }
 

@@ -103,12 +103,20 @@ export const useContestStore = defineStore("contest", {
       return this.initData()
     },
     async initData() {
-      return HttpService.get("/visitor/query/contest/release").then(body => {
+      const job1 = HttpService.get("/visitor/query/contest/record").then(body => {
         if (body.status) {
-          this.init = true
+          this.contestRecord = body.data
+          console.log(body.data);
+        }
+      })
+      const job2 = HttpService.get("/visitor/query/contest/release").then(body => {
+        if (body.status) {
           this.releaseContest = body.data
         }
       })
+      await job1;
+      await job2;
+      this.init = true
     },
     async ensureInit() {
       if (!this.init) {
