@@ -7,10 +7,7 @@ import com.korilin.annotations.ExceptionMessageHandler
 import com.korilin.annotations.RegisterExceptionMessage
 import com.korilin.annotations.USER_EXCEPTION_MESSAGE
 import com.korilin.domain.table.SubmitRecord
-import com.korilin.model.AnswersUpdateBody
-import com.korilin.model.QuestionAnswer
-import com.korilin.model.UnderWayContestUserData
-import com.korilin.model.RegisterBody
+import com.korilin.model.*
 import com.korilin.service.MainService
 import kotlinx.coroutines.*
 import org.springframework.web.bind.annotation.GetMapping
@@ -139,4 +136,9 @@ class MainController(
         }
     }
 
+    @GetMapping("/query/me/contests")
+    suspend fun getMyContests(userId: Int): IResponseBody<Array<MyRegister>> {
+        val data = service.getMyContests(userId)
+        return IResponseBody.success(data = data.toTypedArray())
+    }
 }

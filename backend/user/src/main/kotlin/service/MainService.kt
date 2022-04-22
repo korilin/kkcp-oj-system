@@ -1,7 +1,6 @@
 package com.korilin.service
 
 import com.korilin.CompileFailureException
-import com.korilin.IResponseBody
 import com.korilin.bo.ContestStatus
 import com.korilin.domain.repository.ContestRepository
 import com.korilin.domain.repository.InclusionRepository
@@ -11,6 +10,7 @@ import com.korilin.domain.submitRecords
 import com.korilin.domain.table.*
 import com.korilin.domain.userAnswers
 import com.korilin.domain.userProfiles
+import com.korilin.model.MyRegister
 import com.korilin.model.QuestionAndAnswer
 import com.korilin.model.QuestionAnswer
 import com.korilin.utils.CodeUtil
@@ -19,13 +19,13 @@ import com.korilin.utils.AnswerVerifyHelper
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
-import org.ktorm.dsl.or
 import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 class MainService(
+    private val visitorService: VisitorService,
     private val registrationRepository: RegistrationRepository,
     private val contestRepository: ContestRepository,
     private val questionRepository: QuestionRepository,
@@ -138,7 +138,7 @@ class MainService(
                 it.toMap()
             }.toTypedArray()
             if (clazz == null) {
-                val mes ="编译错误 ${e?.message}"
+                val mes = "编译错误 ${e?.message}"
                 submitRecords.add(SubmitRecord {
                     this.question = question
                     this.user = user
@@ -179,4 +179,11 @@ class MainService(
         it.submitTime
     }.toList().reversed()
 
+    suspend fun getMyContests(userId: Int) =
+        registrationRepository.getRegistrationsByUserId(userId).map { registration ->
+            val questions = inclusionRepository.getQuestionsDetailByContestId(registration.contest.contestId)
+            val rankList = visitorService.getRankList(registration.contest, questions.toTypedArray())
+            val rank = rankList.indexOfFirst { it.element1.id == userId } + 1
+            MyRegister(registration.contest, rank)
+        }
 }

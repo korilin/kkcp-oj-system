@@ -85,3 +85,8 @@ data class RankInfo(
         return result
     }
 }
+
+data class MyRegister(
+    val contest: Contest,
+    val rank: Int
+)

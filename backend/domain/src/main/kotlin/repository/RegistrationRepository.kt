@@ -32,9 +32,15 @@ class RegistrationRepository(database: Database) {
         }
     }
 
-    suspend fun getRegistrations(contestId: Int): List<Registration> {
+    suspend fun getRegistrationsByContestId(contestId: Int): List<Registration> {
         return registrations.filter {
             it.contestId eq contestId
+        }.toList()
+    }
+
+    suspend fun getRegistrationsByUserId(userId: Int): List<Registration> {
+        return registrations.filter {
+            it.userId eq userId
         }.toList()
     }
 }

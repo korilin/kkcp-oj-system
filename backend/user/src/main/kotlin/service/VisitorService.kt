@@ -6,6 +6,7 @@ import com.korilin.domain.repository.InclusionRepository
 import com.korilin.domain.repository.RegistrationRepository
 import com.korilin.domain.submitRecords
 import com.korilin.domain.table.Contest
+import com.korilin.domain.table.Question
 import com.korilin.domain.table.SubmitRecord
 import com.korilin.model.ContestRecordDetail
 import com.korilin.model.ContestRecordInfo
@@ -31,16 +32,8 @@ class VisitorService(
         return contestRepository.findMainTargetContest()
     }
 
-    suspend fun getRecordDetail(contestId: Int): ContestRecordDetail? {
-        val contest = contestRepository.findContestById(contestId)
-        if (contest?.status != ContestStatus.PUBLISH.id) return null
-        val questions = inclusionRepository.getQuestionsDetailByContestId(contest.contestId).map {
-            it.apply {
-                this.testDataJson = emptyArray()
-            }
-        }.toTypedArray()
-        // 内层获取报名的用户
-        val rankList = registrationRepository.getRegistrations(contest.contestId).map { registration ->
+    suspend fun getRankList(contest: Contest, questions: Array<Question>) =
+        registrationRepository.getRegistrationsByContestId(contest.contestId).map { registration ->
             // 每个用户的活动数据
             // 成绩
             var count = 0
@@ -78,6 +71,17 @@ class VisitorService(
                 o2.element2.compareTo(o1.element2)
             }
         }
+
+    suspend fun getRecordDetail(contestId: Int): ContestRecordDetail? {
+        val contest = contestRepository.findContestById(contestId)
+        if (contest?.status != ContestStatus.PUBLISH.id) return null
+        val questions = inclusionRepository.getQuestionsDetailByContestId(contest.contestId).map {
+            it.apply {
+                this.testDataJson = emptyArray()
+            }
+        }.toTypedArray()
+        // 内层获取报名的用户
+        val rankList = getRankList(contest, questions)
         val rank = rankList.slice(0..minOf(9, rankList.size - 1)).map {
             RankInfo(it.element1, it.element4.toTypedArray())
         }.toTypedArray()
@@ -87,7 +91,7 @@ class VisitorService(
     suspend fun getPublishContests(): Array<ContestRecordInfo> {
         // 外层所有 contest
         return contestRepository.queryPublicContests().map { contest ->
-            val count = registrationRepository.getRegistrations(contest.contestId).size
+            val count = registrationRepository.getRegistrationsByContestId(contest.contestId).size
             ContestRecordInfo(contest, count)
         }.reversed().toTypedArray()
     }
