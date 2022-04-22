@@ -64,4 +64,11 @@ initApp()
 .ant-layout-content {
   padding-top: 0 !important;
 }
+
+.avatar {
+  border: #e9e9e980 2px solid;
+  padding: 5px !important;
+  width: 45px !important;
+  height: 45px !important;
+}
 </style>

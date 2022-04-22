@@ -5,7 +5,7 @@ export const goHome = function () {
 }
 
 export const goContest = function () {
-  router.push("contest")
+  router.push("/contest")
 }
 
 export const goRecord = function (contestId) {
@@ -15,4 +15,8 @@ export const goRecord = function (contestId) {
       contestId: contestId
     }
   })
+}
+
+export const goProfile = function () {
+  router.push("/profile")
 }

@@ -2,11 +2,12 @@
 import { ref } from "vue";
 import AuthCard from "./AuthCard.vue";
 import { CloseOutlined } from "@ant-design/icons-vue";
-import { goHome } from "../utils/router-helper";
+import { goHome, goProfile } from "../utils/router-helper";
 import { useCommonStore, useUserStore } from "../plugins/pinia";
 
 const isAuthCardShow = ref(false);
 const userStore = useUserStore();
+
 </script>
 
 <template>
@@ -46,7 +47,7 @@ const userStore = useUserStore();
       <a-button @click="isAuthCardShow = true" v-if="userStore.profile == null"
         >登录/注册</a-button
       >
-      <a-avatar v-else :src="userStore.profile.avatarUrl" />
+      <a-avatar v-else :src="userStore.profile.avatarUrl" @click="goProfile" style="cursor: pointer;" class="avatar" />
     </span>
   </div>
   <div class="auth-card-shade" :class="{ 'auth-card-shade-show': isAuthCardShow }">

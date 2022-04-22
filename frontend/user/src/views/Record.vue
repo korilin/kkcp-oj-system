@@ -102,7 +102,7 @@ initData();
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .wrap {
   width: 800px;
   padding: 40px;
