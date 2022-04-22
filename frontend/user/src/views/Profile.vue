@@ -1,9 +1,26 @@
 <script setup>
-import { useUserStore } from "../plugins/pinia";
+import { useCommonStore, useUserStore } from "../plugins/pinia";
 import { GithubFilled } from "@ant-design/icons-vue";
+import { goRecord } from "../utils/router-helper";
 
 const userStore = useUserStore();
+const commonStore = useCommonStore();
 
+const columns = [
+  {
+    title: "比赛",
+    key: "title",
+  },
+  {
+    title: "类型",
+    key: "type",
+  },
+  {
+    title: "排名",
+    dataIndex: "rank",
+    key: "rank",
+  },
+];
 
 function openGitHub() {
   window.open(userStore.profile.htmlUrl, "target");
@@ -44,6 +61,21 @@ function openGitHub() {
           }}</a-descriptions-item>
         </a-descriptions>
       </div>
+      <a-divider />
+      <a-table :dataSource="userStore.contests" :columns="columns">
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'title'">
+            <a-button type="link" @click="goRecord(record.contest.contestId)">
+              {{ record.contest.title }}
+            </a-button>
+          </template>
+          <template v-if="column.key === 'type'">
+            <a-tag color="purple">{{
+              commonStore.getContestTypeById(record.contest.type).text
+            }}</a-tag>
+          </template>
+        </template>
+      </a-table>
     </template>
   </div>
 </template>

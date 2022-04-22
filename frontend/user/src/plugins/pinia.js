@@ -130,10 +130,16 @@ async function updateProfile(profile) {
   await HttpService.put("/user/update", profile)
 }
 
+async function getMyContest(uid) {
+  const url = `/business/query/me/contests?userId=${uid}`
+  return HttpService.get(url)
+}
+
 export const useUserStore = defineStore("user", {
   state: () => ({
     token: null,
     profile: null,
+    contests: [],
   }),
   actions: {
     async initProfile() {
@@ -153,6 +159,11 @@ export const useUserStore = defineStore("user", {
         htmlUrl: response.data.html_url
       }
       updateProfile(this.profile)
+      getMyContest(this.profile.id).then(body => {
+        if (body.status) {
+          this.contests = body.data
+        }
+      })
     }
   }
 })
