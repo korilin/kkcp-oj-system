@@ -1,7 +1,8 @@
 <script setup>
 import { useCommonStore, useUserStore } from "../plugins/pinia";
 import { GithubFilled } from "@ant-design/icons-vue";
-import { goRecord } from "../utils/router-helper";
+import { goHome, goRecord } from "../utils/router-helper";
+import { Modal } from "ant-design-vue";
 
 const userStore = useUserStore();
 const commonStore = useCommonStore();
@@ -25,11 +26,37 @@ const columns = [
 function openGitHub() {
   window.open(userStore.profile.htmlUrl, "target");
 }
+
+function doLogout() {
+  window.localStorage.removeItem(import.meta.env.VITE_USER_TOKEN_KEY);
+  userStore.profile = null;
+  userStore.contests = null;
+  userStore.token = null;
+  goHome();
+}
+
+function logout() {
+  Modal.confirm({
+    title: "是否要退出登陆",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      doLogout();
+    },
+  });
+}
 </script>
 
 <template>
   <div class="wrap">
-    <a-spin size="large" v-if="userStore.profile == null" />
+    <div v-if="userStore.token == null">
+      <a-result status="403" title="未登陆" sub-title="对不起，你还没有进行登陆">
+        <template #extra>
+          <a-button type="primary" @click="goHome">Back Home</a-button>
+        </template>
+      </a-result>
+    </div>
+    <a-spin size="large" v-else-if="userStore.profile == null" />
     <template v-else>
       <div class="profile">
         <div style="width: 80px; margin-right: 20px">
@@ -61,7 +88,7 @@ function openGitHub() {
           }}</a-descriptions-item>
         </a-descriptions>
       </div>
-      <a-divider />
+      <a-divider>参赛记录</a-divider>
       <a-table :dataSource="userStore.contests" :columns="columns">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'title'">
@@ -76,6 +103,10 @@ function openGitHub() {
           </template>
         </template>
       </a-table>
+      <a-divider />
+      <div style="text-align: center">
+        <a-button type="primary" danger @click="logout">退出登陆</a-button>
+      </div>
     </template>
   </div>
 </template>

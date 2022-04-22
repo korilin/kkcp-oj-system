@@ -1,18 +1,18 @@
 <script setup>
-import Header from "./components/Header.vue"
+import Header from "./components/Header.vue";
 import { useCommonStore, useUserStore } from "./plugins/pinia";
 import HttpService from "./utils/axios-service";
 
-const commonStore = useCommonStore()
-const userStore = useUserStore()
+const commonStore = useCommonStore();
+const userStore = useUserStore();
 
 async function initUser(uid) {
-  const body = await HttpService.post(`/auth/token?uid=${uid}`)
+  const body = await HttpService.post(`/auth/token?uid=${uid}`);
   // 可能还是为 null
   if (body.status && body.data != null) {
-    window.localStorage.setItem(import.meta.env.VITE_USER_TOKEN_KEY, body.data)
-    userStore.token = body.data
-    userStore.initProfile()
+    window.localStorage.setItem(import.meta.env.VITE_USER_TOKEN_KEY, body.data);
+    userStore.token = body.data;
+    userStore.initProfile();
   }
 }
 
@@ -21,22 +21,22 @@ function initApp() {
   const token = window.localStorage.getItem(import.meta.env.VITE_USER_TOKEN_KEY);
 
   if (uid == null || uid == undefined) {
-    window.localStorage.removeItem(import.meta.env.VITE_USER_TOKEN_KEY)
-    HttpService.get("/auth/random").then(body => {
+    window.localStorage.removeItem(import.meta.env.VITE_USER_TOKEN_KEY);
+    HttpService.get("/auth/random").then((body) => {
       if (body.status) {
-        window.localStorage.setItem(import.meta.env.VITE_UID_KEY, body.data)
+        window.localStorage.setItem(import.meta.env.VITE_UID_KEY, body.data);
       }
-    })
+    });
   } else if (token == null || token == undefined) {
-    initUser(uid)
+    initUser(uid);
   } else {
-    userStore.token = token
-    userStore.initProfile()
+    userStore.token = token;
+    userStore.initProfile();
   }
 }
 
-commonStore.initData()
-initApp()
+commonStore.initData();
+initApp();
 </script>
 
 <template>
@@ -46,7 +46,7 @@ initApp()
     </a-layout-header>
     <a-layout-content>
       <router-view v-if="commonStore.init" />
-      <div v-else style="text-align: center; margin-top: 50px;">
+      <div v-else style="text-align: center; margin-top: 50px">
         <a-spin />
       </div>
     </a-layout-content>

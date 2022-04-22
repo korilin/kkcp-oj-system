@@ -106,7 +106,6 @@ export const useContestStore = defineStore("contest", {
       const job1 = HttpService.get("/visitor/query/contest/records").then(body => {
         if (body.status) {
           this.contestRecord = body.data
-          console.log(body.data);
         }
       })
       const job2 = HttpService.get("/visitor/query/contest/release").then(body => {
@@ -139,7 +138,7 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     token: null,
     profile: null,
-    contests: [],
+    contests: null,
   }),
   actions: {
     async initProfile() {
