@@ -115,12 +115,12 @@ async function saveAction() {
   if (question.type != compare.type) data.type = question.type;
   if (question.level != compare.level) data.level = question.level;
   if (question.title != compare.title) data.title = question.title;
-  if (question.ccodeTemplate != compare.ccodeTemplate)
-    data.ccodeTemplate = question.ccodeTemplate;
+  if (question.codeTemplate != compare.codeTemplate)
+    data.codeTemplate = question.codeTemplate;
   if (question.testDataJson != compare.testDataJson)
     data.testDataJson = question.testDataJson;
-  if (question.ddescription != compare.ddescription)
-    data.ddescription = question.ddescription;
+  if (question.description != compare.description)
+    data.description = question.description;
   const result = await Apis.QuestionModule.updateQuestion(questionId, data);
   if (result.status) {
     message.success("Update Success");

@@ -14,11 +14,6 @@ const menus = [
     text: "Profile",
   },
   {
-    key: "dashboard",
-    icon: DashboardFilled,
-    text: "Dashboard",
-  },
-  {
     key: "contests",
     icon: HighlightFilled,
     text: "Contests",

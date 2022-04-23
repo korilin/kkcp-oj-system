@@ -18,7 +18,6 @@ const routes = [
     },
   },
   { path: "/profile", component: Profile, name: "profile" },
-  { path: "/dashboard", component: Profile, name: "dashboard" },
   { path: "/contests", component: Contests, name: "contests" },
   { path: "/contets/new", component: ContestForm, name: "contest-new" },
   {
