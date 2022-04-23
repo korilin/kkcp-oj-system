@@ -5,4 +5,5 @@
     <string name="email">Email</string>
     <string name="code">Code</string>
     <string name="login">Log In</string>
+    <string name="send_code">Send Code</string>
 </resources>
