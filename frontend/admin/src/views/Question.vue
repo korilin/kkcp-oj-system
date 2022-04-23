@@ -1,6 +1,6 @@
 <script setup>
 import { createVNode, reactive, ref } from "vue";
-import { useRoute, } from "vue-router";
+import { useRoute } from "vue-router";
 import { resolveMarkdownAsHtml } from "../utils/utils";
 import QuestionDetail from "../components/QuestionDetail.vue";
 import QuestionCollapse from "../components/QuestionCollapse.vue";
@@ -13,9 +13,9 @@ import { useQuestionStore } from "../plugins/pinia";
 const route = useRoute();
 const questionStore = useQuestionStore();
 
-const questionId = route.params.questionId
+const questionId = route.params.questionId;
 
-const inited = ref(false)
+const inited = ref(false);
 
 /**
  * 编辑时备份原有的数据，数据不能为空
@@ -23,32 +23,32 @@ const inited = ref(false)
  */
 const backup = {
   question: "",
-  commits: "",
-  contests: ""
+  submits: "",
+  contests: "",
 };
 
 // 数据备份
 function backupData(data) {
   // 保证数据不为 null
-  backup.question = JSON.stringify(data.question ?? {})
-  backup.commits = JSON.stringify(data.commits ?? {})
-  backup.contests = JSON.stringify(data.contests ?? [])
+  backup.question = JSON.stringify(data.question ?? {});
+  backup.submits = JSON.stringify(data.submits ?? {});
+  backup.contests = JSON.stringify(data.contests ?? []);
 }
 
 // 数据恢复
 function recoverData() {
   Object.assign(question, JSON.parse(backup.question));
-  Object.assign(commits, JSON.parse(backup.commits));
+  Object.assign(submits, JSON.parse(backup.submits));
   Object.assign(contests, JSON.parse(backup.contests));
 }
 
 // 实际操作数据
 const question = reactive({});
-const commits = reactive({});
-const contests = reactive([])
+const submits = reactive({});
+const contests = reactive([]);
 
 function convertData(data) {
-  data.question.testDataJson = JSON.stringify(data.question.testDataJson)
+  data.question.testDataJson = JSON.stringify(data.question.testDataJson);
   backupData(data);
   recoverData();
 }
@@ -59,15 +59,15 @@ const getQuestionDetail = () => {
   Apis.QuestionModule.queryQuestionDetail(questionId).then((body) => {
     if (body.status) {
       const data = body.data;
-      convertData(data)
+      convertData(data);
       inited.value = true;
     }
-  })
-}
+  });
+};
 
 // ========================= 文件数据更新 =========================
 
-const descriptionSpinning = ref(false)
+const descriptionSpinning = ref(false);
 const handleDescriptionChange = (file) => {
   descriptionSpinning.value = true;
   const reader = new FileReader();
@@ -78,7 +78,7 @@ const handleDescriptionChange = (file) => {
   reader.readAsText(file);
 };
 
-const codeTemplateSpinning = ref(false)
+const codeTemplateSpinning = ref(false);
 const handleCodeTemplateChange = (file) => {
   codeTemplateSpinning.value = true;
   const reader = new FileReader();
@@ -87,9 +87,9 @@ const handleCodeTemplateChange = (file) => {
     codeTemplateSpinning.value = false;
   };
   reader.readAsText(file);
-}
+};
 
-const testDataJsonSpinning = ref(false)
+const testDataJsonSpinning = ref(false);
 const handleTestDataJsonChange = (file) => {
   testDataJsonSpinning.value = true;
   const reader = new FileReader();
@@ -98,69 +98,72 @@ const handleTestDataJsonChange = (file) => {
     testDataJsonSpinning.value = false;
   };
   reader.readAsText(file);
-}
+};
 
 // 发起数据请求
 getQuestionDetail();
 
 // 按钮事件
 function cancelAction() {
-  recoverData()
+  recoverData();
 }
 
 async function saveAction() {
-  const compare = backup.question
-  const data = {}
+  const compare = backup.question;
+  const data = {};
   // 取变化数据，减少请求体大小
-  if (question.type != compare.type) data.type = question.type
-  if (question.level != compare.level) data.level = question.level
-  if (question.title != compare.title) data.title = question.title
-  if (question.ccodeTemplate != compare.ccodeTemplate) data.ccodeTemplate = question.ccodeTemplate
-  if (question.testDataJson != compare.testDataJson) data.testDataJson = question.testDataJson
-  if (question.ddescription != compare.ddescription) data.ddescription = question.ddescription
-  const result = await Apis.QuestionModule.updateQuestion(questionId, data)
+  if (question.type != compare.type) data.type = question.type;
+  if (question.level != compare.level) data.level = question.level;
+  if (question.title != compare.title) data.title = question.title;
+  if (question.ccodeTemplate != compare.ccodeTemplate)
+    data.ccodeTemplate = question.ccodeTemplate;
+  if (question.testDataJson != compare.testDataJson)
+    data.testDataJson = question.testDataJson;
+  if (question.ddescription != compare.ddescription)
+    data.ddescription = question.ddescription;
+  const result = await Apis.QuestionModule.updateQuestion(questionId, data);
   if (result.status) {
-    message.success("更新成功")
-    getQuestionDetail()
+    message.success("Update Success");
+    getQuestionDetail();
   } else {
-    recoverData()
+    recoverData();
   }
 }
-
 
 function showDeleteConfirmModal() {
   Modal.confirm({
     title: "Do you want to delete this question?",
     icon: createVNode(ExclamationCircleOutlined),
-    content: "该问题删除后将无法恢复，是否确定？",
-    okType: 'danger',
+    content:
+      "After the problem is deleted, the data submitted by the user will be deleted. Are you sure to delete the problem?",
+    okType: "danger",
     onOk() {
       return Apis.QuestionModule.deleteQuestion(questionId).then((body) => {
         if (body.status) {
-          message.success("删除成功")
-          questionStore.refreshData()
-          goQuestions()
+          message.success("Delete Success");
+          questionStore.refreshData();
+          goQuestions();
         } else {
-          message.error(body.message)
+          message.error(body.message);
         }
-      })
+      });
     },
-    onCancel() { },
-  })
+    onCancel() {},
+  });
 }
 
 function showNoDeleteModal() {
   Modal.error({
     title: `Could not delete Question[${questionId}]`,
-    content: `该问题被${contests.length}个竞赛活动引用，无法被删除`,
-  })
+    content: `This question is referenced by the ${contests.length} contest activities and cannot be removed`,
+  });
 }
 
 async function deleteAction() {
   if (contests.length == 0) {
-    showDeleteConfirmModal()
+    showDeleteConfirmModal();
   } else {
-    showNoDeleteModal()
+    showNoDeleteModal();
   }
 }
 </script>
@@ -168,7 +171,7 @@ async function deleteAction() {
   <div v-if="inited">
     <QuestionDetail
       :question="question"
-      :commits="commits"
+      :submits="submits"
       :contests="contests"
       :handleDescriptionChange="handleDescriptionChange"
       :handleCodeTemplateChange="handleCodeTemplateChange"
@@ -187,7 +190,7 @@ async function deleteAction() {
       :testDataJsonSpinning="testDataJsonSpinning"
     />
   </div>
-  <div v-else style="text-align: center;">
+  <div v-else style="text-align: center">
     <a-spin />
   </div>
 </template>

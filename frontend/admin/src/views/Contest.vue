@@ -121,6 +121,7 @@ function updateSort(questionId, offset) {
 function deleteContest() {
   Modal.confirm({
     title: "Do you want to delete this contest?",
+    content: "User registration and race data will be erased",
     onOk() {
       return Apis.ContestModule.deleteContest(contestId).then((body) => {
         if (body.status) {

@@ -1,38 +1,45 @@
 <script setup>
-import { message } from 'ant-design-vue';
-import { reactive } from 'vue';
-import { useCommonStore, useContestStore } from '../plugins/pinia';
-import Apis from '../utils/apis';
-import { goContestItem } from '../utils/router-helper';
-import { getDurationTime } from "../utils/utils"
+import { message } from "ant-design-vue";
+import { reactive } from "vue";
+import { useCommonStore, useContestStore } from "../plugins/pinia";
+import Apis from "../utils/apis";
+import { goContestItem } from "../utils/router-helper";
+import { getDurationTime } from "../utils/utils";
 
 const commonStore = useCommonStore();
-const contestStore = useContestStore()
+const contestStore = useContestStore();
 
 const state = reactive({
   title: null,
   type: null,
   description: null,
   duration: null,
-  startTime: null
-})
+  startTime: null,
+});
 
 const durationMark = {
-  60: '1h',
-  120: '2h',
-  180: '3h',
-  240: '4h',
-  300: '5h',
-}
+  60: "1h",
+  120: "2h",
+  180: "3h",
+  240: "4h",
+  300: "5h",
+};
 
 function onFinish() {
-  Apis.ContestModule.newContest(state).then(body => {
+  const form = {
+    title: state.title,
+    type: state.type,
+    description: state.description,
+    duration: state.duration,
+    startTime: state.startTime.format("YYYY-MM-DD HH:mm:ss"),
+  };
+  Apis.ContestModule.newContest(form).then((body) => {
     if (body.status) {
-      contestStore.refreshData()
-      message.success("Contest Create Success")
-      goContestItem(body.data)
+      contestStore.refreshData();
+      message.success("Contest Create Success");
+      goContestItem(body.data);
     }
-  })
+  });
 }
 </script>
 <template>
@@ -56,7 +63,9 @@ function onFinish() {
       :rules="[{ required: true, message: 'Please select contest type!' }]"
     >
       <a-radio-group v-model:value="state.type">
-        <a-radio v-for="cType in commonStore.contestTypes" :value="cType.id">{{ cType.text }}</a-radio>
+        <a-radio v-for="cType in commonStore.contestTypes" :value="cType.id">{{
+          cType.text
+        }}</a-radio>
       </a-radio-group>
     </a-form-item>
     <a-form-item
@@ -81,7 +90,9 @@ function onFinish() {
     <a-form-item
       label="Duration"
       name="duration"
-      :rules="[{ required: true, message: 'Please set the duration time for this contest!' }]"
+      :rules="[
+        { required: true, message: 'Please set the duration time for this contest!' },
+      ]"
     >
       <a-row type="flex" justify="space-around" align="middle">
         <a-col :span="18">
@@ -92,7 +103,7 @@ function onFinish() {
         </a-col>
       </a-row>
     </a-form-item>
-    <a-form-item style="text-align: center;">
+    <a-form-item style="text-align: center">
       <a-button type="primary" html-type="submit">Push New Contest!</a-button>
     </a-form-item>
   </a-form>

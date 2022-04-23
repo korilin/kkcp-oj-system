@@ -3,22 +3,30 @@ package com.korilin.service
 import com.korilin.bo.TestDataItem
 import com.korilin.bo.testDataArrayType
 import com.korilin.ktorm.globalJsonMapper
-import com.korilin.model.Commits
+import com.korilin.model.Submits
 import com.korilin.model.QuestionForm
 import com.korilin.model.QuestionDetail
 import com.korilin.domain.repository.InclusionRepository
 import com.korilin.domain.repository.QuestionRepository
+import com.korilin.domain.submitRecords
 import com.korilin.domain.table.Question
 import javaslang.Tuple2
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import org.ktorm.database.Database
+import org.ktorm.dsl.eq
+import org.ktorm.entity.filter
+import org.ktorm.entity.forEach
 import org.springframework.stereotype.Service
 
 @Service
 internal class QuestionService(
     private val questionRepository: QuestionRepository,
-    private val inclusionRepository: InclusionRepository
-    ) {
+    private val inclusionRepository: InclusionRepository,
+    database: Database
+) {
+
+    private val submitRecords = database.submitRecords
 
     internal suspend fun getAllQuestions() = questionRepository.queryAllQuestions()
 
@@ -44,12 +52,22 @@ internal class QuestionService(
     internal suspend fun getQuestionDetail(questionId: Int): QuestionDetail? {
         return coroutineScope {
             val questionAsync = async { questionRepository.findQuestionById(questionId) }
-            val contestsAsync = async { inclusionRepository.getContestsByQuestionId(questionId)  }
-            val commitsAsync = async { Commits(100, 45) }
+            val contestsAsync = async { inclusionRepository.getContestsByQuestionId(questionId) }
+            val submitsAsync = async {
+                var count = 0
+                var pass = 0
+                submitRecords.filter { it.questionId eq questionId }.forEach {
+                    count += 1
+                    if (it.pass == 100) {
+                        pass += 1
+                    }
+                }
+                Submits(count, pass)
+            }
             val question = questionAsync.await() ?: return@coroutineScope null
             val contests = contestsAsync.await()
-            val commits = commitsAsync.await()
-            QuestionDetail(question, contests.toTypedArray(), commits)
+            val submits = submitsAsync.await()
+            QuestionDetail(question, contests.toTypedArray(), submits)
         }
     }
 
@@ -77,7 +95,10 @@ internal class QuestionService(
         return Tuple2(result == 1, if (result == 1) "SUCCESS" else "更新记录 $result 条")
     }
 
-    fun deleteQuestion(questionId: Int) = questionRepository.findQuestionById(questionId)?.let {
-        it.delete() == 1
+    fun deleteQuestion(questionId: Int) = questionRepository.findQuestionById(questionId)?.let { question ->
+        submitRecords.filter { it.questionId eq questionId }.forEach {
+            it.delete()
+        }
+        question.delete() == 1
     }
 }

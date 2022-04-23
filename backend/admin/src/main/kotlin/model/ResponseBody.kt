@@ -16,12 +16,12 @@ data class AdminLoginModel(
 class QuestionDetail(
     val question: Question,
     val contests: Array<Contest>,
-    val commits: Commits
+    val submits: Submits
 )
 
-data class Commits(
-    val commitCount: Int,
-    val passCount: Int,
+data class Submits(
+    val count: Int,
+    val pass: Int,
 )
 
 data class ContestInfo(

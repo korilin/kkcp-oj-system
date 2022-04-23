@@ -236,9 +236,12 @@ async function getSubmits() {
       </div>
       <div v-if="setup == 3" class="contest-space">
         <div class="over">
-          <a-result status="success" title="你已通过所有题目，可以完成提交了">
+          <a-result
+            status="info"
+            title="后面没有题目了，如果已经通过所有用例可返回主页等待结果"
+          >
             <template #extra>
-              <a-button key="console" type="primary">提交</a-button>
+              <a-button key="console" type="primary" @click="goHome">返回主页</a-button>
             </template>
           </a-result>
         </div>

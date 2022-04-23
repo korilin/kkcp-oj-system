@@ -13,6 +13,7 @@ import com.korilin.domain.submitRecords
 import com.korilin.domain.table.Contest
 import com.korilin.domain.table.Question
 import com.korilin.domain.table.SubmitRecord
+import com.korilin.domain.userAnswers
 import com.korilin.model.ContestRegistration
 import com.korilin.toSecond
 import com.korilin.utils.AnswerClassHelper
@@ -21,10 +22,7 @@ import kotlinx.coroutines.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
-import org.ktorm.entity.Tuple4
-import org.ktorm.entity.filter
-import org.ktorm.entity.sortedBy
-import org.ktorm.entity.toList
+import org.ktorm.entity.*
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -40,8 +38,8 @@ class ContestService(
     private val registrationRepository: RegistrationRepository,
     database: Database
 ) {
-
-    val submitRecords =  database.submitRecords
+    var userAnswers = database.userAnswers
+    val submitRecords = database.submitRecords
 
     suspend fun getAllContestsInfo(): Array<ContestInfo> {
         val contests = contestsRepository.queryContests()
@@ -56,11 +54,21 @@ class ContestService(
         val contest = contestsRepository.findContestById(contestId) ?: return false
         var optCount = 0
         val inclusions = inclusionRepository.getAllByContestsId(contestId)
-        inclusions.forEach {
-            optCount += it.delete()
+        for (inclusion in inclusions) {
+            optCount += inclusion.delete()
+        }
+        val registrations = registrationRepository.getRegistrationsByContestId(contestId)
+        var answerCount = 0
+        for (registration in registrations) {
+            val answers = userAnswers.filter { it.attachId eq registration.attachId }.toList()
+            answerCount += answers.size
+            answers.forEach {
+                optCount += it.delete()
+            }
+            optCount += registration.delete()
         }
         optCount += contest.delete()
-        assert(optCount == inclusions.size + 1)
+        assert(optCount == inclusions.size + registrations.size + answerCount + 1)
         return true
     }
 

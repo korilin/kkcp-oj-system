@@ -7,7 +7,7 @@ import { goContestItem } from "../utils/router-helper";
 
 const props = defineProps({
   question: Object,
-  commits: Object,
+  submits: Object,
   contests: Object,
   handleCodeTemplateChange: Function,
   handleTestDataJsonChange: Function,
@@ -54,7 +54,7 @@ const loadSubmitCountEchart = (submiteTimes, passTimes) => {
 }
 
 onMounted(() => {
-  loadSubmitCountEchart(props.commits.commitCount, props.commits.passCount);
+  loadSubmitCountEchart(props.submits.count, props.submits.pass);
 })
 
 const doneLoading = ref(false)
