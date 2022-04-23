@@ -5,6 +5,7 @@ import com.korilin.domain.table.Contest
 import com.korilin.domain.table.Registration
 import com.korilin.domain.table.UserProfile
 import org.ktorm.database.Database
+import org.ktorm.dsl.and
 import org.ktorm.dsl.eq
 import org.ktorm.dsl.or
 import org.ktorm.entity.add
@@ -28,7 +29,7 @@ class RegistrationRepository(database: Database) {
 
     suspend fun getRegistration(contestId: Int, userId: Int): Registration? {
         return registrations.find {
-            (it.contestId eq contestId) or (it.userId eq userId)
+            (it.contestId eq contestId) and (it.userId eq userId)
         }
     }
 
