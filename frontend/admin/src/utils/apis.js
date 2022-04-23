@@ -90,7 +90,8 @@ const DELETE_CONTEST_URI = "/admin/contest/delete"
 const ADD_QUESTION_TO_CONTEST = "/admin/contest/inclusion/add"
 const REMOVE_QUESTION_FROM_CONTEST = "/admin/contest/inclusion/remove"
 const UPDATE_INCLUSION_SORT = "/admin/contest/inclusion/update"
-const UPDATE_CONTEST__URI = "/admin/contest/update/status"
+const UPDATE_CONTEST_STATUS_URI = "/admin/contest/update/status"
+const CONTEST_REGISTRATIONS_URI = "/admin/contest/registrations"
 
 class ContestModuleApis {
   async queryAllContest() {
@@ -130,8 +131,13 @@ class ContestModuleApis {
   }
 
   async updateStatus(contestId, status) {
-    const url = `${UPDATE_CONTEST__URI}?contestId=${contestId}&status=${status}`
+    const url = `${UPDATE_CONTEST_STATUS_URI}?contestId=${contestId}&status=${status}`
     return HttpService.put(url)
+  }
+
+  async getRegistrations(contestId) {
+    const url = `${CONTEST_REGISTRATIONS_URI}?contestId=${contestId}`
+    return HttpService.get(url)
   }
 }
 
