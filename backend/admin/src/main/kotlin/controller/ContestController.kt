@@ -9,6 +9,7 @@ import com.korilin.model.ContestInfo
 import com.korilin.model.InclusionRequest
 import com.korilin.service.ContestService
 import com.korilin.domain.table.Question
+import com.korilin.model.ContestRegistration
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.web.bind.annotation.*
 
@@ -77,5 +78,12 @@ class ContestController(private val contestService: ContestService) {
             return IResponseBody.error(e.message!!, data = status)
         }
         return IResponseBody(newStatus == status, "", data = newStatus)
+    }
+
+    @GetMapping("/registrations")
+    @ExceptionMessageHandler
+    suspend fun getRegistrations(contestId: Int): IResponseBody<Array<ContestRegistration>> {
+        val ls = contestService.getRegistrations(contestId)
+        return IResponseBody.success(data = ls.toTypedArray())
     }
 }

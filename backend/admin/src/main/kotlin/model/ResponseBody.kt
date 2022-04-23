@@ -1,8 +1,7 @@
 package com.korilin.model
 
-import com.korilin.domain.table.AdminAccount
-import com.korilin.domain.table.Contest
-import com.korilin.domain.table.Question
+import com.korilin.domain.table.*
+import java.time.LocalDateTime
 
 /**
  * 登录响应数据模型
@@ -44,6 +43,32 @@ data class ContestInfo(
     override fun hashCode(): Int {
         var result = contest.hashCode()
         result = 31 * result + questions.contentHashCode()
+        return result
+    }
+}
+
+data class ContestRegistration(
+    val profile: UserProfile,
+    val time: LocalDateTime,
+    val answers: Array<SubmitRecord>
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ContestRegistration
+
+        if (profile != other.profile) return false
+        if (time != other.time) return false
+        if (!answers.contentEquals(other.answers)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = profile.hashCode()
+        result = 31 * result + time.hashCode()
+        result = 31 * result + answers.contentHashCode()
         return result
     }
 }
