@@ -73,7 +73,7 @@ class AdminFilter(database: Database) : WebFilter {
                 this.option = request.path.value()
                 this.time = LocalDateTime.now()
             }
-            adminOptions.add(opt)
+//            adminOptions.add(opt)
         }
         return chain.filter(exchange)
     }
