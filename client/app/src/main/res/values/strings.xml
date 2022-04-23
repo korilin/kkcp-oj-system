@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">KKCP Admin App</string>
+    <string name="kkcp">KKCP</string>
+    <string name="admin">Admin</string>
+    <string name="email">Email</string>
+    <string name="code">Code</string>
+    <string name="login">Log In</string>
+</resources>
