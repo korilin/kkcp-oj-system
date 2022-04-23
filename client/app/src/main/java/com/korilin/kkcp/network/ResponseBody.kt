@@ -17,5 +17,5 @@ data class Account(
     var email: String,
     var name: String,
     var level: Int,
-    var lastLoginTime: LocalDateTime
+    var lastLoginTime: String
 )
