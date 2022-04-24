@@ -1,10 +1,7 @@
 package com.korilin.domain.table
 
 import org.ktorm.entity.Entity
-import org.ktorm.schema.Table
-import org.ktorm.schema.int
-import org.ktorm.schema.text
-import org.ktorm.schema.varchar
+import org.ktorm.schema.*
 
 interface UserProfile: Entity<UserProfile> {
 
@@ -17,6 +14,7 @@ interface UserProfile: Entity<UserProfile> {
     var avatarUrl: String
     var bio: String
     var htmlUrl: String
+    var block: Boolean
 }
 
 object UserProfiles: Table<UserProfile>("t_user_profile") {
@@ -27,4 +25,5 @@ object UserProfiles: Table<UserProfile>("t_user_profile") {
     val avatarUrl = text("avatar_url").bindTo { it.avatarUrl }
     val bio = text("bio").bindTo { it.bio }
     val htmlUrl = text("html_url").bindTo { it.htmlUrl }
+    val block = boolean("block").bindTo { it.block }
 }

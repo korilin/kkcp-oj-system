@@ -4,6 +4,7 @@ import com.korilin.domain.adminAccounts
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find
+import org.ktorm.entity.toList
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -14,4 +15,6 @@ class AdminAccountRepository(database: Database) {
     suspend fun queryAdminAccount(email: String) = adminAccounts.find {
         it.email eq email
     }
+
+    suspend fun queryAllAdmin() = adminAccounts.toList()
 }

@@ -15,7 +15,7 @@ interface AdminAccount: Entity<AdminAccount> {
 
     var email: String
     var name: String
-    var level: Int
+    var level: Int // 1,2,3
     var lastLoginTime: LocalDateTime
 }
 

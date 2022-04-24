@@ -42,3 +42,9 @@ data class InclusionRequest(
         return result
     }
 }
+
+data class Admin(
+    val email: String,
+    val name: String,
+    val level: Int
+)
