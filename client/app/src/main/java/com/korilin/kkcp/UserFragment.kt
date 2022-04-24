@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.korilin.kkcp.databinding.UserFragmentBinding
 
 class UserFragment : Fragment() {
 
@@ -14,13 +15,14 @@ class UserFragment : Fragment() {
     }
 
     private lateinit var viewModel: UserViewModel
+    private lateinit var binding: UserFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
-        return inflater.inflate(R.layout.user_fragment, container, false)
+    ): View {
+        binding = UserFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 

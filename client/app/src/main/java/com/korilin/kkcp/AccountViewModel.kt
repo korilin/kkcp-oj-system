@@ -1,7 +1,9 @@
 package com.korilin.kkcp
 
 import androidx.lifecycle.ViewModel
+import com.korilin.kkcp.network.Account
 
 class AccountViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+
+    val accounts: MutableList<Account> = mutableListOf()
 }
