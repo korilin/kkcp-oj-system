@@ -11,7 +11,11 @@ import java.time.LocalDateTime
  * 管理员实体
  */
 interface AdminAccount: Entity<AdminAccount> {
-    companion object : Entity.Factory<AdminAccount>()
+    companion object : Entity.Factory<AdminAccount>() {
+        const val READ = 1
+        const val WRITE = 2
+        const val SUPER = 3
+    }
 
     var email: String
     var name: String

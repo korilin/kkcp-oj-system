@@ -62,7 +62,7 @@ class AdminFilter(database: Database) : WebFilter {
             }
             // 校验 adminAccount 对象权限
             if (isManagerOpt) {
-                if (adminAccount.level != 5) {
+                if (adminAccount.level != AdminAccount.SUPER) {
                     exchange.response.statusCode = HttpStatus.UNAUTHORIZED
                     return Mono.empty()
                 }

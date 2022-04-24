@@ -2,12 +2,11 @@ package com.korilin.kkcp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.textfield.TextInputEditText
 import com.korilin.kkcp.databinding.ActivityLoginBinding
 import com.korilin.kkcp.network.LoginBody
 import com.korilin.kkcp.network.httpService
+import com.korilin.kkcp.storage.Store
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -27,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
                     try {
                         val response = httpService.sendCode(emailInput.editText?.text.toString())
                         if (response.status) {
+                            showToast("Already Send")
                             repeat(60) {
                                 codeSendBtn.text = "${60 - it}"
                                 delay(1000)
@@ -49,7 +49,10 @@ class LoginActivity : AppCompatActivity() {
                     try {
                         val response = httpService.login(LoginBody(email, code))
                         if (response.status) {
-                            showToast("SUCCESS")
+                            Store.token = response.data!!.token
+                            Store.account = response.data.account
+                            showToast("Login Success")
+                            startActivity(MainActivity::class.java)
                         } else {
                             showToast(response.message)
                         }
