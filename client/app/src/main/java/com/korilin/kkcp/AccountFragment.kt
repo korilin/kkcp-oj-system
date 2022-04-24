@@ -61,6 +61,9 @@ class AccountFragment : Fragment() {
                 name.text = account.name
                 email.text = account.email
                 level.text = "Lv${account.level}"
+                root.setOnClickListener {
+                    
+                }
             }
         }
 
@@ -68,7 +71,5 @@ class AccountFragment : Fragment() {
     }
 
     inner class RecyclerAdapterHolder(val binding: ItemAccountBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
+        RecyclerView.ViewHolder(binding.root)
 }
