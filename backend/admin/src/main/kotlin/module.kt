@@ -18,5 +18,5 @@ internal object AdminModuleConfig {
     internal const val CONTEST_URL_PREFIX = "$ADMIN_URL_PREFIX/contest"
 
     // 管理员管理接口
-    internal const val ADMIN_MANAGER_PREFIX = "$ADMIN_URL_PREFIX/manager/"
+    internal const val ADMIN_MANAGER_PREFIX = "$ADMIN_URL_PREFIX/manager/v5"
 }
