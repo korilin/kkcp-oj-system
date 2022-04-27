@@ -2,7 +2,6 @@ package com.korilin.kkcp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.korilin.kkcp.network.Account
 import com.korilin.kkcp.network.User
 import com.korilin.kkcp.network.httpService
 import com.korilin.kkcp.network.request
@@ -12,7 +11,8 @@ class UserViewModel : ViewModel() {
 
     val users: MutableList<User> = mutableListOf()
 
-    var onUsersChange: (Int, Int) -> Unit = { _, _ -> }
+    var onUsersInsert: (Int, Int) -> Unit = { _, _-> }
+    var onUsersUpdate: (Int) -> Unit = { _ -> }
 
     fun initAccounts() {
         viewModelScope.launch {
@@ -20,7 +20,19 @@ class UserViewModel : ViewModel() {
                 httpService.queryAllUser()
             }) {
                 users.addAll(it!!)
-                onUsersChange(0, it.size)
+                onUsersInsert(0, it.size)
+            }
+        }
+    }
+
+    fun updateUserState(position: Int, status: Boolean) {
+        val uid = users[position].id
+        viewModelScope.launch {
+            request(call = {
+                httpService.blockUser(userId = uid, status = status)
+            }) {
+                users[position].block = status
+                onUsersUpdate(position)
             }
         }
     }

@@ -41,8 +41,11 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        viewModel.onUsersChange = { position, length ->
-            mAdapter.notifyItemRangeChanged(position, length)
+        viewModel.onUsersInsert = { position, size ->
+            mAdapter.notifyItemRangeInserted(position, size)
+        }
+        viewModel.onUsersUpdate = {
+            mAdapter.notifyItemChanged(it)
         }
         viewModel.initAccounts()
     }
@@ -72,11 +75,10 @@ class UserFragment : Fragment() {
                 deleteBtn.setOnClickListener {
                     val builder = AlertDialog.Builder(requireContext())
                     builder.setMessage(if (user.block) "是否解禁该用户？" else "确定封禁该用户？")
-                        .setPositiveButton("Yes") { dialog, id ->
-                            // TODO
+                        .setPositiveButton("Yes") { _, _ ->
+                            viewModel.updateUserState(position, user.block.not())
                         }
                         .setNegativeButton("Cancel") { _, _ ->
-                            // User cancelled the dialog
                         }
                     // Create the AlertDialog object and return it
                     builder.create().show()
