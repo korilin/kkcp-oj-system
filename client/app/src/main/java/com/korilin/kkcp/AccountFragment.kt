@@ -7,10 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
 import com.korilin.kkcp.databinding.AccountFragmentBinding
 import com.korilin.kkcp.databinding.ItemAccountBinding
 
@@ -34,14 +38,35 @@ class AccountFragment : Fragment() {
             adapter = mAdapter
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
+        binding.actionButton.setOnClickListener {
+            val builder = AlertDialog.Builder(requireActivity())
+            val view = inflater.inflate(R.layout.dialog_account, null)
+            builder.setView(view)
+                // Add action buttons
+                .setPositiveButton("Create") { dialog, id ->
+                    val radioGroup = view.findViewById<RadioGroup>(R.id.radio_group)
+                    val level = when (radioGroup.checkedRadioButtonId) {
+                        R.id.radio_lv3 -> 3
+                        R.id.radio_lv2 -> 2
+                        else -> 1
+                    }
+                    val name = view.findViewById<TextInputEditText>(R.id.name).text.toString()
+                    val email = view.findViewById<TextInputEditText>(R.id.email).text.toString()
+                    viewModel.newAccount(email, name, level)
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+            builder.create().show()
+        }
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[AccountViewModel::class.java]
-        viewModel.onAccountsChange = { position, length ->
-            mAdapter.notifyItemRangeChanged(position, length)
+        viewModel.onAccountsChange = { position, _ ->
+            mAdapter.notifyItemInserted(position)
         }
         viewModel.initAccounts()
     }
@@ -60,16 +85,16 @@ class AccountFragment : Fragment() {
                 email.text = account.email
                 level.text = "Lv${account.level}"
                 deleteBtn.setOnClickListener {
-                    val builder = AlertDialog.Builder(requireContext())
+                    val builder = AlertDialog.Builder(requireActivity())
                     builder.setMessage("确定删除该管理员账户吗？")
                         .setPositiveButton("Yes") { dialog, id ->
-                            viewModel.deleteAccount(account.email) {
+                            viewModel.deleteAccount(position) {
                                 this@RecyclerViewAdapter.notifyItemRemoved(position)
+                                requireContext().showToast("删除成功")
                             }
-                            requireContext().showToast("删除成功")
                         }
-                        .setNegativeButton("Cancel") { _, _ ->
-                            // User cancelled the dialog
+                        .setNegativeButton("Cancel") { dialog, _ ->
+                            dialog.cancel()
                         }
                     // Create the AlertDialog object and return it
                     builder.create().show()
