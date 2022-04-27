@@ -226,7 +226,6 @@ async function getSubmits() {
         <div class="editor-wrap">
           <KotlinEditor class="editor" ref="editor" v-model="answer" />
           <div class="opt-btn">
-            213
             <a-button size="smaill" @click="saveAnswer">保存</a-button>
             <a-button size="smaill" @click="resetAnswer">重置</a-button>
             <a-button type="primary" size="smaill" @click="testAnswer">测试</a-button>

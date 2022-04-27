@@ -29,18 +29,18 @@ ${suffix}`;
 
 <template>
   <a-collapse class="desc-md-space markdown-html" v-model:activeKey="activeKey" ghost>
-    <a-collapse-panel key="1" header="题目描述">
-      <a-spin tip="解析中" :spinning="descriptionSpinning">
+    <a-collapse-panel key="1" header="Description">
+      <a-spin tip="Converting" :spinning="descriptionSpinning">
         <div v-html="description" v-highlight></div>
       </a-spin>
     </a-collapse-panel>
-    <a-collapse-panel key="2" header="Kotlin 代码模板">
-      <a-spin tip="解析中" :spinning="codeTemplateSpinning">
+    <a-collapse-panel key="2" header="Kotlin Code Template">
+      <a-spin tip="Converting" :spinning="codeTemplateSpinning">
         <div v-html="toCodeMdHtml(codeTemplate, 'Kotlin')" v-highlight></div>
       </a-spin>
     </a-collapse-panel>
-    <a-collapse-panel key="3" header="测试数据（JSON）">
-      <a-spin tip="解析中" :spinning="testDataJsonSpinning">
+    <a-collapse-panel key="3" header="Test Data (JSON)">
+      <a-spin tip="Converting" :spinning="testDataJsonSpinning">
         <div v-html="toCodeMdHtml(testDataJson, 'JSON')" v-highlight></div>
       </a-spin>
     </a-collapse-panel>

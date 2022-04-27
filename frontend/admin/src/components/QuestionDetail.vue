@@ -37,11 +37,11 @@ const loadSubmitCountEchart = (submiteTimes, passTimes) => {
         data: [
           {
             value: submiteTimes - passTimes,
-            name: '未通过次数'
+            name: 'UnPass Count'
           },
           {
             value: passTimes,
-            name: '通过次数'
+            name: 'Pass Count'
           },
         ],
         radius: ['50%', '70%']
@@ -109,10 +109,10 @@ const colors = [
         <a-button @click="doCancel" style="margin-left: 20px;">Cancel</a-button>
       </span>
     </template>
-    <a-descriptions-item label="题目">
+    <a-descriptions-item label="Title">
       <a-input v-model:value="question.title" :bordered="false" :disabled="readMode" />
     </a-descriptions-item>
-    <a-descriptions-item label="类型">
+    <a-descriptions-item label="Type">
       <a-select
         ref="typeSelect"
         v-model:value="question.type"
@@ -126,7 +126,7 @@ const colors = [
         >{{ qType.text }}</a-select-option>
       </a-select>
     </a-descriptions-item>
-    <a-descriptions-item label="难度">
+    <a-descriptions-item label="Level">
       <a-select
         ref="levelSelect"
         v-model:value="question.level"
@@ -140,7 +140,7 @@ const colors = [
         >{{ level.text }}</a-select-option>
       </a-select>
     </a-descriptions-item>
-    <a-descriptions-item label="答案提交次数" :span="3" style="text-align: center;">
+    <a-descriptions-item label="Submit Count" :span="3" style="text-align: center;">
       <div id="submitCountEchart" :style="{ width: '500px', height: '250px', margin: 'auto' }"></div>
     </a-descriptions-item>
     <a-descriptions-item :span="3" class="contests">
@@ -157,27 +157,27 @@ const colors = [
       </a-list>
     </a-descriptions-item>
     <a-descriptions-item :span="3" class="files" v-if="!readMode">
-      <a-divider>题目数据/文件</a-divider>
+      <a-divider>File Data</a-divider>
       <div class="file-space">
         <InstantUploadBox
           class="upload-box"
-          text="代码模版: 上传 Kotlin 文件进行更新"
-          :hint="'最后更新时间: ' + question.codeTemplateLastUpdateTime"
+          text="Code Template: Upload Kotlin File"
+          :hint="'Last Update Time: ' + question.codeTemplateLastUpdateTime"
           :handleChange="handleCodeTemplateChange"
           kkcpIcon="icon-kotlin-file"
         />
         <InstantUploadBox
           class="upload-box"
-          :text="'测试数据: 上传 JSON 文件进行更新'"
-          :hint="'最后更新时间: ' + question.testDataJsonLastUpdateTime"
+          :text="'Test Data: Upload JSON File'"
+          :hint="'Last Update Time: ' + question.testDataJsonLastUpdateTime"
           :handleChange="handleTestDataJsonChange"
           kkcpIcon="icon-JSON"
         />
         <InstantUploadBox
           class="upload-box"
           style="width: 80%;"
-          :text="'题目描述: 上传 Markdown 文件进行解析'"
-          :hint="'最后更新时间: ' + question.descriptionLastUpdateTime"
+          :text="'Description: Upload Markdown File Convert To HTML String'"
+          :hint="'Last Update Time: ' + question.descriptionLastUpdateTime"
           :handleChange="handleDescriptionChange"
           kkcp-icon="icon-markdown"
         />

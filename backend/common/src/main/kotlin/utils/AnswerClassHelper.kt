@@ -59,7 +59,6 @@ object AnswerClassHelper {
         }
     }
 
-    private val classLoaders = ConcurrentHashMap<Int, QuestionClassLoader>()
 
     private fun getFullPath(questionId: Int): String {
         return "$PATH/$DIR_PREFIX$questionId"
@@ -97,6 +96,7 @@ object AnswerClassHelper {
         }
     }
 
+    private val classLoaders = ConcurrentHashMap<Int, QuestionClassLoader>()
     private val counter = AtomicInteger()
 
     fun createClass(questionId: Int, userId: Int, code: String): Class<*> {

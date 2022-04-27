@@ -20,7 +20,7 @@ object AESUtil {
     /**
      * 通过提供的 seed 来建一个对称加密密钥
      */
-    fun createKey(seed: String): Key = KeyGenerator.getInstance("AES").apply {
+    private fun createKey(seed: String): Key = KeyGenerator.getInstance("AES").apply {
         init(128, SecureRandom(seed.toByteArray()))
     }.generateKey()
 

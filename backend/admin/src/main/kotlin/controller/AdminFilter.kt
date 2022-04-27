@@ -67,13 +67,12 @@ class AdminFilter(database: Database) : WebFilter {
                     return Mono.empty()
                 }
             }
-            // 记录管理员的操作行为 -> 增删改
-            val opt = AdminOptionRecord {
+            // 记录管理员的操作行为
+            adminOptions.add(AdminOptionRecord {
                 this.email = adminAccount.email
                 this.option = request.path.value()
                 this.time = LocalDateTime.now()
-            }
-//            adminOptions.add(opt)
+            })
         }
         return chain.filter(exchange)
     }
