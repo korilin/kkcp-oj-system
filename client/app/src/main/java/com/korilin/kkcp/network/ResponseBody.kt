@@ -18,3 +18,14 @@ data class Account(
     var level: Int,
     var lastLoginTime: String
 )
+
+data class User(
+    var id: Int,
+    var login: String,
+    var name: String,
+    var email: String,
+    var avatarUrl: String,
+    var bio: String,
+    var htmlUrl: String,
+    var block: Boolean
+)

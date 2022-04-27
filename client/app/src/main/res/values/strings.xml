@@ -11,4 +11,5 @@
     <string name="Lv1">Lv1</string>
     <string name="Lv3">Lv3</string>
     <string name="Lv2">Lv2</string>
+    <string name="delete">Delete</string>
 </resources>
