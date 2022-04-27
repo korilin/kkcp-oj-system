@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    private val tabs = arrayOf("Account", "User")
+    private val tabs = arrayOf("Account", "Record", "User")
     private val fragments = arrayOf(
-        AccountFragment.newInstance(), UserFragment.newInstance()
+        AccountFragment.newInstance(), OptionsFragment.newInstance(), UserFragment.newInstance()
     )
 
     inner class ViewPager2Adapter(activity: MainActivity) : FragmentStateAdapter(activity) {

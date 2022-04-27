@@ -47,7 +47,7 @@ class UserFragment : Fragment() {
         viewModel.onUsersUpdate = {
             mAdapter.notifyItemChanged(it)
         }
-        viewModel.initAccounts()
+        viewModel.initUsers()
     }
 
 
@@ -61,9 +61,9 @@ class UserFragment : Fragment() {
         override fun onBindViewHolder(holder: RecyclerAdapterHolder, position: Int) {
             val user = viewModel.users[position]
             holder.binding.apply {
-                name.text = user.name
-                email.text = user.email
-                level.text = "ID:${user.id}"
+                title.text = user.name
+                content.text = user.email
+                tag.text = "ID:${user.id}"
                 if (user.block) {
                     deleteBtn.text = "UnBlock"
                     deleteBtn.setBackgroundColor(

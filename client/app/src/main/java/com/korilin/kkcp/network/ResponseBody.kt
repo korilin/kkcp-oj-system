@@ -29,3 +29,10 @@ data class User(
     var htmlUrl: String,
     var block: Boolean
 )
+
+data class Option(
+    val optId: Int,
+    var email: String,
+    var option: String,
+    var time: String
+)

@@ -10,6 +10,7 @@ import org.ktorm.dsl.eq
 import org.ktorm.dsl.notEq
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
+import org.ktorm.entity.sortedBy
 import org.ktorm.entity.toList
 import org.springframework.stereotype.Service
 
@@ -30,7 +31,7 @@ class ManagerService(
         return user.flushChanges() == 1
     }
 
-    suspend fun allOpts() = adminOpts.filter { it.option notEq "" }.toList()
+    suspend fun allOpts() = adminOpts.sortedBy { it.time }.toList().reversed()
 
     suspend fun allAccount() = adminAccountRepository.queryAllAdmin()
 

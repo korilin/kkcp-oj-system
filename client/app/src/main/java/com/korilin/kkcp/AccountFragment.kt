@@ -7,8 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -50,8 +48,8 @@ class AccountFragment : Fragment() {
                         R.id.radio_lv2 -> 2
                         else -> 1
                     }
-                    val name = view.findViewById<TextInputEditText>(R.id.name).text.toString()
-                    val email = view.findViewById<TextInputEditText>(R.id.email).text.toString()
+                    val name = view.findViewById<TextInputEditText>(R.id.title).text.toString()
+                    val email = view.findViewById<TextInputEditText>(R.id.content).text.toString()
                     viewModel.newAccount(email, name, level)
                 }
                 .setNegativeButton("Cancel") { dialog, _ ->
@@ -65,8 +63,8 @@ class AccountFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[AccountViewModel::class.java]
-        viewModel.onAccountsChange = { position, _ ->
-            mAdapter.notifyItemInserted(position)
+        viewModel.onAccountsChange = { position, size ->
+            mAdapter.notifyItemRangeInserted(position, size)
         }
         viewModel.initAccounts()
     }
@@ -81,9 +79,9 @@ class AccountFragment : Fragment() {
         override fun onBindViewHolder(holder: RecyclerAdapterHolder, position: Int) {
             val account = viewModel.accounts[position]
             holder.binding.apply {
-                name.text = account.name
-                email.text = account.email
-                level.text = "Lv${account.level}"
+                title.text = account.name
+                content.text = account.email
+                tag.text = "Lv${account.level}"
                 deleteBtn.setOnClickListener {
                     val builder = AlertDialog.Builder(requireActivity())
                     builder.setMessage("确定删除该管理员账户吗？")

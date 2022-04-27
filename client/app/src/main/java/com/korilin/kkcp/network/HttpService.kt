@@ -22,6 +22,11 @@ interface HttpService {
         @Header("Admin-Token") token: String? = Store.token
     ): ResponseBody<Array<Account>>
 
+    @GET("/api/admin/manager/v5/account/opts")
+    suspend fun queryAllOption(
+        @Header("Admin-Token") token: String? = Store.token
+    ): ResponseBody<Array<Option>>
+
     @POST("/api/admin/manager/v5/account/new")
     suspend fun newAccount(
         @Header("Admin-Token") token: String? = Store.token,

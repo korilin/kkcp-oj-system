@@ -10,36 +10,36 @@
     android:focusable="true">
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="korilin" />
+        tools:text="Title" />
 
 
     <TextView
-        android:id="@+id/level"
+        android:id="@+id/tag"
         android:layout_marginStart="10dp"
         android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/name"
-        app:layout_constraintStart_toEndOf="@+id/name"
-        app:layout_constraintTop_toTopOf="@+id/name"
-        tools:text="Lv2" />
+        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toTopOf="@+id/title"
+        tools:text="Tag" />
 
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name"
-        tools:text="korilin.dev@gmail.com" />
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:text="content" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/deleteBtn"

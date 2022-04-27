@@ -14,7 +14,7 @@ class UserViewModel : ViewModel() {
     var onUsersInsert: (Int, Int) -> Unit = { _, _-> }
     var onUsersUpdate: (Int) -> Unit = { _ -> }
 
-    fun initAccounts() {
+    fun initUsers() {
         viewModelScope.launch {
             request(call = {
                 httpService.queryAllUser()
