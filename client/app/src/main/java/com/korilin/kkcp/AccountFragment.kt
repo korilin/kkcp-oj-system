@@ -7,14 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.korilin.kkcp.databinding.AccountFragmentBinding
 import com.korilin.kkcp.databinding.ItemAccountBinding
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 class AccountFragment : Fragment() {
 
@@ -61,8 +59,20 @@ class AccountFragment : Fragment() {
                 name.text = account.name
                 email.text = account.email
                 level.text = "Lv${account.level}"
-                root.setOnClickListener {
-                    
+                deleteBtn.setOnClickListener {
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setMessage("确定删除该管理员账户吗？")
+                        .setPositiveButton("Yes") { dialog, id ->
+                            viewModel.deleteAccount(account.email) {
+                                this@RecyclerViewAdapter.notifyItemRemoved(position)
+                            }
+                            requireContext().showToast("删除成功")
+                        }
+                        .setNegativeButton("Cancel") { _, _ ->
+                            // User cancelled the dialog
+                        }
+                    // Create the AlertDialog object and return it
+                    builder.create().show()
                 }
             }
         }

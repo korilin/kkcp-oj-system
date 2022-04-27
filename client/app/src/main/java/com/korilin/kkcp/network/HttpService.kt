@@ -21,6 +21,29 @@ interface HttpService {
     suspend fun queryAllAccount(
         @Header("Admin-Token") token: String? = Store.token
     ): ResponseBody<Array<Account>>
+
+    @POST("/api/admin/manager/v5/account/new")
+    suspend fun newAccount(
+        @Header("Admin-Token") token: String? = Store.token,
+        @Body body: Account
+    ): ResponseBody<Boolean>
+
+    @DELETE("/api/admin/manager/v5/account/del")
+    suspend fun deleteAccount(
+        @Header("Admin-Token") token: String? = Store.token,
+        @Query("email") email: String
+    ): ResponseBody<Boolean>
+
+    @GET("/api/admin/manager/v5/user/all")
+    suspend fun queryAllUser(@Header("Admin-Token") token: String? = Store.token): ResponseBody<Array<User>>
+
+    @PUT("/api/admin/manager/v5/user/block")
+    suspend fun blockUser(
+        @Header("Admin-Token") token: String? = Store.token,
+        @Query("userId") userId: Int,
+        @Query("status") status: Boolean
+    ): ResponseBody<Boolean>
+
 }
 
 private const val IP = "10.0.2.2"

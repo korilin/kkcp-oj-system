@@ -2,6 +2,7 @@ package com.korilin.service
 
 import com.korilin.domain.adminOptions
 import com.korilin.domain.repository.AdminAccountRepository
+import com.korilin.domain.table.AdminAccount
 import com.korilin.domain.table.UserProfile
 import com.korilin.domain.userProfiles
 import org.ktorm.database.Database
@@ -30,6 +31,8 @@ class ManagerService(
     suspend fun allOpts() = adminOpts.toList()
 
     suspend fun allAccount() = adminAccountRepository.queryAllAdmin()
+
+    suspend fun addAccount(account: AdminAccount) = adminAccountRepository.newAdminAccount(account) == 1
 
     suspend fun deleteAccount(email: String): Boolean {
         val account = adminAccountRepository.queryAdminAccount(email)

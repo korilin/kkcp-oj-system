@@ -1,9 +1,11 @@
 package com.korilin.domain.repository
 
 import com.korilin.domain.adminAccounts
+import com.korilin.domain.table.AdminAccount
 import org.ktorm.database.Database
 import org.ktorm.dsl.between
 import org.ktorm.dsl.eq
+import org.ktorm.entity.add
 import org.ktorm.entity.filter
 import org.ktorm.entity.find
 import org.ktorm.entity.toList
@@ -19,4 +21,6 @@ class AdminAccountRepository(database: Database) {
     }
 
     suspend fun queryAllAdmin() = adminAccounts.filter { it.level between 1..3 }.toList()
+
+    suspend fun newAdminAccount(account: AdminAccount) = adminAccounts.add(account)
 }

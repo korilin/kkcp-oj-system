@@ -25,4 +25,14 @@ class AccountViewModel : ViewModel() {
             }
         }
     }
+
+    fun deleteAccount(email: String, block: ()->Unit) {
+        viewModelScope.launch {
+            request(call = {
+                httpService.deleteAccount(email = email)
+            }) {
+                block()
+            }
+        }
+    }
 }
