@@ -13,7 +13,7 @@ object AnswerVerifyHelper {
             for (item in data) {
                 val scope = CoroutineScope(Dispatchers.IO)
                 try {
-                    // 单个用例最多执行 3 秒
+                    // 单个用例最多执行 2 秒
                     val result = withTimeout(2000) {
                         val job = scope.async {
                             invokeMethod.invoke(
