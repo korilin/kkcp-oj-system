@@ -37,7 +37,7 @@ function logout() {
   </a-descriptions>
   <a-alert
     style="margin-top: 30px"
-    message="Contact Lv5 administrator to change your account infomation."
+    message="Contact Lv3 administrator to change your account infomation."
     type="info"
   />
   <div style="text-align: center;">
