@@ -1,11 +1,11 @@
 # kotlin-knowledge-competition-platform
 Kotlin 知识竞赛平台 - 毕业设计 Demo 型项目
 
-## 进度
+## 目录
 
-项目进度统计在 korilin's project 中
-
-https://github.com/users/korilin/projects/3/views/1
+- backend 后端 Kotlin + Spring Webflux
+- client 客户端 Android built in Compose
+- frontend 前端 vue3 + vite
 
 ## 目的
 
